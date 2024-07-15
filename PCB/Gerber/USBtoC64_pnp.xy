@@ -1,0 +1,26 @@
+# Pick And Place List
+# Company=
+# Author=
+# eMail=
+#
+# Project=USBtoC64
+# Date=20:58:34
+# CreatedBy=Fritzing 1.0.2b.2023-12-20.CD-1901-0-dbdbe34c
+#
+#
+# Coordinates in mils, always center of component
+# Origin 0/0=Lower left corner of PCB
+# Rotation in degree (0-360, math. pos.)
+#
+RefDes,Description,Package,X,Y,Rotation,Side,Mount
+Description: resistance;capacitance;inductance;voltage;current;power;mpn;mn;
+S1,";;;;;;;;","THT",739.022,1085.8,90,Top,THT
+A2,";;;;;;;;","",773.889,628.281,180,Top,MANUAL
+1K,"220;;;;;0.25W;;;","THT",813.711,627.615,90,Top,THT
+150,"220;;;;;0.25W;;;","THT",342.167,627.615,90,Top,THT
+1K,"220;;;;;0.25W;;;","THT",1145.52,629.739,90,Top,THT
+D1,";;;;;;;;","diode-1n4148",469,678.115,-90,Top,SMT
+Q1,";;;;;;;;","TO92 [THT]",967.867,708.677,-90,Top,THT
+X1,";;;;;;;;","db9",151.322,628.28,-90,Top,SMT
+D2,";;;;;;;;","diode-1n4148",700.633,678.115,-90,Top,SMT
+150,"220;;;;;0.25W;;;","THT",586.256,627.615,-90,Top,THT
