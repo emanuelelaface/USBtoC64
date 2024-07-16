@@ -1,5 +1,5 @@
 /*
-USB to Commodore 64 adaptor by Emanuele Laface
+USB to Commodore 64 adaptor V 1.0 by Emanuele Laface
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
 THE POWER WILL ARRIVE DIRECTLY TO THE SID OF THE COMMODORE AND MAY DESTROY IT.
@@ -22,42 +22,45 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include "esp_timer.h"
 #include "Adafruit_NeoPixel.h"
 
-#define PIN_WS2812B 21
-#define NUM_PIXELS 1
-Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800);
+#define PIN_WS2812B 21 // Pin for RGB LED
+#define NUM_PIXELS 1 // 1 LED
+Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED
 
+// Define GPIOs for Joystick Switches
 #define C64_FIRE          7
 #define C64_UP            8
 #define C64_DOWN          9 
 #define C64_LEFT         10
 #define C64_RIGHT        11
-
+// Define GPIOs for analog mouse ports
 #define C64_POTX          4
 #define C64_POTY          6
-
+// Define GPIO for interrupt from C64
 #define C64_INT           1
-
-#define SWITCH_MJ         13 //2 // HIGH = mouse, LOW = Joystick
-
+// Define GPIO for switch Mouse - Joystick
+#define SWITCH_MJ        13 // 2 // HIGH = mouse, LOW = Joystick
+// Define the default timers for the mouse delay, all empirical for PAL version
 #define MINdelayOnX    2450
 #define MAXdelayOnX    5040
 #define MINdelayOnY    2440
 #define MAXdelayOnY    5100
 #define STEPdelayOnX   10.16689245
 #define STEPdelayOnY   10.14384171
+// Define the timing for mouse used as Joystick
+#define M2JCalib      833 // 20000 at 240 MHz
 
-#define M2JCalib      20000
-
+// Define the volatile variables for the hardware timers
 volatile uint64_t delayOnX = MINdelayOnX;
 volatile uint64_t delayOnY = MINdelayOnY;
 volatile uint64_t delayOffX = 10;
 volatile uint64_t delayOffY = 10;
-
+// Define the hardware timers
 hw_timer_t *timerOnX = NULL;
 hw_timer_t *timerOnY = NULL;
 hw_timer_t *timerOffX = NULL;
 hw_timer_t *timerOffY = NULL;
 
+// From now till further comment is all the Bluetooth stuff that is copyed from the example fo the module
 static const char *TAG = "USB MESSAGE";
 QueueHandle_t hid_host_event_queue;
 bool user_shutdown = false;
@@ -75,23 +78,25 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
   if (length < sizeof(hid_mouse_input_report_boot_t)) {
     return;
   }
-  if (digitalRead(SWITCH_MJ)) {
-    c64_mouse_m(mouse_report);
+  // Here is where the USB mouse receive the report from USB.
+  if (digitalRead(SWITCH_MJ)) {       // If we are in Mouse mode
+    c64_mouse_m(mouse_report);        // The mouse function in mouse mode is called
   }
-  else {
-    c64_mouse_j(mouse_report);
+  else {                              // If we are in joystick mode
+    c64_mouse_j(mouse_report);        // The mouse function in joystick mode is called
   }
 }
 
 static void hid_host_generic_report_callback(const uint8_t *const data, const int length) {
-  if (digitalRead(SWITCH_MJ)) {
-    c64_joystick_m(data, length);
+  // Here is where the USB joystick receive the report from USB.
+  if (digitalRead(SWITCH_MJ)) {     // If we are in Mouse mode
+    c64_joystick_m(data, length);   // The joystick function in mouse mode is called
   }
-  else {
-    c64_joystick_j(data, length);
+  else {                            // If we are in joystick mode
+    c64_joystick_j(data, length);   // The joystick function in joystick mode is called
   }
 }
-
+// More USB stuff
 void hid_host_interface_callback(hid_host_device_handle_t hid_device_handle, const hid_host_interface_event_t event, void *arg) {
   uint8_t data[64] = {0};
   size_t data_length = 0;
@@ -197,51 +202,55 @@ void app_main(void) {
   task_created = xTaskCreate(&hid_host_task, "hid_task", 4 * 1024, NULL, 2, NULL);
   assert(task_created == pdTRUE);
 }
-
+// This interrupt is called when the C64 set to zero the voltage on the POTX
+// The BJT transforms the signal in HIGH and the Interrupt is invoked
 void IRAM_ATTR handleInterrupt() {
-  if (!((GPIO.in >> C64_INT) & 1)) return; // Workaround for a BUG!
-  timerWrite(timerOnX, 0);
-  timerAlarm(timerOnX, delayOnX, false, 0);
-  timerWrite(timerOnY, 0);
-  timerAlarm(timerOnY, delayOnY, false, 0);
+  // Workaround for a BUG! Sometime the interrupt is triggered twice but only once when
+  // it is HIGH, so I check the level and if it is not HIGH I do not start the timers
+  // This is a bug of the Arduino API, the ESP32 IDF should work fine
+  if (!((GPIO.in >> C64_INT) & 1)) return;
+  timerWrite(timerOnX, 0);                      // Reset the timer for POTX
+  timerAlarm(timerOnX, delayOnX, false, 0);     // Set the delay when the POTX timer interrupt will trigger the start
+  timerWrite(timerOnY, 0);                      // Reset the ON timer for POTY
+  timerAlarm(timerOnY, delayOnY, false, 0);     // Set the delay when the POTY timer interrupt will trigger start
 }
 
 void IRAM_ATTR turnOnPotX() {
-  GPIO.out_w1ts = (1 << C64_POTX);
-  timerWrite(timerOffX, 0);
-  timerAlarm(timerOffX, delayOffX, false, 0);
+  GPIO.out_w1ts = (1 << C64_POTX);              // Turn on POTX after delayOnX
+  timerWrite(timerOffX, 0);                     // Reset the OFF timer for POTX
+  timerAlarm(timerOffX, delayOffX, false, 0);   // Set the delay when the POTX timer interrupt will trigger the end
 }
 
 void IRAM_ATTR turnOffPotX() {
-  GPIO.out_w1tc = (1 << C64_POTX);
+  GPIO.out_w1tc = (1 << C64_POTX);              // After delayOffX this interrupt is called and the GPIO of POTX is turned OFF
 }
 
 void IRAM_ATTR turnOnPotY() {
-  GPIO.out_w1ts = (1 << C64_POTY);
-  timerWrite(timerOffY, 0);
-  timerAlarm(timerOffY, delayOffY, false, 0);
+  GPIO.out_w1ts = (1 << C64_POTY);              // Turn on POTY after delayOnY
+  timerWrite(timerOffY, 0);                     // Reset the OFF timer for POTY
+  timerAlarm(timerOffY, delayOffY, false, 0);   // Set the delay when the POTY timer interrupt will trigger the end
 }
 
 void IRAM_ATTR turnOffPotY() {
-  GPIO.out_w1tc = (1 << C64_POTY);
+  GPIO.out_w1tc = (1 << C64_POTY);              // After delayOffY this interrupt is called and the GPIO of POTY is turned OFF
 }
-
+// This timer is used to turn off the joystick pins when the mouse is in joystick mode, for the horizontal direction
 void IRAM_ATTR turnOffJoyX() {
   digitalWrite(C64_LEFT, LOW);
   digitalWrite(C64_RIGHT, LOW);
   pinMode(C64_LEFT, INPUT);
   pinMode(C64_RIGHT, INPUT);
 }
-
+// This timer is used to turn off the joystick pins when the mouse is in joystick mode, for the vertical direction
 void IRAM_ATTR turnOffJoyY() {
   digitalWrite(C64_UP, LOW);
   digitalWrite(C64_DOWN, LOW);
   pinMode(C64_UP, INPUT);
   pinMode(C64_DOWN, INPUT);
 }
-
+// Function of mouse in mouse mode
 void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
-  if (mouse_report->buttons.button1) {
+  if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
     pinMode(C64_FIRE, OUTPUT);
     digitalWrite(C64_FIRE, LOW);
   }
@@ -249,7 +258,7 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     digitalWrite(C64_FIRE, LOW);
     pinMode(C64_FIRE, INPUT);
   }
-  if (mouse_report->buttons.button2) {
+  if (mouse_report->buttons.button2) {  // Right button is wired to C64 UP
     pinMode(C64_UP, OUTPUT);
     digitalWrite(C64_UP, LOW);
   }
@@ -257,25 +266,26 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     digitalWrite(C64_UP, LOW);
     pinMode(C64_UP, INPUT);
   }
-  delayOnX += STEPdelayOnX*mouse_report->x_displacement;
-  if (delayOnX > MAXdelayOnX) {
+  delayOnX += STEPdelayOnX*mouse_report->x_displacement;   // Define the moment when the POTX has to be turned on after the interrupt
+  if (delayOnX > MAXdelayOnX) {                            // If the value is over the limit, it returns to the zero
     delayOnX = MINdelayOnX;
   }
-  if (delayOnX < MINdelayOnX) {
+  if (delayOnX < MINdelayOnX) {                            // If the value is below the zero limit, it returns to the maximum
     delayOnX = MAXdelayOnX;
   }
 
-  delayOnY -= STEPdelayOnX*mouse_report->y_displacement;
-  if (delayOnY > MAXdelayOnY) {
+  delayOnY -= STEPdelayOnX*mouse_report->y_displacement;   // Define the moment when the POTY has to be turned on after the interrupt
+  if (delayOnY > MAXdelayOnY) {                            // If the value is over the limit, it returns to the zero
     delayOnY = MINdelayOnY;
   }
-  if (delayOnY < MINdelayOnY) {
+  if (delayOnY < MINdelayOnY) {                            // If the value is below the zero limit, it returns to the maximum
     delayOnY = MAXdelayOnY;
   }
 }
 
+// Function of mouse in joystick mode
 void c64_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
-  if (mouse_report->buttons.button1) {
+  if (mouse_report->buttons.button1) {        // Map left button to C64 FIRE
     pinMode(C64_FIRE, OUTPUT);
     digitalWrite(C64_FIRE, LOW);
   }
@@ -283,7 +293,7 @@ void c64_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
     digitalWrite(C64_FIRE, LOW);
     pinMode(C64_FIRE, INPUT);
   }
-  if (mouse_report->x_displacement>0) {
+  if (mouse_report->x_displacement>0) {       // If the motion is in the X direction move the joystick right or left
     pinMode(C64_RIGHT, OUTPUT);
     digitalWrite(C64_RIGHT, LOW);
   }
@@ -291,7 +301,7 @@ void c64_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
     pinMode(C64_LEFT, OUTPUT);
     digitalWrite(C64_LEFT, LOW);
   }
-  if (mouse_report->y_displacement>0) {
+  if (mouse_report->y_displacement>0) {       // If the motion is in the Y direction move the joystick up or down
     pinMode(C64_DOWN, OUTPUT);
     digitalWrite(C64_DOWN, LOW);
   }
@@ -299,12 +309,16 @@ void c64_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
     pinMode(C64_UP, OUTPUT);
     digitalWrite(C64_UP, LOW);
   }
-  timerWrite(timerOffX, 0);
-  timerAlarm(timerOffX, abs(mouse_report->x_displacement)*M2JCalib, false, 0);
-  timerWrite(timerOffY, 0);
-  timerAlarm(timerOffY, abs(mouse_report->y_displacement)*M2JCalib, false, 0);
+  timerWrite(timerOffX, 0);   // Reset the timer for the X direction
+  timerAlarm(timerOffX, abs(mouse_report->x_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the X direction after a delay proportional to the motion
+  timerWrite(timerOffY, 0);   // Reset the timer for the Y direction
+  timerAlarm(timerOffY, abs(mouse_report->y_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the Y direction after a delay proportional to the motion
 }
 
+// Function of joystick in joystick mode
+// It is almost self explanatory, the function receive an array of bytes and depending on the byte
+// A C64 GPIO is called. This function was tested with Joypad for SNES, it is very possible that another model of
+// joypad or joystick needs to change the bytes called here.
 void c64_joystick_j(const uint8_t *const data, const int length) {
   switch (data[1]) {
     case 0:
@@ -380,13 +394,13 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
       break;
   }
 }
-
+// Function of joystick in mouse mode
 void c64_joystick_m(const uint8_t *const data, const int length) {
   float x = 0;
   float y = 0;
-  switch (data[1]) {
+  switch (data[1]) {            // If the motion is in vertical
     case 0:
-      y = 3*STEPdelayOnY;
+      y = 3*STEPdelayOnY;       // set the y motion as 3 steps of mouse in the positive or negative direction
       break;
     case 255:
       y = -3*STEPdelayOnY;
@@ -394,9 +408,9 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
     default:
       break;
   }
-  switch (data[0]) {
+  switch (data[0]) {            // If the motion is in horizontal
     case 0:
-      x = -3*STEPdelayOnX;
+      x = -3*STEPdelayOnX;      // set the x motion as 3 steps of mouse in the negative or positive direction
       break;
     case 255:
       x = 3*STEPdelayOnX;
@@ -447,6 +461,7 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
       }
       break;
   }
+  // Setup the delays of the mouse POTX and Y according to the displacement of the joystick
   delayOnX += x;
   if (delayOnX > MAXdelayOnX) {
     delayOnX = MINdelayOnX;
@@ -463,19 +478,23 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
     delayOnY = MAXdelayOnY;
   }
 }
-
+// This interrupt is called when the switch mouse/joystick is activated.
+// The reason to reset the board is that too many things has to change, in particular the
+// Clock frequency and the USB (and timers) would be in an unpredictable state, so it is
+// Safer simply to reboot the board
 void IRAM_ATTR switchMJHandler() {
   esp_restart();
 }
 
 void setup() {
-  
+  // Turn on the LED in RED color
   ws2812b.begin();
   ws2812b.clear();
   ws2812b.setPixelColor(0, ws2812b.Color(0, 255, 0));
   ws2812b.show();
-  
+  // Start the USB
   app_main();
+  // Configure the GPIOs for the Joystick
   pinMode(C64_UP, OUTPUT);
   digitalWrite(C64_UP, LOW);
   pinMode(C64_UP, INPUT);
@@ -491,14 +510,14 @@ void setup() {
   pinMode(C64_FIRE, OUTPUT);
   digitalWrite(C64_FIRE, LOW);
   pinMode(C64_FIRE, INPUT);
-
+  // Define the GPIO and Interrupt for the mouse/joystick switch
   pinMode(SWITCH_MJ, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(SWITCH_MJ), switchMJHandler, CHANGE);
-
+  // Define the GPIOs for the mouse interrupt and the POTs
   pinMode(C64_INT, INPUT_PULLUP);
   pinMode(C64_POTX, OUTPUT);
   pinMode(C64_POTY, OUTPUT);
-
+  // Define the hardware timer frequencies, and turn on the timers 
   timerOnX = timerBegin(10000000);
   timerAlarm(timerOnX, delayOnX, false, 0);
   timerOffX = timerBegin(10000000);
@@ -507,24 +526,26 @@ void setup() {
   timerAlarm(timerOnY, delayOnY, false, 0);
   timerOffY = timerBegin(10000000);
   timerAlarm(timerOffY, delayOffY, false, 0);
-  
-  ws2812b.clear();
-  ws2812b.show();
 
-  if (digitalRead(SWITCH_MJ)) {
-    timerAttachInterrupt(timerOnX, &turnOnPotX);
+  if (digitalRead(SWITCH_MJ)) {                                               // If we are in mouse mode
+    timerAttachInterrupt(timerOnX, &turnOnPotX);                              // Attach the timers to the POT interrupts
     timerAttachInterrupt(timerOffX, &turnOffPotX);
     timerAttachInterrupt(timerOnY, &turnOnPotY);
     timerAttachInterrupt(timerOffY, &turnOffPotY);
-    attachInterrupt(digitalPinToInterrupt(C64_INT), handleInterrupt, RISING);
-    ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));
+    attachInterrupt(digitalPinToInterrupt(C64_INT), handleInterrupt, RISING); // Attach the interrupt PIN to the handler
+    ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                        // Set the LED BLU
     ws2812b.show();
   }
-  else {
-    timerAttachInterrupt(timerOffX, &turnOffJoyX);
-    timerAttachInterrupt(timerOffY, &turnOffJoyY);
-    ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));
+  else {                                                                      // If we are in joystick mode
+    ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
     ws2812b.show();
+    // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
+    // Joystick can be safely used on the C64 with the 100 mA current supply of the control ports.
+    // We cannot use this frequency in mouse mode because the hardware timers must be fast enough to trigger the interrupt
+    // at the right moment. Also it is very uncommon that we will need 2 mouse at he same time on the C64.
+    setCpuFrequencyMhz(10);
+    timerAttachInterrupt(timerOffX, &turnOffJoyX);                            // Attach the timers for the interrupts of the mouse in joystick mode
+    timerAttachInterrupt(timerOffY, &turnOffJoyY);
   }
 }
 
