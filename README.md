@@ -13,6 +13,8 @@ The ESP32 allows interrupts when an input signal is falling, unfortunately the v
 
 The values in the initial variables are the timing for a PAL C64 and are obtained purely empirically. It is very possible that another C64 uses a bit different timing, even if I believe that it should be quite stable considering that Commodore was selling the same mouse to everyone. For sure there can be difference with a NTSC version. When I will have one on my hands I will test it and adjust the timing according to it.
 
+There is an additional switch to make the board working in mouse mode or joystick mode. In mouse mode any device connected will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or with a gamepad. In Joystick mode the board uses the joystick pins for any kind of device. This means that some game, like the graphics adventure game (Maniac Mansion for example) can be played with a mouse even if originally is designed for a game controller.
+
 ![](https://github.com/emanuelelaface/USBtoC64/blob/main/Schematic.jpeg)
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
