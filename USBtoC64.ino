@@ -481,12 +481,12 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
 // This interrupt is called when the switch mouse/joystick is activated.
 // The reason to reset the board is that too many things has to change, in particular the
 // Clock frequency and the USB (and timers) would be in an unpredictable state, so it is
-// Safer simply to reboot the board
+// safer simply to reboot the board
 void IRAM_ATTR switchMJHandler() {
   esp_restart();
 }
 
-void setup() {
+void setup() {  
   // Turn on the LED in RED color
   ws2812b.begin();
   ws2812b.clear();
