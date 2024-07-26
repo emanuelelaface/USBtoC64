@@ -1,5 +1,5 @@
 /*
-USB to Commodore 64 adaptor V 1.0 by Emanuele Laface
+USB to Commodore 64 adaptor V 1.1 by Emanuele Laface
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
 THE POWER WILL ARRIVE DIRECTLY TO THE SID OF THE COMMODORE AND MAY DESTROY IT.
@@ -17,10 +17,10 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include "soc/gpio_struct.h"
 #include "usb/usb_host.h"
 #include "hid_host.h"
-#include "hid_usage_keyboard.h"
 #include "hid_usage_mouse.h"
 #include "esp_timer.h"
 #include "Adafruit_NeoPixel.h"
+#include "EEPROM.h"
 
 #define PIN_WS2812B 21 // Pin for RGB LED
 #define NUM_PIXELS 1 // 1 LED
@@ -38,7 +38,7 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 // Define GPIO for interrupt from C64
 #define C64_INT           1
 // Define GPIO for switch Mouse - Joystick
-#define SWITCH_MJ        13 // 2 // HIGH = mouse, LOW = Joystick
+#define SWITCH_MJ         2 // HIGH = mouse, LOW = Joystick
 // Define the default timers for the mouse delay, all empirical for PAL version
 #define MINdelayOnX    2450
 #define MAXdelayOnX    5040
@@ -48,6 +48,9 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 #define STEPdelayOnY   10.14384171
 // Define the timing for mouse used as Joystick
 #define M2JCalib      833 // 20000 at 240 MHz
+#define CONFIG          0 // set the configuration switch to the "Boot" button
+#define JOYBUTTONS      7 // 4 directions and 3 fire
+#define EEPROM_SIZE JOYBUTTONS*2 // deine the size of the EEPROM we will need to save joystick data
 
 // Define the volatile variables for the hardware timers
 volatile uint64_t delayOnX = MINdelayOnX;
@@ -60,10 +63,17 @@ hw_timer_t *timerOnY = NULL;
 hw_timer_t *timerOffX = NULL;
 hw_timer_t *timerOffY = NULL;
 
+// Variables used to configure the board for the joystick connected
+bool configMode = false;
+uint8_t defaultConfigData[100];
+int defaultConfigLength = 0;
+// These two in particular use the configuration to match the usage of the controller
+uint8_t joyVal[JOYBUTTONS];
+uint8_t joyPos[JOYBUTTONS];
+
 // From now till further comment is all the Bluetooth stuff that is copyed from the example fo the module
 static const char *TAG = "USB MESSAGE";
 QueueHandle_t hid_host_event_queue;
-bool user_shutdown = false;
 
 typedef struct {
   hid_host_device_handle_t hid_device_handle;
@@ -89,11 +99,16 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
 
 static void hid_host_generic_report_callback(const uint8_t *const data, const int length) {
   // Here is where the USB joystick receive the report from USB.
-  if (digitalRead(SWITCH_MJ)) {     // If we are in Mouse mode
-    c64_joystick_m(data, length);   // The joystick function in mouse mode is called
+  if (configMode) { // if the controller is in configuration mode, it calls a function that simply reads the joystick values
+    c64_joystick_config(data, length);
   }
-  else {                            // If we are in joystick mode
-    c64_joystick_j(data, length);   // The joystick function in joystick mode is called
+  else {
+    if (digitalRead(SWITCH_MJ)) {     // If we are in Mouse mode
+      c64_joystick_m(data, length);   // The joystick function in mouse mode is called
+    }
+    else {                            // If we are in joystick mode
+      c64_joystick_j(data, length);   // The joystick function in joystick mode is called
+    }
   }
 }
 // More USB stuff
@@ -175,7 +190,7 @@ void hid_host_task(void *pvParameters) {
   hid_host_event_queue_t evt_queue;
   hid_host_event_queue = xQueueCreate(10, sizeof(hid_host_event_queue_t));
 
-  while (!user_shutdown) {
+  while (true) {
     if (xQueueReceive(hid_host_event_queue, &evt_queue, pdMS_TO_TICKS(50))) {
       hid_host_device_event(evt_queue.hid_device_handle, evt_queue.event, evt_queue.arg);
     }
@@ -198,7 +213,6 @@ void app_main(void) {
   ulTaskNotifyTake(false, 1000);
   const hid_host_driver_config_t hid_host_driver_config = { .create_background_task = true, .task_priority = 5, .stack_size = 4096, .core_id = 0, .callback = hid_host_device_callback, .callback_arg = NULL};
   ESP_ERROR_CHECK(hid_host_install(&hid_host_driver_config));
-  user_shutdown = false;
   task_created = xTaskCreate(&hid_host_task, "hid_task", 4 * 1024, NULL, 2, NULL);
   assert(task_created == pdTRUE);
 }
@@ -317,149 +331,97 @@ void c64_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
 
 // Function of joystick in joystick mode
 // It is almost self explanatory, the function receive an array of bytes and depending on the byte
-// A C64 GPIO is called. This function was tested with Joypad for SNES, it is very possible that another model of
-// joypad or joystick needs to change the bytes called here.
+// A C64 GPIO is called.
+// The Joystick positions are recoded as UP, DOWN, LEFT, RIGHT, FIRE and compared here to see wich GPIO enable.
 void c64_joystick_j(const uint8_t *const data, const int length) {
-  switch (data[1]) {
-    case 0:
+  if (data[joyPos[0]] == joyVal[0]) {
       pinMode(C64_UP, OUTPUT);
       digitalWrite(C64_UP, LOW);
-      break;
-    case 255:
+  }
+  else {
+    digitalWrite(C64_UP, LOW);
+    pinMode(C64_UP, INPUT);
+  }
+  if (data[joyPos[1]] == joyVal[1]) {
       pinMode(C64_DOWN, OUTPUT);
       digitalWrite(C64_DOWN, LOW);
-      break;
-    default:
-      digitalWrite(C64_UP, LOW);
-      digitalWrite(C64_DOWN, LOW);
-      pinMode(C64_UP, INPUT);
-      pinMode(C64_DOWN, INPUT);
-      break;
   }
-  switch (data[0]) {
-    case 0:
+  else {
+    digitalWrite(C64_DOWN, LOW);
+    pinMode(C64_DOWN, INPUT);    
+  }
+  if (data[joyPos[2]] == joyVal[2]) {
       pinMode(C64_LEFT, OUTPUT);
       digitalWrite(C64_LEFT, LOW);
-      break;
-    case 255:
+  }
+  else {
+    digitalWrite(C64_LEFT, LOW);
+    pinMode(C64_LEFT, INPUT);
+  }
+  if (data[joyPos[3]] == joyVal[3]) {
       pinMode(C64_RIGHT, OUTPUT);
       digitalWrite(C64_RIGHT, LOW);
-      break;
-    default:
-      digitalWrite(C64_LEFT, LOW);
-      digitalWrite(C64_RIGHT, LOW);
-      pinMode(C64_LEFT, INPUT);
-      pinMode(C64_RIGHT, INPUT);
-      break;
   }
-  switch (data[5]) {
-    case 47:
-      pinMode(C64_FIRE, OUTPUT);
-      digitalWrite(C64_FIRE, LOW);
-      break;
-    case 79:
-      //printf("B\n");
-      break;
-    case 31:
-      //printf("X\n");
-      break;
-    case 143:
-      //printf("Y\n");
-      break;
-    default:
-      digitalWrite(C64_FIRE, LOW);
-      pinMode(C64_FIRE, INPUT);
-      break;
+  else {
+    digitalWrite(C64_RIGHT, LOW);
+    pinMode(C64_RIGHT, INPUT);
   }
-  switch (data[6]) {
-    case 1:
+  if (data[joyPos[4]] == joyVal[4]) {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
-    break;
-    case 2:
+  }
+  else {
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+  }
+  if (data[joyPos[5]] == joyVal[5]) {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
-      break;
-    case 16:
-      //printf("SELECT\n");
-      break;
-    case 32:
-      //printf("START\n");
-      break;
-    default:
-      if (data[5] == 15) {
-        digitalWrite(C64_FIRE, LOW);
-        pinMode(C64_FIRE, INPUT);
-      }
-      break;
+  }
+  else {
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+  }
+  if (data[joyPos[6]] == joyVal[6]) {
+      pinMode(C64_FIRE, OUTPUT);
+      digitalWrite(C64_FIRE, LOW);
+  }
+  else {
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
   }
 }
 // Function of joystick in mouse mode
 void c64_joystick_m(const uint8_t *const data, const int length) {
   float x = 0;
   float y = 0;
-  switch (data[1]) {            // If the motion is in vertical
-    case 0:
+  if (data[joyPos[0]] == joyVal[0]) {            // If the motion is in vertical
       y = 3*STEPdelayOnY;       // set the y motion as 3 steps of mouse in the positive or negative direction
-      break;
-    case 255:
+  }
+  if (data[joyPos[1]] == joyVal[1]) {
       y = -3*STEPdelayOnY;
-      break;
-    default:
-      break;
   }
-  switch (data[0]) {            // If the motion is in horizontal
-    case 0:
+  if (data[joyPos[2]] == joyVal[2]) {            // If the motion is in horizontal
       x = -3*STEPdelayOnX;      // set the x motion as 3 steps of mouse in the negative or positive direction
-      break;
-    case 255:
+  }
+  if (data[joyPos[3]] == joyVal[3]) {
       x = 3*STEPdelayOnX;
-      break;
-    default:
-      break;
   }
-  switch (data[5]) {
-    case 47:
+  if (data[joyPos[4]] == joyVal[4]) {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
-      break;
-    case 79:
-      //printf("B\n");
-      break;
-    case 31:
-      //printf("X\n");
-      break;
-    case 143:
-      //printf("Y\n");
-      break;
-    default:
-      digitalWrite(C64_FIRE, LOW);
-      pinMode(C64_FIRE, INPUT);
-      break;
   }
-  switch (data[6]) {
-    case 1:
-      pinMode(C64_FIRE, OUTPUT);
-      digitalWrite(C64_FIRE, LOW);
-    break;
-    case 2:
+  else {
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+  }
+  if (data[joyPos[5]] == joyVal[5]) {
       pinMode(C64_UP, OUTPUT);
       digitalWrite(C64_UP, LOW);
-      break;
-    case 16:
-      //printf("SELECT\n");
-      break;
-    case 32:
-      //printf("START\n");
-      break;
-    default:
-      if (data[5] == 15) {
-        digitalWrite(C64_FIRE, LOW);
-        pinMode(C64_FIRE, INPUT);
-        digitalWrite(C64_UP, LOW);
-        pinMode(C64_UP, INPUT);
-      }
-      break;
+  }
+  else {
+    digitalWrite(C64_UP, LOW);
+    pinMode(C64_UP, INPUT);
   }
   // Setup the delays of the mouse POTX and Y according to the displacement of the joystick
   delayOnX += x;
@@ -469,7 +431,6 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
   if (delayOnX < MINdelayOnX) {
     delayOnX = MAXdelayOnX;
   }
-
   delayOnY += y;
   if (delayOnY > MAXdelayOnY) {
     delayOnY = MINdelayOnY;
@@ -478,12 +439,90 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
     delayOnY = MAXdelayOnY;
   }
 }
+
+// Function to configure the Joystick
+// This function is dummy, it simply records values for from the joystick for the configuration
+void c64_joystick_config(const uint8_t *const data, const int length){
+  for (int i=0; i<length; i++) {
+    defaultConfigData[i] = data[i];
+    defaultConfigLength = length;
+  }
+}
 // This interrupt is called when the switch mouse/joystick is activated.
 // The reason to reset the board is that too many things has to change, in particular the
 // Clock frequency and the USB (and timers) would be in an unpredictable state, so it is
 // safer simply to reboot the board
 void IRAM_ATTR switchMJHandler() {
-  esp_restart();
+    esp_restart();
+}
+
+void configurator() {  // When the board is in configuration mode
+  uint8_t tmpData[100];
+
+  for (int i=0; i<10; i++) {  // blink red led fast 10 times
+    ws2812b.clear();
+    ws2812b.show();
+    delay(50);
+    ws2812b.setPixelColor(0, ws2812b.Color(0, 25, 0));
+    ws2812b.show();
+    delay(50);
+  }
+  delay(100);
+  ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0)); // set green led
+  ws2812b.show();
+  for (int i=0; i<100; i++){
+    defaultConfigData[i]=0;
+    tmpData[i] = 0;
+  }
+  configMode = true;  // tells the USB that we are in configMode
+  while(defaultConfigLength == 0){ // Wait for the USB controller connected that produces some data
+    delay(100);
+  }
+  while(memcmp( tmpData, defaultConfigData, sizeof(uint8_t)*defaultConfigLength) != 0) { // if the data do not match the temporary data match them
+    for (int i=0; i<defaultConfigLength; i++) {
+      tmpData[i] = defaultConfigData[i];
+    }
+  }
+  delay(300);
+  ws2812b.clear();  // turn off the LED
+  ws2812b.show();
+  for (int joy = 0; joy<JOYBUTTONS; joy++){  // repeat for the 4 directions and the fire
+    while(digitalRead(CONFIG)==HIGH) {  // Wait for Boot button pressed
+      delay(100);
+    }
+    ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25)); // Set the blue led on
+    ws2812b.show();
+    for (int i=0; i<defaultConfigLength; i++) {  // sync the data with the temporary data
+      tmpData[i] = defaultConfigData[i];
+    }
+    while(memcmp( tmpData, defaultConfigData, sizeof(uint8_t)*defaultConfigLength) == 0) { // wait for a difference between the temporary data and the joystick
+      delay(100);
+    }
+    for (int i=0; i<defaultConfigLength; i++) {  // storey wich part of the array and wich value corresponds to the data
+      if (tmpData[i] != defaultConfigData[i]) {
+        joyVal[joy] = defaultConfigData[i];
+        joyPos[joy] = i;
+        break;
+      }
+    }
+    ws2812b.clear();
+    ws2812b.show();
+  }
+  for (int i=0; i<10; i++) {  // once finished, blink blue light fast 10 times
+    ws2812b.clear();
+    ws2812b.show();
+    delay(50);
+    ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));
+    ws2812b.show();
+    delay(50);
+  }
+  for (int i=0; i<JOYBUTTONS; i++) { // Write the values in the EEPROM for the permanent storage
+    EEPROM.write(2*i, joyPos[i]);
+    EEPROM.write(2*i+1, joyVal[i]);
+  }
+  EEPROM.commit();
+  ws2812b.clear();
+  ws2812b.show();
 }
 
 void setup() {  
@@ -492,60 +531,73 @@ void setup() {
   ws2812b.clear();
   ws2812b.setPixelColor(0, ws2812b.Color(0, 255, 0));
   ws2812b.show();
+  // start the EEPROM
+  EEPROM.begin(EEPROM_SIZE);
+  for (int i=0; i<JOYBUTTONS; i++) {
+    joyPos[i] = EEPROM.read(2*i);
+    joyVal[i] = EEPROM.read(2*i+1);
+  }
   // Start the USB
   app_main();
   // Configure the GPIOs for the Joystick
-  pinMode(C64_UP, OUTPUT);
-  digitalWrite(C64_UP, LOW);
-  pinMode(C64_UP, INPUT);
-  pinMode(C64_DOWN, OUTPUT);
-  digitalWrite(C64_DOWN, LOW);
-  pinMode(C64_DOWN, INPUT);
-  pinMode(C64_LEFT, OUTPUT);
-  digitalWrite(C64_LEFT, LOW);
-  pinMode(C64_LEFT, INPUT);
-  pinMode(C64_RIGHT, OUTPUT);
-  digitalWrite(C64_RIGHT, LOW);
-  pinMode(C64_RIGHT, INPUT);
-  pinMode(C64_FIRE, OUTPUT);
-  digitalWrite(C64_FIRE, LOW);
-  pinMode(C64_FIRE, INPUT);
-  // Define the GPIO and Interrupt for the mouse/joystick switch
-  pinMode(SWITCH_MJ, INPUT_PULLUP);
-  attachInterrupt(digitalPinToInterrupt(SWITCH_MJ), switchMJHandler, CHANGE);
-  // Define the GPIOs for the mouse interrupt and the POTs
-  pinMode(C64_INT, INPUT_PULLUP);
-  pinMode(C64_POTX, OUTPUT);
-  pinMode(C64_POTY, OUTPUT);
-  // Define the hardware timer frequencies, and turn on the timers 
-  timerOnX = timerBegin(10000000);
-  timerAlarm(timerOnX, delayOnX, false, 0);
-  timerOffX = timerBegin(10000000);
-  timerAlarm(timerOffX, delayOffX, false, 0);
-  timerOnY = timerBegin(10000000);
-  timerAlarm(timerOnY, delayOnY, false, 0);
-  timerOffY = timerBegin(10000000);
-  timerAlarm(timerOffY, delayOffY, false, 0);
-
-  if (digitalRead(SWITCH_MJ)) {                                               // If we are in mouse mode
-    timerAttachInterrupt(timerOnX, &turnOnPotX);                              // Attach the timers to the POT interrupts
-    timerAttachInterrupt(timerOffX, &turnOffPotX);
-    timerAttachInterrupt(timerOnY, &turnOnPotY);
-    timerAttachInterrupt(timerOffY, &turnOffPotY);
-    attachInterrupt(digitalPinToInterrupt(C64_INT), handleInterrupt, RISING); // Attach the interrupt PIN to the handler
-    ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                        // Set the LED BLU
-    ws2812b.show();
+  pinMode(CONFIG, INPUT_PULLUP);  // Set the BOOT button in input mode
+  delay(1000); // Wait for 1 second
+  if (digitalRead(CONFIG) == LOW) { // If the user holds the BOOT button it will set the board in configuration mode
+    configurator();
   }
-  else {                                                                      // If we are in joystick mode
-    ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
-    ws2812b.show();
-    // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
-    // Joystick can be safely used on the C64 with the 100 mA current supply of the control ports.
-    // We cannot use this frequency in mouse mode because the hardware timers must be fast enough to trigger the interrupt
-    // at the right moment. Also it is very uncommon that we will need 2 mouse at he same time on the C64.
-    setCpuFrequencyMhz(10);
-    timerAttachInterrupt(timerOffX, &turnOffJoyX);                            // Attach the timers for the interrupts of the mouse in joystick mode
-    timerAttachInterrupt(timerOffY, &turnOffJoyY);
+  else {
+    pinMode(C64_UP, OUTPUT);
+    digitalWrite(C64_UP, LOW);
+    pinMode(C64_UP, INPUT);
+    pinMode(C64_DOWN, OUTPUT);
+    digitalWrite(C64_DOWN, LOW);
+    pinMode(C64_DOWN, INPUT);
+    pinMode(C64_LEFT, OUTPUT);
+    digitalWrite(C64_LEFT, LOW);
+    pinMode(C64_LEFT, INPUT);
+    pinMode(C64_RIGHT, OUTPUT);
+    digitalWrite(C64_RIGHT, LOW);
+    pinMode(C64_RIGHT, INPUT);
+    pinMode(C64_FIRE, OUTPUT);
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+    // Define the GPIO and Interrupt for the mouse/joystick switch
+    pinMode(SWITCH_MJ, INPUT_PULLUP);
+    attachInterrupt(digitalPinToInterrupt(SWITCH_MJ), switchMJHandler, CHANGE);
+    // Define the GPIOs for the mouse interrupt and the POTs
+    pinMode(C64_INT, INPUT_PULLUP);
+    pinMode(C64_POTX, OUTPUT);
+    pinMode(C64_POTY, OUTPUT);
+    // Define the hardware timer frequencies, and turn on the timers 
+    timerOnX = timerBegin(10000000);
+    timerAlarm(timerOnX, delayOnX, false, 0);
+    timerOffX = timerBegin(10000000);
+    timerAlarm(timerOffX, delayOffX, false, 0);
+    timerOnY = timerBegin(10000000);
+    timerAlarm(timerOnY, delayOnY, false, 0);
+    timerOffY = timerBegin(10000000);
+    timerAlarm(timerOffY, delayOffY, false, 0);
+
+    if (digitalRead(SWITCH_MJ)) {                                               // If we are in mouse mode
+      timerAttachInterrupt(timerOnX, &turnOnPotX);                              // Attach the timers to the POT interrupts
+      timerAttachInterrupt(timerOffX, &turnOffPotX);
+      timerAttachInterrupt(timerOnY, &turnOnPotY);
+      timerAttachInterrupt(timerOffY, &turnOffPotY);
+      attachInterrupt(digitalPinToInterrupt(C64_INT), handleInterrupt, RISING); // Attach the interrupt PIN to the handler
+      ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                        // Set the LED BLU
+      ws2812b.show();
+    }
+    else {                                                                      // If we are in joystick mode
+      ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
+      ws2812b.show();
+      // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
+      // Joystick can be safely used on the C64 with the 100 mA current supply of the control ports.
+      // We cannot use this frequency in mouse mode because the hardware timers must be fast enough to trigger the interrupt
+      // at the right moment. Also it is very uncommon that we will need 2 mouse at he same time on the C64.
+      setCpuFrequencyMhz(10);
+      timerAttachInterrupt(timerOffX, &turnOffJoyX);                            // Attach the timers for the interrupts of the mouse in joystick mode
+      timerAttachInterrupt(timerOffY, &turnOffJoyY);
+    }
   }
 }
 
