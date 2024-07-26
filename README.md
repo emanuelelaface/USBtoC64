@@ -1,4 +1,4 @@
-USB Adapter for Commodore 64 Joystick and Mouse Port
+# USB Adapter for Commodore 64 Joystick and Mouse Port
 
 This adapter interfaces a USB device with the CONTROL Port of the C64, allowing it to be used as a mouse or joystick.
 
@@ -12,7 +12,28 @@ The initial variable values are the timing for a PAL C64 and are obtained empiri
 
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
-![](https://github.com/emanuelelaface/USBtoC64/blob/main/Schematic.jpeg)
+![](https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/schematic.jpeg)
+
+---
+
+## Joystick Configuration
+
+Each joystick or gamepad presents data to the USB in a different way. The library used for ESP32 receives an array of uint8 where each element of the array is connected to a button or an axis, and it is not possible to predict in advance how the joystick will associate this data to the buttons. Therefore, the user has to configure the USBtoC64 manually. To do this, follow the procedure below:
+
+- Identify the **boot** button on the board. It is the left button when the USB port is oriented towards the top.
+- Disconnect the joystick from the controller.
+- When the controller is connected to the Commodore 64, it will boot with a ![](https://placehold.co/15x15/f03c15/f03c15.png) `RED` LED for one second, then it will change to green (for Joystick) or blue (for mouse) depending on the position of the switch mode.
+- To set the controller in configuration mode, the **boot** button must be pressed during the red light. This can be done by rebooting the board (pressing the other button on the board, which is the reset button) and then holding the **boot** button during the red LED.
+- If pressed correctly, the red light will flash 10 times quickly, and then a ![](https://placehold.co/15x15/c5f015/c5f015.png) `GREEN` LED will indicate that the board is in configuration mode.
+- Insert the USB controller to configure; the green light should turn off, and the controller is ready to be programmed.
+- The procedure now requires the insertion of 7 controls: the 4 directions in the exact sequence UP, DOWN, LEFT, RIGHT, and then 3 buttons for FIRE. (3 because most controllers have many buttons and it can be useful to map more than one to fire. Additionally, when the joystick is used in mouse mode, the first 2 fire buttons are assigned as left and right buttons.)
+- To associate the controls, press the **boot** button each time and then the controller direction.
+- Press the **boot** button; a ![](https://placehold.co/15x15/1589F0/1589F0.png) `BLUE` LED should appear, and the controller will wait for the UP direction. Once the UP direction is pressed on the controller, the blue LED will turn off.
+- Repeat the previous step for DOWN, LEFT, RIGHT, FIRE1, FIRE2, FIRE3.
+- After the last button, the controller will flash a ![](https://placehold.co/15x15/c5f015/c5f015.png) `GREEN` LED and will be set to work with that controller.
+- It is now possible to reboot the controller and use it with the configured joystick.
+
+---
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
 THE POWER WILL ARRIVE DIRECTLY TO THE SID OF THE COMMODORE AND MAY DESTROY IT.
