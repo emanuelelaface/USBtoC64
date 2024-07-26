@@ -33,6 +33,8 @@ Each joystick or gamepad presents data to the USB in a different way. The librar
 - After the last button, the controller will flash a ![](https://placehold.co/15x15/c5f015/c5f015.png) `GREEN` LED and will be set to work with that controller.
 - It is now possible to reboot the controller and use it with the configured joystick.
 
+The analog knobs in the joystick cannot be mapped to the C64 because the port of the commodore understands only a binary value ON/OFF. If you try to configure the joystick with an analog control you will end up in something that will not work.
+
 ---
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
