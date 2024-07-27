@@ -15,6 +15,23 @@ There is an additional switch to make the board work in mouse mode or joystick m
 ![](https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/schematic.jpeg)
 
 ---
+## Installation From Arduino IDE
+
+To install the code from the source file **USBtoC64.ino**, you will need the Arduino IDE. Ensure that the ESP32 board is installed, specifically the ESP32S3 Dev Module.
+
+Additionally, the ESP32 USB HID HOST library is required. This library is not available in the official repository. You can download the ZIP file of the repository from [ESP32_USB_Host_HID](https://github.com/esp32beans/ESP32_USB_Host_HID). To install it, go to Sketch->Include Library->Add .ZIP Library in the Arduino IDE.
+
+To set the board in upload mode, hold the **BOOT** button while the board is disconnected from the USB port. Then, connect the board to the USB port and after one second, the USB port should appear in the list of ports in the Arduino IDE. You can then upload the code.
+
+## Installation From the Binary File
+
+Alternatively, you can load the binary file **USBtoC64.bin**, which is located in the BIN folder. Follow these steps:
+
+1. From Python, run `pip install esptool`.
+2. Once esptool is installed, press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
+3. On the computer, run `esptool.py -b 921600 -c esp32s3 -p <PORT> write_flash --flash_freq 80m 0x00000 USBtoC64.bin`, where <PORT> is the USB port created once the board is connected. On Windows, it is probably COM3 or something similar. On Linux and Mac, it will be /dev/tty.USBsomething or /dev/cu.usbsomething.
+
+---
 
 ## Joystick Configuration
 
