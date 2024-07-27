@@ -366,23 +366,7 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
     digitalWrite(C64_RIGHT, LOW);
     pinMode(C64_RIGHT, INPUT);
   }
-  if (data[joyPos[4]] == joyVal[4]) {
-      pinMode(C64_FIRE, OUTPUT);
-      digitalWrite(C64_FIRE, LOW);
-  }
-  else {
-    digitalWrite(C64_FIRE, LOW);
-    pinMode(C64_FIRE, INPUT);
-  }
-  if (data[joyPos[5]] == joyVal[5]) {
-      pinMode(C64_FIRE, OUTPUT);
-      digitalWrite(C64_FIRE, LOW);
-  }
-  else {
-    digitalWrite(C64_FIRE, LOW);
-    pinMode(C64_FIRE, INPUT);
-  }
-  if (data[joyPos[6]] == joyVal[6]) {
+  if ((data[joyPos[4]] == joyVal[4]) | (data[joyPos[5]] == joyVal[5]) | (data[joyPos[6]] == joyVal[6])) {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
   }
