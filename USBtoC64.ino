@@ -38,7 +38,7 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 // Define GPIO for interrupt from C64
 #define C64_INT           1
 // Define GPIO for switch Mouse - Joystick
-#define SWITCH_MJ         2 // HIGH = mouse, LOW = Joystick
+#define SWITCH_MJ        13 // HIGH = mouse, LOW = Joystick
 // Define the default timers for the mouse delay, all empirical for PAL version
 #define MINdelayOnX    2450
 #define MAXdelayOnX    5040
