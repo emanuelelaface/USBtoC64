@@ -50,7 +50,7 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 #define M2JCalib      833 // 20000 at 240 MHz
 #define CONFIG          0 // set the configuration switch to the "Boot" button
 #define JOYBUTTONS      7 // 4 directions and 3 fire
-#define EEPROM_SIZE JOYBUTTONS*2 // deine the size of the EEPROM we will need to save joystick data
+#define EEPROM_SIZE JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
 
 // Define the volatile variables for the hardware timers
 volatile uint64_t delayOnX = MINdelayOnX;
