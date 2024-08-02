@@ -71,7 +71,7 @@ int defaultConfigLength = 0;
 uint8_t joyVal[JOYBUTTONS];
 uint8_t joyPos[JOYBUTTONS];
 
-// From now till further comment is all the Bluetooth stuff that is copyed from the example fo the module
+// From now till further comment is all the USB stuff that is copyed from the example fo the module
 static const char *TAG = "USB MESSAGE";
 QueueHandle_t hid_host_event_queue;
 
