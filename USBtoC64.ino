@@ -507,6 +507,7 @@ void configurator() {  // When the board is in configuration mode
   EEPROM.commit();
   ws2812b.clear();
   ws2812b.show();
+  esp_restart();
 }
 
 void setup() {  
