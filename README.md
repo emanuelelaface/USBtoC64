@@ -12,11 +12,13 @@ The initial variable values are the timing for a PAL C64 and are obtained empiri
 
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
-![](https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/schematic.jpeg)
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic1.jpg" alt="Pic 1" style="width: 32%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic2.jpg" alt="Pic 2" style="width: 32%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic3.jpg" alt="Pic 3" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/schematic.jpeg" alt="Schematic" style="width: 52%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic1.jpg" alt="Pic 1" style="width: 38%;">
+</div>
+<div style="display: flex; justify-content: space-between;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic2.jpg" alt="Pic 2" style="width: 45%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic3.jpg" alt="Pic 3" style="width: 45%;">
 </div>
 
 ---
