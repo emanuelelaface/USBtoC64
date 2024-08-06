@@ -1,0 +1,35 @@
+# Pick And Place List
+# Company=
+# Author=
+# eMail=
+#
+# Project=USBtoC64-small
+# Date=15:25:25
+# CreatedBy=Fritzing 1.0.2b.2023-12-20.CD-1901-0-dbdbe34c
+#
+#
+# Coordinates in mils, always center of component
+# Origin 0/0=Lower left corner of PCB
+# Rotation in degree (0-360, math. pos.)
+#
+RefDes,Description,Package,X,Y,Rotation,Side,Mount
+Description: resistance;capacitance;inductance;voltage;current;power;mpn;mn;
+150,"220;;;;;0.25W;;;","THT",214.711,386.873,90,Top,THT
+D1,";;;;;;;;","diode-1n4148",314.211,437.373,-90,Top,SMT
+D2,";;;;;;;;","diode-1n4148",514.211,437.373,-90,Top,SMT
+Pad2,";;;;;;;;","",72.4978,502.811,0,Top,MANUAL
+Pad5,";;;;;;;;","",72.4978,172.589,0,Top,MANUAL
+Via1,";;;;;;;;","",713.15,451.078,0,Bottom,MANUAL
+1K,"220;;;;;0.25W;;;","THT",712.711,386.873,90,Top,THT
+Pad7,";;;;;;;;","",72.4978,450.033,0,Top,MANUAL
+Pad6,";;;;;;;;","",72.4978,562.144,0,Top,MANUAL
+S1,";;;;;;;;","THT",998.167,387.191,180,Top,THT
+Pad3,";;;;;;;;","",72.4978,396.477,0,Top,MANUAL
+Pad8,";;;;;;;;","",72.4978,338.477,0,Top,MANUAL
+A2,";;;;;;;;","",642.4,387.191,180,Top,MANUAL
+Pad9,";;;;;;;;","",72.4978,231.7,0,Top,MANUAL
+Pad4,";;;;;;;;","",72.4978,288.144,0,Top,MANUAL
+1K,"220;;;;;0.25W;;;","THT",601.511,386.873,90,Top,THT
+Q1,";;;;;;;;","TO92 [THT]",836.378,389.759,-90,Top,THT
+Pad1,";;;;;;;;","",72.4978,612.255,0,Top,MANUAL
+150,"220;;;;;0.25W;;;","THT",414.711,386.873,-90,Top,THT
