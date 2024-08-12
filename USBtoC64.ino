@@ -40,14 +40,29 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 // Define GPIO for switch Mouse - Joystick
 #define SWITCH_MJ        13 // HIGH = mouse, LOW = Joystick
 // Define the default timers for the mouse delay, all empirical for PAL version
-#define MINdelayOnX    2450
-#define MAXdelayOnX    5040
-#define MINdelayOnY    2440
-#define MAXdelayOnY    5100
-#define STEPdelayOnX   10.16689245
-#define STEPdelayOnY   10.14384171
-// Define the timing for mouse used as Joystick
-#define M2JCalib      833 // 20000 at 240 MHz
+
+#define PAL               true // select if it is PAL or NTSC and adjust the timings
+
+#if PAL
+  #define MINdelayOnX    2450 // 2543
+  #define MAXdelayOnX    5040 // 5232
+  #define MINdelayOnY    2440 // 2533
+  #define MAXdelayOnY    5100 // 5294
+  #define STEPdelayOnX   10.16689245 // 10.55364275
+  #define STEPdelayOnY   10.14384171 // 10.52971515
+  // Define the timing for mouse used as Joystick
+  #define M2JCalib      833 // 20000 at 240 MHz // 865
+#else
+  #define MINdelayOnX    2543
+  #define MAXdelayOnX    5232
+  #define MINdelayOnY    2533
+  #define MAXdelayOnY    5294
+  #define STEPdelayOnX   10.55364275
+  #define STEPdelayOnY   10.52971515
+  // Define the timing for mouse used as Joystick
+  #define M2JCalib      865 // 20000 at 240 MHz
+#endif
+
 #define CONFIG          0 // set the configuration switch to the "Boot" button
 #define JOYBUTTONS      7 // 4 directions and 3 fire
 #define EEPROM_SIZE JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
