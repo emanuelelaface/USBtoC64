@@ -8,7 +8,7 @@ The mouse uses the analog part of the port (Pot X and Pot Y). The Commodore 64 h
 
 The idea is to use an ESP32 board to wait for the discharge drop and then an additional 256 cycles, finally sending the proper value to the C64 at the right moment. The ESP32 allows interrupts when an input signal is falling; however, the voltage from the C64 is a bit too low for the ESP32 interrupt because the board requires at least 3 volts, while the C64 provides around 1.2 volts. Therefore, a BJT is used to amplify the signal (and invert it, so it is HIGH when the C64 is LOW, which reduces noise in detecting the status).
 
-The initial variable values are the timing for a PAL C64 and are obtained empirically. It is possible that another C64 may use slightly different timing, though it should be quite stable since Commodore sold the same mouse to everyone. There can be differences with an NTSC version. When I have one, I will test it and adjust the timing accordingly.
+The initial variable values are the timing for a PAL C64 and are obtained empirically. The NTSC version of the timings are calculated scaling for the ratio of the frequencies NTSC/PAL. It is possible that another C64 may use slightly different timing, though it should be quite stable since Commodore sold the same mouse to everyone. When I will have one NTSC Commodore, I will test it and adjust the timings if needed.
 
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
@@ -40,13 +40,15 @@ Additionally, the ESP32 USB HID HOST library is required. This library is not av
 
 To set the board in upload mode, hold the **BOOT** button while the board is disconnected from the USB port. Then, connect the board to the USB port and after one second, the USB port should appear in the list of ports in the Arduino IDE. You can then upload the code.
 
+To select PAL or NTSC timing the #define PAL line has to be set as ture or false.
+
 ## Installation From the Binary File
 
 Alternatively, you can load the binary file **USBtoC64.bin**, which is located in the BIN folder. Follow these steps:
 
 1. From Python, run `pip install esptool`.
 2. Once esptool is installed, press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
-3. On the computer, run `esptool.py -b 921600 -c esp32s3 -p <PORT> write_flash --flash_freq 80m 0x00000 USBtoC64.bin`, where <PORT> is the USB port created once the board is connected. On Windows, it is probably COM3 or something similar. On Linux and Mac, it will be /dev/tty.USBsomething or /dev/cu.usbsomething.
+3. On the computer, run `esptool.py -b 921600 -c esp32s3 -p <PORT> write_flash --flash_freq 80m 0x00000 USBtoC64-<PAL|NTSC>.bin`, where <PORT> is the USB port created once the board is connected. On Windows, it is probably COM3 or something similar. On Linux and Mac, it will be /dev/tty.USBsomething or /dev/cu.usbsomething. <PAL|NTSC> is the version with the timings for PAL or for NTSC version of the Commodore 64.
 
 ---
 
