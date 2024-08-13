@@ -1,5 +1,5 @@
 /*
-USB to Commodore 64 adaptor V 2.1 by Emanuele Laface
+USB to Commodore 64 adaptor V 2.0 by Emanuele Laface
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
 THE POWER WILL ARRIVE DIRECTLY TO THE SID OF THE COMMODORE AND MAY DESTROY IT.
@@ -38,7 +38,7 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 // Define GPIO for interrupt from C64
 #define C64_INT           1
 // Define GPIO for switch Mouse - Joystick
-#define SWITCH_MJ        13 // HIGH = mouse, LOW = Joystick
+#define SWITCH_MJ         2 // HIGH = mouse, LOW = Joystick
 // Define the default timers for the mouse delay, all empirical for PAL version
 
 #define PAL               true // select if it is PAL or NTSC and adjust the timings
@@ -53,14 +53,14 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
   // Define the timing for mouse used as Joystick
   #define M2JCalib      833 // 20000 at 240 MHz
 #else
-  #define MINdelayOnX    2543
-  #define MAXdelayOnX    5232
-  #define MINdelayOnY    2533
-  #define MAXdelayOnY    5294
-  #define STEPdelayOnX   10.55364275
-  #define STEPdelayOnY   10.52971515
+  #define MINdelayOnX    2360
+  #define MAXdelayOnX    4855
+  #define MINdelayOnY    2351
+  #define MAXdelayOnY    4913
+  #define STEPdelayOnX   9.794315054
+  #define STEPdelayOnY   9.772109035
   // Define the timing for mouse used as Joystick
-  #define M2JCalib      865 // 20000 at 240 MHz
+  #define M2JCalib      802 // 20000 at 240 MHz
 #endif
 
 #define CONFIG          0 // set the configuration switch to the "Boot" button
