@@ -41,7 +41,7 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 #define SWITCH_MJ         2 // HIGH = mouse, LOW = Joystick
 // Define the default timers for the mouse delay, all empirical for PAL version
 
-#define PAL               true // select if it is PAL or NTSC and adjust the timings
+#define PAL               1 // select if it is PAL or NTSC and adjust the timings
 
 #if PAL
   #define MINdelayOnX    2450
