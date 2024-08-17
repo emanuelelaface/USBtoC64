@@ -70,7 +70,7 @@ Each joystick or gamepad presents data to the USB in a different way. The librar
 - It is now possible to reboot the controller and use it with the configured joystick.
 
 If your controller is advanced, with analog joystick and you want to map specifically as mouse or you want some more advanced customization you can discover how your values
-are mapped following this [Configurator](https://raw.githack.com/emanuelelaface/USBtoC64/main/CONFIGURATOR/config.html) and once you download the CSV file you can contact me for a specific configuration (or if you know your business you can code your controls directly in the firmware source and upload to your controller).
+are mapped following this [Configurator](https://raw.githack.com/emanuelelaface/USBtoC64/main/CONFIGURATOR/config.html) and once you download the CSV file you can contact me for a specific configuration, or if you know your business you can code your controls directly in the firmware source and upload to your controller. You can use the USBtoC64-customized.ino file to associate the correct values to the joystick positions in the joystick call-back function.
 
 ---
 
