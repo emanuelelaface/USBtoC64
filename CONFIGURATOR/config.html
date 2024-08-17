@@ -272,6 +272,7 @@
 
     <script>
         const dataBody = document.getElementById('dataBody');
+	let selectedDevice = null;
 
         async function connectToGameController() {
             try {
@@ -283,6 +284,7 @@
                     console.log(`Dispositivo HID connesso: ${device.productName}`);
                     await device.open();
                     await readRawData(device);
+		    selectedDevice = device;
                 } else {
                     console.log('Nessun dispositivo HID selezionato.');
                 }
@@ -296,6 +298,11 @@
                 device.addEventListener('inputreport', event => {
                     const { data } = event;
                     const values = [];
+
+		    const reportId = event.reportId;
+		    if (reportId !== undefined) {
+		    	values.push(reportId);
+		    }
 
                     for (let i = 0; i < data.byteLength; i++) {
                         values.push(data.getUint8(i));
@@ -333,6 +340,7 @@
             const toggleCheckbox = document.getElementById('toggle');
             const mode = toggleCheckbox.checked ? 'NTSC' : 'PAL';
 	    var csvPayload = [
+                    `${selectedDevice.productName},${selectedDevice.vendorId},${selectedDevice.productId}`,
 		    `UP,${values[0]},${values[1]}`,
 		    `UP-RIGHT,${values[2]},${values[3]}`,
 		    `RIGHT,${values[4]},${values[5]}`,
