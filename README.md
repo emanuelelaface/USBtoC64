@@ -69,7 +69,8 @@ Each joystick or gamepad presents data to the USB in a different way. The librar
 - After the last button, the controller will flash a ![](https://placehold.co/15x15/c5f015/c5f015.png) `GREEN` LED and will be set to work with that controller.
 - It is now possible to reboot the controller and use it with the configured joystick.
 
-The analog knobs in the joystick cannot be mapped to the C64 because the port of the commodore understands only a binary value ON/OFF. If you try to configure the joystick with an analog control you will end up in something that will not work.
+If your controller is advanced, with analog joystick and you want to map specifically as mouse or you want some more advanced customization you can discover how your values
+are mapped following this [Configurator](https://raw.githack.com/emanuelelaface/USBtoC64/main/CONFIGURATOR/config.html) and once you download the CSV file you can contact me for a specific configuration (or if you know your business you can code your controls directly in the firmware source and upload to your controller).
 
 ---
 
