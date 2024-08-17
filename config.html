@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>USB to Commodore 64 Configurator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            height: 100vh;
+        }
+        h1, h2 {
+            color: #333;
+            margin: 20px 0;
+        }
+        #container {
+            width: 80%;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex;
+        }
+        .controller-reader {
+            flex: 1;
+            padding: 20px;
+            border-right: 2px solid #ccc;
+        }
+        .controls-block {
+            flex: 2;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .control-section {
+            width: 48%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #f7f7f7;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        input[type="text"] {
+            width: 80%;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+        .toggle-container {
+            display: flex;
+	    flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .toggle-container input[type="checkbox"] {
+            display: none;
+        }
+        .toggle-container label {
+            cursor: pointer;
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+            user-select: none;
+        }
+        .toggle-container input[type="checkbox"]:checked + label {
+            background-color: #28a745;
+        }
+        .toggle-container label::before {
+            content: "PAL";
+            display: block;
+            text-align: center;
+        }
+        .toggle-container input[type="checkbox"]:checked + label::before {
+            content: "NTSC";
+        }
+        #downloadCsvButton {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #dc3545;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+	    margin-top: 100px;
+        }
+        #downloadCsvButton:hover {
+            background-color: #c82333;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div class="controller-reader">
+	    <center>
+            <h1>Controller Values</h1>
+            <button id="connectButton">Connect to Game Controller</button>
+	    </center>
+	    <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Index</th>
+                        <th>Values</th>
+                    </tr>
+                </thead>
+                <tbody id="dataBody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="controls-block">
+            <div class="control-section">
+		<center>
+                <h2>Standard Controller</h2>
+		</center>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Index</th>
+                        <th>Value</th>
+                    </tr>
+                    <tr>
+                        <td>UP</td>
+                        <td><input type="text" name="up-index"></td>
+                        <td><input type="text" name="up-value"></td>
+                    </tr>
+                    <tr>
+                        <td>UP-RIGHT</td>
+                        <td><input type="text" name="up-right-index"></td>
+                        <td><input type="text" name="up-right-value"></td>
+                    </tr>
+                    <tr>
+                        <td>RIGHT</td>
+                        <td><input type="text" name="right-index"></td>
+                        <td><input type="text" name="right-value"></td>
+                    </tr>
+                    <tr>
+                        <td>RIGHT-DOWN</td>
+                        <td><input type="text" name="right-down-index"></td>
+                        <td><input type="text" name="right-down-value"></td>
+                    </tr>
+                    <tr>
+                        <td>DOWN</td>
+                        <td><input type="text" name="down-index"></td>
+                        <td><input type="text" name="down-value"></td>
+                    </tr>
+                    <tr>
+                        <td>DOWN-LEFT</td>
+                        <td><input type="text" name="down-left-index"></td>
+                        <td><input type="text" name="down-left-value"></td>
+                    </tr>
+                    <tr>
+                        <td>LEFT</td>
+                        <td><input type="text" name="left-index"></td>
+                        <td><input type="text" name="left-value"></td>
+                    </tr>
+                    <tr>
+                        <td>LEFT-UP</td>
+                        <td><input type="text" name="left-up-index"></td>
+                        <td><input type="text" name="left-up-value"></td>
+                    </tr>
+                    <tr>
+                        <td>FIRE1</td>
+                        <td><input type="text" name="fire1-index"></td>
+                        <td><input type="text" name="fire1-value"></td>
+                    </tr>
+                    <tr>
+                        <td>FIRE2</td>
+                        <td><input type="text" name="fire2-index"></td>
+                        <td><input type="text" name="fire2-value"></td>
+                    </tr>
+                    <tr>
+                        <td>FIRE3</td>
+                        <td><input type="text" name="fire3-index"></td>
+                        <td><input type="text" name="fire3-value"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="control-section">
+		<center>
+                <h2>Left Analog Controller</h2>
+		</center>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Index</th>
+                        <th>Min Value</th>
+                        <th>Max Value</th>
+                    </tr>
+                    <tr>
+                        <td>Horizontal</td>
+                        <td><input type="text" name="left-analog-horizontal-index"></td>
+                        <td><input type="text" name="left-analog-horizontal-min"></td>
+                        <td><input type="text" name="left-analog-horizontal-max"></td>
+                    </tr>
+                    <tr>
+                        <td>Vertical</td>
+                        <td><input type="text" name="left-analog-vertical-index"></td>
+                        <td><input type="text" name="left-analog-vertical-min"></td>
+                        <td><input type="text" name="left-analog-vertical-max"></td>
+                    </tr>
+		</table>
+		<center>
+                <h2>Right Analog Controller</h2>
+		</center>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Index</th>
+                        <th>Min Value</th>
+                        <th>Max Value</th>
+                    </tr>
+                    <tr>
+                        <td>Horizontal</td>
+                        <td><input type="text" name="right-analog-horizontal-index"></td>
+                        <td><input type="text" name="right-analog-horizontal-min"></td>
+                        <td><input type="text" name="right-analog-horizontal-max"></td>
+                    </tr>
+                    <tr>
+                        <td>Vertical</td>
+                        <td><input type="text" name="right-analog-vertical-index"></td>
+                        <td><input type="text" name="right-analog-vertical-min"></td>
+                        <td><input type="text" name="right-analog-vertical-max"></td>
+                    </tr>
+                </table>
+		<center><h2>Commodore Model</h2></center>
+    		<div class="toggle-container", align="center">
+        		<input type="checkbox" id="toggle">
+        		<label for="toggle"></label>
+    		</div>
+    		<center>
+        		<button id="downloadCsvButton">Download Configuration</button>
+    		</center>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        const dataBody = document.getElementById('dataBody');
+
+        async function connectToGameController() {
+            try {
+                const [device] = await navigator.hid.requestDevice({
+                    filters: []
+                });
+
+                if (device) {
+                    console.log(`Dispositivo HID connesso: ${device.productName}`);
+                    await device.open();
+                    await readRawData(device);
+                } else {
+                    console.log('Nessun dispositivo HID selezionato.');
+                }
+            } catch (error) {
+                console.error('Errore nella connessione al dispositivo HID:', error);
+            }
+        }
+
+        async function readRawData(device) {
+            try {
+                device.addEventListener('inputreport', event => {
+                    const { data } = event;
+                    const values = [];
+
+                    for (let i = 0; i < data.byteLength; i++) {
+                        values.push(data.getUint8(i));
+                    }
+
+                    updateTable(values);
+                });
+            } catch (error) {
+                console.error('Errore nella lettura dei dati raw dal dispositivo HID:', error);
+            }
+        }
+
+        function updateTable(values) {
+            dataBody.innerHTML = '';
+
+            values.forEach((value, index) => {
+                const row = document.createElement('tr');
+                const indexCell = document.createElement('td');
+                const valueCell = document.createElement('td');
+
+                indexCell.textContent = index;
+                valueCell.textContent = value;
+
+                row.appendChild(indexCell);
+                row.appendChild(valueCell);
+                dataBody.appendChild(row);
+            });
+        }
+
+        function downloadCSV() {
+            const rows = [];
+
+            const cells = document.querySelectorAll('input[type="text"]');
+            const values = Array.from(cells).map(input => input.value);
+            const toggleCheckbox = document.getElementById('toggle');
+            const mode = toggleCheckbox.checked ? 'NTSC' : 'PAL';
+	    var csvPayload = [
+		    `UP,${values[0]},${values[1]}`,
+		    `UP-RIGHT,${values[2]},${values[3]}`,
+		    `RIGHT,${values[4]},${values[5]}`,
+		    `RIGHT-DOWN,${values[6]},${values[7]}`,
+		    `DOWN,${values[8]},${values[9]}`,
+		    `DOWN-LEFT,${values[10]},${values[11]}`,
+		    `LEFT,${values[12]},${values[13]}`,
+		    `LEFT-UP,${values[14]},${values[15]}`,
+		    `FIRE1,${values[16]},${values[17]}`,
+		    `FIRE2,${values[18]},${values[19]}`,
+		    `FIRE3,${values[20]},${values[21]}`,
+		    `LEFT-ANALOG-HORIZONTAL,${values[22]},${values[23]},${values[24]}`,
+		    `LEFT-ANALOG-VERTICAL,${values[25]},${values[26]},${values[27]}`,
+		    `RIGHT-ANALOG-HORIZONTAL,${values[28]},${values[29]},${values[30]}`,
+		    `RIGHT-ANALOG-VERTICAL,${values[31]},${values[32]},${values[33]}`,
+		    `COMMODORE,${mode}`
+	    ].join("\n");
+	    console.log(csvPayload);
+
+            const blob = new Blob([csvPayload], { type: 'text/csv;charset=utf-8;' });
+
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            link.setAttribute('href', url);
+            link.setAttribute('download', 'USBtoCommodore64_Config.csv');
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        document.getElementById('connectButton').addEventListener('click', connectToGameController);
+        document.getElementById('downloadCsvButton').addEventListener('click', downloadCSV);
+    </script>
+</body>
+</html>
+
