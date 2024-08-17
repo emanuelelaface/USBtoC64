@@ -350,7 +350,6 @@
 		    `RIGHT-ANALOG-VERTICAL,${values[31]},${values[32]},${values[33]}`,
 		    `COMMODORE,${mode}`
 	    ].join("\n");
-	    console.log(csvPayload);
 
             const blob = new Blob([csvPayload], { type: 'text/csv;charset=utf-8;' });
 
