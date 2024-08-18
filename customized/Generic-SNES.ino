@@ -402,13 +402,13 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
   if (data[1] == 0) {            // If the motion is in vertical
       y = 3*STEPdelayOnY;       // set the y motion as 3 steps of mouse in the positive or negative direction
   }
-  if (data[1] = 255) {
+  if (data[1] == 255) {
       y = -3*STEPdelayOnY;
   }
   if (data[0] == 0) {            // If the motion is in horizontal
       x = -3*STEPdelayOnX;      // set the x motion as 3 steps of mouse in the negative or positive direction
   }
-  if (data[0] = 255) {
+  if (data[0] == 255) {
       x = 3*STEPdelayOnX;
   }
   if ((data[6] == 1) | (data[5] == 47)) {
@@ -426,6 +426,20 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
   else {
     digitalWrite(C64_UP, LOW);
     pinMode(C64_UP, INPUT);
+  }
+  delayOnX += x;
+  if (delayOnX > MAXdelayOnX) {
+    delayOnX = MINdelayOnX;
+  }
+  if (delayOnX < MINdelayOnX) {
+    delayOnX = MAXdelayOnX;
+  }
+  delayOnY += y;
+  if (delayOnY > MAXdelayOnY) {
+    delayOnY = MINdelayOnY;
+  }
+  if (delayOnY < MINdelayOnY) {
+    delayOnY = MAXdelayOnY;
   }
 }
 
