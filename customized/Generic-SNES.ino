@@ -1,5 +1,5 @@
 /*
-CUSTOMIZATION FOR 8BitDo Pro 2, USB 11720:24582
+CUSTOMIZATION FOR USB gamepad, USB 2079:58369
 
 USB to Commodore 64 adaptor V 1.1 by Emanuele Laface
 
@@ -342,32 +342,16 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
   if (data[1] == 0) {
     isup = true;
   }
-  if (data[1] == 2) {
+  if (data[0] == 255) {
     isright = true;
   }
-  if (data[1] == 4) {
+  if (data[1] == 255) {
     isdown = true;
   }
-  if (data[1] == 6) {
+  if (data[0] == 0) {
     isleft = true;
   }
-  if (data[1] == 1) {
-    isup = true;
-    isright = true;
-  }
-  if (data[1] == 3) {
-    isdown = true;
-    isright = true;
-  }
-  if (data[1] == 5) {
-    isdown = true;
-    isleft = true;
-  }
-  if (data[1] == 7) {
-    isup = true;
-    isleft = true;
-  }
-  if ((data[8] == 64) | (data[8] == 128) | (data[8] == 1)) {
+  if ((data[6] == 1) | (data[6] == 2) | (data[5] == 47)) {
       isfire = true;
   }
   if (isup) {
@@ -413,7 +397,21 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
 }
 // Function of joystick in mouse mode
 void c64_joystick_m(const uint8_t *const data, const int length) {
-  if ((data[8] == 64) | (data[8] == 1)) {
+  float x = 0;
+  float y = 0;
+  if (data[1] == 0) {            // If the motion is in vertical
+      y = 3*STEPdelayOnY;       // set the y motion as 3 steps of mouse in the positive or negative direction
+  }
+  if (data[1] = 255) {
+      y = -3*STEPdelayOnY;
+  }
+  if (data[0] == 0) {            // If the motion is in horizontal
+      x = -3*STEPdelayOnX;      // set the x motion as 3 steps of mouse in the negative or positive direction
+  }
+  if (data[0] = 255) {
+      x = 3*STEPdelayOnX;
+  }
+  if ((data[6] == 1) | (data[5] == 47)) {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
   }
@@ -421,29 +419,13 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
     digitalWrite(C64_FIRE, LOW);
     pinMode(C64_FIRE, INPUT);
   }
-  if (data[8] == 128) {
+  if (data[6] == 2) {
       pinMode(C64_UP, OUTPUT);
       digitalWrite(C64_UP, LOW);
   }
   else {
     digitalWrite(C64_UP, LOW);
     pinMode(C64_UP, INPUT);
-  }
-  delayOnX += (data[2]-127)/3;
-  delayOnX += (data[4]-127)/3;
-  if (delayOnX > MAXdelayOnX) {
-    delayOnX = MINdelayOnX;
-  }
-  if (delayOnX < MINdelayOnX) {
-    delayOnX = MAXdelayOnX;
-  }
-  delayOnY += (127-data[3])/3;
-  delayOnY += (127-data[5])/3;
-  if (delayOnY > MAXdelayOnY) {
-    delayOnY = MINdelayOnY;
-  }
-  if (delayOnY < MINdelayOnY) {
-    delayOnY = MAXdelayOnY;
   }
 }
 

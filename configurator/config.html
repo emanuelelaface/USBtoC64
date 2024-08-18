@@ -281,7 +281,7 @@
                 });
 
                 if (device) {
-                    console.log(`Dispositivo HID connesso: ${device.productName}`);
+                    console.log(`Dispositivo HID connesso: ${device.productName}, ${device.vendorId}:${device.productId}`);
                     await device.open();
                     await readRawData(device);
 		    selectedDevice = device;
@@ -317,7 +317,6 @@
 
         function updateTable(values) {
             dataBody.innerHTML = '';
-
             values.forEach((value, index) => {
                 const row = document.createElement('tr');
                 const indexCell = document.createElement('td');
