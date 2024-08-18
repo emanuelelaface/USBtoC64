@@ -13,12 +13,12 @@ The initial variable values are the timing for a PAL C64 and are obtained empiri
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/schematic.jpeg" alt="Schematic" style="width: 52%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic1.jpg" alt="Pic 1" style="width: 38%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 52%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1.jpg" alt="Pic 1" style="width: 38%;">
 </div>
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic2.jpg" alt="Pic 2" style="width: 45%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/IMAGES/pic3.jpg" alt="Pic 3" style="width: 45%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2.jpg" alt="Pic 2" style="width: 45%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3.jpg" alt="Pic 3" style="width: 45%;">
 </div>
 
 ## Components
@@ -70,7 +70,7 @@ Each joystick or gamepad presents data to the USB in a different way. The librar
 - It is now possible to reboot the controller and use it with the configured joystick.
 
 If your controller is advanced, with analog joystick and you want to map specifically as mouse or you want some more advanced customization you can discover how your values
-are mapped following this [Configurator](https://raw.githack.com/emanuelelaface/USBtoC64/main/CONFIGURATOR/config.html) and once you download the CSV file you can contact me for a specific configuration, or if you know your business you can code your controls directly in the firmware source and upload to your controller. You can use the USBtoC64-customized.ino file to associate the correct values to the joystick positions in the joystick call-back function.
+are mapped following this [Configurator](https://raw.githack.com/emanuelelaface/USBtoC64/main/CONFIGURATOR/config.html) and once you download the CSV file you can contact me for a specific configuration, or if you know your business you can code your controls directly in the firmware source and upload to your controller. You can look at the customized folder where I will collect specific configuration for commercial controllers.
 
 ---
 
