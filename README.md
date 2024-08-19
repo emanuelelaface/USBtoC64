@@ -21,8 +21,11 @@ There is an additional switch to make the board work in mouse mode or joystick m
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3.jpg" alt="Pic 3" style="width: 45%;">
 </div>
 
-## [Tindie](https://www.tindie.com/products/burglar_ot/usbtoc64/).
-<BR><a href="https://www.tindie.com/products/burglar_ot/usbtoc64/"><img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/tindie-logo.png" alt="Tindie Logo Link" width="150" height="78"></a>
+## Pre assembled and tested board
+<div style="display: flex; justify-content: space-between;">
+  <a href="https://www.tindie.com/products/burglar_ot/usbtoc64/"><img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/tindie-logo.png" alt="Tindie Logo Link" width="150" height="78"></a>
+</div>
+If you like this project and you want to have a fully assembled and tested board, you can buy it on [Tindie](https://www.tindie.com/products/burglar_ot/usbtoc64/). In this way you can also benefit of customized configuration and you will support the future development of the project.
 
 ## Components
 - **ESP32 S3 Mini**: I use the [Waveshare](https://www.waveshare.com/esp32-s3-zero.htm) version. There are other boards with a similar form factor, but the pinout may be different, which would require redesigning the board.
