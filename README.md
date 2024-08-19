@@ -21,6 +21,8 @@ There is an additional switch to make the board work in mouse mode or joystick m
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3.jpg" alt="Pic 3" style="width: 45%;">
 </div>
 
+![https://www.tindie.com/products/burglar_ot/usbtoc64/](https://github.com/emanuelelaface/USBtoC64/blob/main/images/tindie-logo.png)
+
 ## Components
 - **ESP32 S3 Mini**: I use the [Waveshare](https://www.waveshare.com/esp32-s3-zero.htm) version. There are other boards with a similar form factor, but the pinout may be different, which would require redesigning the board.
 - **2N3904 NPN transistor**.
