@@ -12,13 +12,17 @@ The initial variable values are the timing for a PAL C64 and are obtained empiri
 
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
+The two releases (2.1 and 3.0) of the PCB differs only for the kind of connector that can be mounted. The 90 degrees connectors are more difficult to find and needs more work to be cut and adapted for the board, so the version 3.0 is for the normal connectors that are easier to find and adapt.
+
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 52%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1.jpg" alt="Pic 1" style="width: 38%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 39%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev2.1.jpg" alt="Pic 1" style="width: 29%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev3.0.jpg" alt="Pic 1" style="width: 29%;">
 </div>
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2.jpg" alt="Pic 2" style="width: 45%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3.jpg" alt="Pic 3" style="width: 45%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2-rev2.1.jpg" alt="Pic 2" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2-rev3.0.jpg" alt="Pic 3" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3-rev3.0.jpg" alt="Pic 3" style="width: 32%;">
 </div>
 
 ## Pre-assembled and Tested Board
