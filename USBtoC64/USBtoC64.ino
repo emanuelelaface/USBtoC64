@@ -24,7 +24,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 #define PIN_WS2812B 21 // Pin for RGB LED
 #define NUM_PIXELS 1 // 1 LED
-Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED
+Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED Some board is NEO_RGB
 
 // Define GPIOs for Joystick Switches
 #define C64_FIRE          7
