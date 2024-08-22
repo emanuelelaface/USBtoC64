@@ -22,11 +22,10 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include "hid_usage_mouse.h"
 #include "esp_timer.h"
 #include "Adafruit_NeoPixel.h"
-#include "esp_hidh_api.h"
 
 #define PIN_WS2812B 21 // Pin for RGB LED
 #define NUM_PIXELS 1 // 1 LED
-Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED
+Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Initialize LED
 
 // Define GPIOs for Joystick Switches
 #define C64_FIRE          7
@@ -74,6 +73,9 @@ hw_timer_t *timerOnX = NULL;
 hw_timer_t *timerOnY = NULL;
 hw_timer_t *timerOffX = NULL;
 hw_timer_t *timerOffY = NULL;
+
+bool autofire = false;
+bool autoleftright = false;
 
 // From now till further comment is all the USB stuff that is copyed from the example fo the module
 static const char *TAG = "USB MESSAGE";
@@ -339,28 +341,28 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
   bool isright = false;
   bool isfire = false;
 
-  if (data[1] == 0) {
+  if ((data[1] == 0) | (data[8] == 8)) {
     isup = true;
-  }
-  if (data[1] == 2) {
-    isright = true;
-  }
-  if (data[1] == 4) {
-    isdown = true;
-  }
-  if (data[1] == 6) {
-    isleft = true;
   }
   if (data[1] == 1) {
     isup = true;
+    isright = true;
+  }
+  if (data[1] == 2) {
     isright = true;
   }
   if (data[1] == 3) {
     isdown = true;
     isright = true;
   }
+  if (data[1] == 4) {
+    isdown = true;
+  }
   if (data[1] == 5) {
     isdown = true;
+    isleft = true;
+  }
+  if (data[1] == 6) {
     isleft = true;
   }
   if (data[1] == 7) {
@@ -369,6 +371,40 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
   }
   if ((data[8] == 64) | (data[8] == 128) | (data[8] == 1)) {
       isfire = true;
+  }
+  if (data[8] == 32) {
+    autofire = true;
+  }
+  if (data[8] == 16) {
+    autofire = true;
+  }
+  if (data[8] == 2) {
+    autofire = false;
+  }
+  if (data[9] == 32) {
+    autoleftright = true;
+  }
+  if (data[9] == 64) {
+    autoleftright = false;
+  }
+  if (autofire) {
+    pinMode(C64_FIRE, OUTPUT);
+    digitalWrite(C64_FIRE, LOW);
+    delay(5);
+  }
+  if (autoleftright) {
+    pinMode(C64_LEFT, OUTPUT);
+    digitalWrite(C64_LEFT, LOW);
+    delay(8);
+    digitalWrite(C64_LEFT, LOW);
+    pinMode(C64_LEFT, INPUT);
+    delay(8);
+    pinMode(C64_RIGHT, OUTPUT);
+    digitalWrite(C64_RIGHT, LOW);
+    delay(8);
+    digitalWrite(C64_RIGHT, LOW);
+    pinMode(C64_RIGHT, INPUT);
+    delay(8);
   }
   if (isup) {
     pinMode(C64_UP, OUTPUT);
