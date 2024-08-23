@@ -25,7 +25,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 
 #define PIN_WS2812B 21 // Pin for RGB LED
 #define NUM_PIXELS 1 // 1 LED
-Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Initialize LED
+Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED
 
 // Define GPIOs for Joystick Switches
 #define C64_FIRE          7
@@ -378,10 +378,10 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
   if (data[8] == 2) {
     autofire = false;
   }
-  if (data[9] == 32) {
+  if (data[8] == 32) {
     autoleftright = true;
   }
-  if (data[9] == 64) {
+  if (data[8] == 4) {
     autoleftright = false;
   }
   if (autofire) {
@@ -462,16 +462,24 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
     digitalWrite(C64_UP, LOW);
     pinMode(C64_UP, INPUT);
   }
-  delayOnX += (data[2]-127)/3;
-  delayOnX += (data[4]-127)/3;
+  if ((data[2] < 64) | (data[2] > 190)){
+    delayOnX += (data[2]-127)/3;
+  }
+  if ((data[4] < 64) | (data[4] > 190)){
+    delayOnX += (data[4]-127)/3;
+  }
   if (delayOnX > MAXdelayOnX) {
     delayOnX = MINdelayOnX;
   }
   if (delayOnX < MINdelayOnX) {
     delayOnX = MAXdelayOnX;
   }
-  delayOnY += (127-data[3])/3;
-  delayOnY += (127-data[5])/3;
+  if ((data[3] < 64) | (data[3] > 190)){
+    delayOnY += (127-data[3])/3;
+  }
+  if ((data[5] < 64) | (data[5] > 190)){
+    delayOnY += (127-data[5])/3;
+  }
   if (delayOnY > MAXdelayOnY) {
     delayOnY = MINdelayOnY;
   }
