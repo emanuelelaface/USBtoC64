@@ -120,6 +120,11 @@
         #downloadCsvButton:hover {
             background-color: #c82333;
         }
+        #controllerInfo {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #333;
+        }
     </style>
 </head>
 <body>
@@ -128,6 +133,7 @@
 	    <center>
             <h1>Controller Values</h1>
             <button id="connectButton">Connect to Game Controller</button>
+            <div id="controllerInfo"></div>
 	    </center>
 	    <table id="dataTable">
                 <thead>
@@ -283,6 +289,14 @@
                 if (device) {
                     console.log(`Dispositivo HID connesso: ${device.productName}, ${device.vendorId}:${device.productId}`);
                     await device.open();
+                    
+                    const controllerInfoDiv = document.getElementById('controllerInfo');
+                    controllerInfoDiv.innerHTML = `
+                        <p><strong>Controller:</strong> ${device.productName}</p>
+                        <p><strong>Vendor ID:</strong> ${device.vendorId}</p>
+                        <p><strong>Product ID:</strong> ${device.productId}</p>
+                    `;
+
                     await readRawData(device);
 		    selectedDevice = device;
                 } else {

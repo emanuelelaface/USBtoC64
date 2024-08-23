@@ -1,5 +1,5 @@
 /*
-CUSTOMIZATION FOR iBuffafolo SNES, USB 1411:8288
+CUSTOMIZATION FOR iBuffalo SNES, USB 1411:8288
 
 USB to Commodore 64 adaptor V 1.1 by Emanuele Laface
 
