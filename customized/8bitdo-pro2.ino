@@ -372,9 +372,6 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
   if ((data[8] == 64) | (data[8] == 128) | (data[8] == 1)) {
       isfire = true;
   }
-  if (data[8] == 32) {
-    autofire = true;
-  }
   if (data[8] == 16) {
     autofire = true;
   }
