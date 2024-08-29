@@ -55,10 +55,18 @@ To select PAL or NTSC timing the #define PAL line has to be set as ture or false
 
 ## Installation From the Binary File
 
-Alternatively, you can load the binary file **USBtoC64.bin**, which is located in the BIN folder. Follow these steps:
+Alternatively, you can load the binary file **USBtoC64.bin**, which is located in the BIN folder.
+The tool to upload the binary is the `esptool`. This is available as web page or as python. The web page should be compatible with Chrome browser or similar, probably not with Firefox, but on some operating system (like Mac OS) there can be a problem of binding the port to the web page. Anyway my sugestion is to try the web page first because is very fast and if does not work try with the python installation.
 
-1. From Python, run `pip install esptool`.
-2. Once esptool is installed, press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
+### From the web page
+1. Disconnect the adapter from the Commodore 64.
+2. Press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
+3. Go on the website of [esptool](https://espressif.github.io/esptool-js/) click on Connect, select the port for your adapter and upload the firmware.
+
+### From Python
+1. Install the esptool with `pip install esptool`.
+2. Disconnect the adapter from the Commodore 64.
+2. Press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
 3. On the computer, run `esptool.py -b 921600 -c esp32s3 -p <PORT> write_flash --flash_freq 80m 0x00000 USBtoC64-<PAL|NTSC>.bin`, where <PORT> is the USB port created once the board is connected. On Windows, it is probably COM3 or something similar. On Linux and Mac, it will be /dev/tty.USBsomething or /dev/cu.usbsomething. <PAL|NTSC> is the version with the timings for PAL or for NTSC version of the Commodore 64.
 
 ---
