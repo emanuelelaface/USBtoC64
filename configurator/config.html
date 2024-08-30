@@ -126,6 +126,19 @@
             font-size: 16px;
             color: #333;
         }
+	select {
+  	    background-color: lightgray;
+	    border-radius: 4px;
+            display: inline-block;
+            font: inherit;
+	    padding: 0.5em 0.5em 0.5em 0.5em;
+            margin: 0;      
+            -webkit-box-sizing: border-box;
+            -moz-box-sizing: border-box;
+            box-sizing: border-box;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+        }
     </style>
 </head>
 <body>
@@ -161,86 +174,343 @@
                         <th></th>
                         <th>Index</th>
                         <th>Value</th>
+                        <th>Function</th>
                     </tr>
                     <tr>
                         <td>UP</td>
                         <td><input type="text" name="up-index"></td>
                         <td><input type="text" name="up-value"></td>
+                        <td>
+			    <select>
+				<option value="UP" selected="selected">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>UP-RIGHT</td>
                         <td><input type="text" name="up-right-index"></td>
                         <td><input type="text" name="up-right-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT" selected="selected">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>RIGHT</td>
                         <td><input type="text" name="right-index"></td>
                         <td><input type="text" name="right-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT" selected="selected">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>RIGHT-DOWN</td>
                         <td><input type="text" name="right-down-index"></td>
                         <td><input type="text" name="right-down-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN" selected="selected">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>DOWN</td>
                         <td><input type="text" name="down-index"></td>
                         <td><input type="text" name="down-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN" selected="selected">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>DOWN-LEFT</td>
                         <td><input type="text" name="down-left-index"></td>
                         <td><input type="text" name="down-left-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT" selected="selected">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>LEFT</td>
                         <td><input type="text" name="left-index"></td>
                         <td><input type="text" name="left-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT" selected="selected">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>LEFT-UP</td>
                         <td><input type="text" name="left-up-index"></td>
                         <td><input type="text" name="left-up-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP" selected="selected">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>BUTTON A</td>
                         <td><input type="text" name="button-a-index"></td>
                         <td><input type="text" name="button-a-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE" selected="selected">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>BUTTON B</td>
                         <td><input type="text" name="button-b-index"></td>
                         <td><input type="text" name="button-b-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON" selected="selected">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>BUTTON X</td>
                         <td><input type="text" name="button-x-index"></td>
                         <td><input type="text" name="button-x-value"></td>
+                        <td>
+			    <select>
+				<option value="UP" selected="selected">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>BUTTON Y</td>
                         <td><input type="text" name="button-y-index"></td>
                         <td><input type="text" name="button-y-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF" selected="selected">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>BUTTON LEFT</td>
                         <td><input type="text" name="button-left-index"></td>
                         <td><input type="text" name="button-left-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE" selected="selected">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>BUTTON RIGHT</td>
                         <td><input type="text" name="button-right-index"></td>
                         <td><input type="text" name="button-right-value"></td>
+                        <td>
+			    <select>
+				<option value="UP" selected="selected">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>SELECT</td>
                         <td><input type="text" name="button-select-index"></td>
                         <td><input type="text" name="button-select-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE" selected="selected">NONE</option>
+		            </select>
+			</td>
                     </tr>
                     <tr>
                         <td>START</td>
                         <td><input type="text" name="button-start-index"></td>
                         <td><input type="text" name="button-start-value"></td>
+                        <td>
+			    <select>
+				<option value="UP">UP</option>
+				<option value="UP-RIGHT">UP-RIGHT</option>
+				<option value="RIGHT">RIGHT</option>
+				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
+				<option value="DOWN">DOWN</option>
+				<option value="DOWN-LEFT">DOWN-LEFT</option>
+				<option value="LEFT">LEFT</option>
+				<option value="LEFT-UP">LEFT-UP</option>
+				<option value="FIRE">FIRE</option>
+				<option value="AUTOFIREON">AUTO FIRE ON</option>
+				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+				<option value="NONE" selected="selected">NONE</option>
+		            </select>
+			</td>
                     </tr>
                 </table>
             </div>
@@ -402,26 +672,28 @@
 
             const cells = document.querySelectorAll('input[type="text"]');
             const values = Array.from(cells).map(input => input.value);
+            const cellsf = document.querySelectorAll('select');
+            const valuesf = Array.from(cellsf).map(select => select.value);
             const toggleCheckbox = document.getElementById('toggle');
             const mode = toggleCheckbox.checked ? 'NTSC' : 'PAL';
 	    var csvPayload = [
                     `${selectedDevice.productName},${selectedDevice.vendorId},${selectedDevice.productId}`,
-		    `UP,${values[0]},${values[1]}`,
-		    `UP-RIGHT,${values[2]},${values[3]}`,
-		    `RIGHT,${values[4]},${values[5]}`,
-		    `RIGHT-DOWN,${values[6]},${values[7]}`,
-		    `DOWN,${values[8]},${values[9]}`,
-		    `DOWN-LEFT,${values[10]},${values[11]}`,
-		    `LEFT,${values[12]},${values[13]}`,
-		    `LEFT-UP,${values[14]},${values[15]}`,
-		    `A,${values[16]},${values[17]}`,
-		    `B,${values[18]},${values[19]}`,
-		    `X,${values[20]},${values[21]}`,
-		    `Y,${values[22]},${values[23]}`,
-		    `BUTTON-LEFT,${values[24]},${values[25]}`,
-		    `BUTTON-RIGHT,${values[26]},${values[27]}`,
-		    `SELECT,${values[28]},${values[29]}`,
-		    `START,${values[30]},${values[31]}`,
+		    `UP,${values[0]},${values[1]},${valuesf[0]}`,
+		    `UP-RIGHT,${values[2]},${values[3]},${valuesf[1]}`,
+		    `RIGHT,${values[4]},${values[5]},${valuesf[2]}`,
+		    `RIGHT-DOWN,${values[6]},${values[7]},${valuesf[3]}`,
+		    `DOWN,${values[8]},${values[9]},${valuesf[4]}`,
+		    `DOWN-LEFT,${values[10]},${values[11]},${valuesf[5]}`,
+		    `LEFT,${values[12]},${values[13]},${valuesf[6]}`,
+		    `LEFT-UP,${values[14]},${values[15]},${valuesf[7]}`,
+		    `A,${values[16]},${values[17]},${valuesf[8]}`,
+		    `B,${values[18]},${values[19]},${valuesf[9]}`,
+		    `X,${values[20]},${values[21]},${valuesf[10]}`,
+		    `Y,${values[22]},${values[23]},${valuesf[11]}`,
+		    `BUTTON-LEFT,${values[24]},${values[25]},${valuesf[12]}`,
+		    `BUTTON-RIGHT,${values[26]},${values[27]},${valuesf[13]}`,
+		    `SELECT,${values[28]},${values[29]},${valuesf[14]}`,
+		    `START,${values[30]},${values[31]},${valuesf[15]}`,
 		    `LEFT-ANALOG-HORIZONTAL,${values[32]},${values[33]},${values[34]}`,
 		    `LEFT-ANALOG-VERTICAL,${values[35]},${values[36]},${values[37]}`,
 		    `RIGHT-ANALOG-HORIZONTAL,${values[38]},${values[39]},${values[40]}`,
