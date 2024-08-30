@@ -11,8 +11,9 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+	    flex-direction: column;
+            justify-content: flex-start;
+            align-items: center;
             height: 100vh;
         }
         h1, h2 {
@@ -128,6 +129,9 @@
     </style>
 </head>
 <body>
+    <center>
+    <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/gamepad.png"width: 100%; height: auto;"></img>
+    </center>
     <div id="container">
         <div class="controller-reader">
 	    <center>
@@ -199,19 +203,44 @@
                         <td><input type="text" name="left-up-value"></td>
                     </tr>
                     <tr>
-                        <td>FIRE1</td>
-                        <td><input type="text" name="fire1-index"></td>
-                        <td><input type="text" name="fire1-value"></td>
+                        <td>BUTTON A</td>
+                        <td><input type="text" name="button-a-index"></td>
+                        <td><input type="text" name="button-a-value"></td>
                     </tr>
                     <tr>
-                        <td>FIRE2</td>
-                        <td><input type="text" name="fire2-index"></td>
-                        <td><input type="text" name="fire2-value"></td>
+                        <td>BUTTON B</td>
+                        <td><input type="text" name="button-b-index"></td>
+                        <td><input type="text" name="button-b-value"></td>
                     </tr>
                     <tr>
-                        <td>FIRE3</td>
-                        <td><input type="text" name="fire3-index"></td>
-                        <td><input type="text" name="fire3-value"></td>
+                        <td>BUTTON X</td>
+                        <td><input type="text" name="button-x-index"></td>
+                        <td><input type="text" name="button-x-value"></td>
+                    </tr>
+                    <tr>
+                        <td>BUTTON Y</td>
+                        <td><input type="text" name="button-y-index"></td>
+                        <td><input type="text" name="button-y-value"></td>
+                    </tr>
+                    <tr>
+                        <td>BUTTON LEFT</td>
+                        <td><input type="text" name="button-left-index"></td>
+                        <td><input type="text" name="button-left-value"></td>
+                    </tr>
+                    <tr>
+                        <td>BUTTON RIGHT</td>
+                        <td><input type="text" name="button-right-index"></td>
+                        <td><input type="text" name="button-right-value"></td>
+                    </tr>
+                    <tr>
+                        <td>SELECT</td>
+                        <td><input type="text" name="button-select-index"></td>
+                        <td><input type="text" name="button-select-value"></td>
+                    </tr>
+                    <tr>
+                        <td>START</td>
+                        <td><input type="text" name="button-start-index"></td>
+                        <td><input type="text" name="button-start-value"></td>
                     </tr>
                 </table>
             </div>
@@ -261,6 +290,29 @@
                         <td><input type="text" name="right-analog-vertical-index"></td>
                         <td><input type="text" name="right-analog-vertical-min"></td>
                         <td><input type="text" name="right-analog-vertical-max"></td>
+                    </tr>
+                </table>
+		<center>
+                <h2>Triggers</h2>
+		</center>
+                <table>
+                    <tr>
+                        <th></th>
+                        <th>Index</th>
+                        <th>Min Value</th>
+                        <th>Max Value</th>
+                    </tr>
+                    <tr>
+                        <td>Left Trigger</td>
+                        <td><input type="text" name="left-trigger-index"></td>
+                        <td><input type="text" name="left-trigger-min"></td>
+                        <td><input type="text" name="left-trigger-max"></td>
+                    </tr>
+                    <tr>
+                        <td>Right Trigger</td>
+                        <td><input type="text" name="right-trigger-index"></td>
+                        <td><input type="text" name="right-trigger-min"></td>
+                        <td><input type="text" name="right-trigger-max"></td>
                     </tr>
                 </table>
 		<center><h2>Commodore Model</h2></center>
@@ -362,13 +414,20 @@
 		    `DOWN-LEFT,${values[10]},${values[11]}`,
 		    `LEFT,${values[12]},${values[13]}`,
 		    `LEFT-UP,${values[14]},${values[15]}`,
-		    `FIRE1,${values[16]},${values[17]}`,
-		    `FIRE2,${values[18]},${values[19]}`,
-		    `FIRE3,${values[20]},${values[21]}`,
-		    `LEFT-ANALOG-HORIZONTAL,${values[22]},${values[23]},${values[24]}`,
-		    `LEFT-ANALOG-VERTICAL,${values[25]},${values[26]},${values[27]}`,
-		    `RIGHT-ANALOG-HORIZONTAL,${values[28]},${values[29]},${values[30]}`,
-		    `RIGHT-ANALOG-VERTICAL,${values[31]},${values[32]},${values[33]}`,
+		    `A,${values[16]},${values[17]}`,
+		    `B,${values[18]},${values[19]}`,
+		    `X,${values[20]},${values[21]}`,
+		    `Y,${values[22]},${values[23]}`,
+		    `BUTTON-LEFT,${values[24]},${values[25]}`,
+		    `BUTTON-RIGHT,${values[26]},${values[27]}`,
+		    `SELECT,${values[28]},${values[29]}`,
+		    `START,${values[30]},${values[31]}`,
+		    `LEFT-ANALOG-HORIZONTAL,${values[32]},${values[33]},${values[34]}`,
+		    `LEFT-ANALOG-VERTICAL,${values[35]},${values[36]},${values[37]}`,
+		    `RIGHT-ANALOG-HORIZONTAL,${values[38]},${values[39]},${values[40]}`,
+		    `RIGHT-ANALOG-VERTICAL,${values[41]},${values[42]},${values[43]}`,
+		    `LEFT-TRIGGER,${values[44]},${values[45]},${values[46]}`,
+		    `RIGHT-TRIGGER,${values[47]},${values[48]},${values[49]}`,
 		    `COMMODORE,${mode}`
 	    ].join("\n");
 
