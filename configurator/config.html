@@ -708,7 +708,7 @@
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', 'USBtoCommodore64_Config.csv');
+            link.setAttribute('download', `${selectedDevice.productName}_${selectedDevice.vendorId}_${selectedDevice.productId}.csv`);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
