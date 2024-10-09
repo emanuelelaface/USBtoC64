@@ -15,7 +15,7 @@ There is an additional switch to make the board work in mouse mode or joystick m
 The two releases (2.1 and 3.0) of the PCB differs only for the kind of connector that can be mounted. The 90 degrees connectors are more difficult to find and needs more work to be cut and adapted for the board, so the version 3.0 is for the normal connectors that are easier to find and adapt.
 
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 39%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 38%;">
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev2.1.jpg" alt="Pic 1" style="width: 29%;">
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev3.0.jpg" alt="Pic 1" style="width: 29%;">
 </div>
