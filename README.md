@@ -38,6 +38,7 @@ If you like this project and want a fully assembled and tested board, you can pu
 - **PCB Slide Switch, 3-pin**.
 - **Two 1 kOhm resistors, 1% tolerance**.
 - **Two 150 Ohm resistors, 1% tolerance**.
+- **One 5.1 kOhm resistor, 1% tolerance**.
 - **Two BAT 43 Schottky Diodes**.
 - **DE-9 (also known as D-SUB 9 or DB 9) female connector**: I use the 90-degree version to solder it onto the PCB. Regardless of the connector type, it's good practice to remove the metallic enclosure because it can easily short the +5V line of the C64 when inserted, potentially damaging your computer. I also cut the lateral plastic to make it more compact.
 
