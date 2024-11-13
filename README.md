@@ -1,26 +1,26 @@
-# USB Adapter for Commodore 64 Joystick and Mouse Port
+# USB Adapter for Commodore 64 and AMIGA Joystick and Mouse Port
 
-This adapter interfaces a USB device with the CONTROL Port of the C64, allowing it to be used as a mouse or joystick.
+This adapter interfaces a USB device with the CONTROL Port of the C64 and AMIGA, allowing it to be used as a mouse or joystick.
 
 The joystick connects via pins 1, 2, 3, 4, and 6 of the CONTROL port, with the GPIOs simply set as open circuits or shorted to ground when a joystick direction is pressed.
 
-The mouse uses the analog part of the port (Pot X and Pot Y). The Commodore 64 has these two pins for evaluating an analog resistor that charges an internal capacitor. The charging time is decoded as a resistor value with a digital value from 0 to 255. The trick used by Commodore engineers to use it as a mouse was to send a pulse at the right moment, making the C64 believe that the capacitor is fully charged. To establish the right moment, the C64 goes through 512 cycles (almost 512 microseconds, since the clock frequencies of PAL and NTSC are not exactly 1 MHz: PAL is 0.985248 MHz, NTSC is 1.022727 MHz). During the first 256 cycles, the potentiometer is set to ground, then it charges the capacitor.
+On the C64, the mouse uses the analog part of the port (Pot X and Pot Y). The Commodore 64 has these two pins for evaluating an analog resistor that charges an internal capacitor. The charging time is decoded as a resistor value with a digital value from 0 to 255. The trick used by Commodore engineers to use it as a mouse was to send a pulse at the right moment, making the C64 believe that the capacitor is fully charged. To establish the right moment, the C64 goes through 512 cycles (almost 512 microseconds, since the clock frequencies of PAL and NTSC are not exactly 1 MHz: PAL is 0.985248 MHz, NTSC is 1.022727 MHz). During the first 256 cycles, the potentiometer is set to ground, then it charges the capacitor.
 
 The idea is to use an ESP32 board to wait for the discharge drop and then an additional 256 cycles, finally sending the proper value to the C64 at the right moment. The ESP32 allows interrupts when an input signal is falling; however, the voltage from the C64 is a bit too low for the ESP32 interrupt because the board requires at least 3 volts, while the C64 provides around 1.2 volts. Therefore, a BJT is used to amplify the signal (and invert it, so it is HIGH when the C64 is LOW, which reduces noise in detecting the status).
 
 The initial variable values are the timing for a PAL C64 and are obtained empirically. The NTSC version of the timings are calculated scaling for the ratio of the frequencies NTSC/PAL. It is possible that another C64 may use slightly different timing, though it should be quite stable since Commodore sold the same mouse to everyone. When I will have one NTSC Commodore, I will test it and adjust the timings if needed.
 
+On AMIGA the mouse is encoded in the quadrature signal using two trains of pulses with 90 degrees of shift in order to identify the steps and the directions of the motion.
+
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
-The two releases (2.1 and 3.0) of the PCB differs only for the kind of connector that can be mounted. The 90 degrees connectors are more difficult to find and needs more work to be cut and adapted for the board, so the version 3.0 is for the normal connectors that are easier to find and adapt.
+The PCB are in two versions: THT (version 3.2) and SMD (version 4.1). The functionalities are identical.
 
 <div style="display: flex; justify-content: space-between;">
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 38%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev2.1.jpg" alt="Pic 1" style="width: 29%;">
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev3.0.jpg" alt="Pic 1" style="width: 29%;">
 </div>
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2-rev2.1.jpg" alt="Pic 2" style="width: 32%;">
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2-rev3.0.jpg" alt="Pic 3" style="width: 32%;">
   <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3-rev3.0.jpg" alt="Pic 3" style="width: 32%;">
 </div>
@@ -60,7 +60,7 @@ Alternatively, you can load the binary file **USBtoC64.bin**, which is located i
 The tool to upload the binary is the `esptool`. This is available as web page or as python. The web page should be compatible with Chrome browser or similar, probably not with Firefox, but on some operating system (like Mac OS) there can be a problem of binding the port to the web page. Anyway my sugestion is to try the web page first because is very fast and if does not work try with the python installation.
 
 ### From the web page
-1. Disconnect the adapter from the Commodore 64.
+1. Disconnect the adapter from the Commodore 64 or AMIGA.
 2. Press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
 3. Go on the website of [esptool](https://espressif.github.io/esptool-js/) click on Connect, select the port for your adapter and upload the firmware.
 
