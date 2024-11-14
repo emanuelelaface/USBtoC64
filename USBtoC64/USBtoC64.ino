@@ -22,26 +22,25 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include "Adafruit_NeoPixel.h"
 #include "EEPROM.h"
 
-#define PIN_WS2812B 21 // Pin for RGB LED
-#define NUM_PIXELS 1 // 1 LED
-Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED Some board is NEO_RGB
+#define PIN_WS2812B      21 // Pin for RGB LED
+#define NUM_PIXELS        1 // 1 LED
+Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Initialize LED Some board is NEO_RGB
 
-// Define GPIOs for Joystick Switches
+// Define GPIOs for C64
 #define C64_FIRE          7
 #define C64_UP            8
 #define C64_DOWN          9 
 #define C64_LEFT         10
 #define C64_RIGHT        11
-// Define GPIOs for analog mouse ports
 #define C64_POTX          4
 #define C64_POTY          6
 // Define GPIO for interrupt from C64
 #define C64_INT           1
 // Define GPIO for switch Mouse - Joystick
 #define SWITCH_MJ        13 // HIGH = mouse, LOW = Joystick
-// Define the default timers for the mouse delay, all empirical for PAL version
 
-#define PAL               0 // select if it is PAL or NTSC and adjust the timings
+// Define the default timers for the mouse delay, all empirical for PAL version
+#define PAL               1 // select if it is PAL or NTSC and adjust the timings
 
 #if PAL
   #define MINdelayOnX    2450
@@ -64,20 +63,26 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Ini
 #endif
 
 // Amiga SETTINGS
-#define AMIGA_FIRE          7
-#define AMIGA_UP            8
-#define AMIGA_DOWN          9 
-#define AMIGA_LEFT         10
-#define AMIGA_RIGHT        11
-#define AMIGA_BUTTON2       5
-#define AMIGA_BUTTON3       3
-#define PULSE_LENGTH      300 // lenght of pusle for Amiga mouse
+#define AMIGA_FIRE        7
+#define AMIGA_UP          8
+#define AMIGA_DOWN        9 
+#define AMIGA_LEFT       10
+#define AMIGA_RIGHT      11
+#define AMIGA_BUTTON2     5
+#define AMIGA_BUTTON3     3
+#define PULSE_LENGTH    150 // lenght of pusle for Amiga mouse
 
-#define CONFIG          0 // set the configuration switch to the "Boot" button
-#define JOYBUTTONS      7 // 4 directions and 3 fire
+#define CONFIG            0 // set the configuration switch to the "Boot" button
+#define JOYBUTTONS        7 // 4 directions and 3 fire
 #define EEPROM_SIZE JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
 
 int ISC64 = 0;  // Commodore 64 / Amiga detection flag
+
+uint8_t H[4]  = { LOW, LOW, HIGH, HIGH };
+uint8_t HQ[4] = { LOW, HIGH, HIGH, LOW };
+
+uint8_t QX = 3;
+uint8_t QY = 3;
 
 // Define the volatile variables for the hardware timers
 volatile uint64_t delayOnX = MINdelayOnX;
@@ -461,95 +466,43 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
   }
 }
 
-// Routine to move the mouse for Amiga in the X direction
-void amiga_h_motion(void *pvParameters) {
-  int x_dir = *((int *)pvParameters);
-  if (x_dir == 0) {
-    delete (int *)pvParameters;
-    vTaskDelete(NULL);
-    return;
-  }
-  if (x_dir == -1) {
-    x_dir = -2;
-  }
-  pinMode(C64_DOWN, OUTPUT);
-  pinMode(C64_RIGHT, OUTPUT);
-  GPIO.out_w1tc = (1 << C64_DOWN);
-  GPIO.out_w1tc = (1 << C64_RIGHT);
-  for (int i = 0; i<abs(x_dir); i++) {
-    if (x_dir > 0) {  
-      GPIO.out_w1ts = (1 << C64_DOWN);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-      GPIO.out_w1ts = (1 << C64_RIGHT);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-      GPIO.out_w1tc = (1 << C64_DOWN);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-      GPIO.out_w1tc = (1 << C64_RIGHT);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-    }
-    else {
-      GPIO.out_w1ts = (1 << C64_RIGHT);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-      GPIO.out_w1ts = (1 << C64_DOWN);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-      GPIO.out_w1tc = (1 << C64_RIGHT);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-      GPIO.out_w1tc = (1 << C64_DOWN);
-      delayMicroseconds(PULSE_LENGTH / abs(x_dir));
-    }
-  }
-  pinMode(C64_DOWN, INPUT);
-  pinMode(C64_RIGHT, INPUT);
-  delete (int *)pvParameters;
-  vTaskDelete(NULL);
+void AMIGAHorizontalMove() {
+    digitalWrite(AMIGA_DOWN, H[QX]);
+    digitalWrite(AMIGA_RIGHT, HQ[QX]);
+    delayMicroseconds(PULSE_LENGTH);
 }
 
-// Routine to move the mouse for Amiga in the Y direction
-void amiga_v_motion(void *pvParameters) {
-  int y_dir = *((int *)pvParameters);
-  if (y_dir == 0) {
-    delete (int *)pvParameters;
-    vTaskDelete(NULL);
-    return;
-  }
-  if (y_dir == -1) {
-    y_dir = -2;
-  }
-  pinMode(C64_UP, OUTPUT);
-  pinMode(C64_LEFT, OUTPUT);
-  GPIO.out_w1tc = (1 << C64_LEFT);
-  GPIO.out_w1tc = (1 << C64_UP);
-  for (int i = 0; i<abs(y_dir); i++) {
-    if (y_dir > 0) {
-      GPIO.out_w1ts = (1 << C64_UP);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-      GPIO.out_w1ts = (1 << C64_LEFT);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-      GPIO.out_w1tc = (1 << C64_UP);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-      GPIO.out_w1tc = (1 << C64_LEFT);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-    }
-    else {
-      GPIO.out_w1ts = (1 << C64_LEFT);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-      GPIO.out_w1ts = (1 << C64_UP);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-      GPIO.out_w1tc = (1 << C64_LEFT);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-      GPIO.out_w1tc = (1 << C64_UP);
-      delayMicroseconds(PULSE_LENGTH / abs(y_dir));
-    }
-  }
-  pinMode(C64_UP, INPUT);
-  pinMode(C64_LEFT, INPUT);
-  delete (int *)pvParameters;
-  vTaskDelete(NULL);
+void AMIGAVerticalMove() {
+    digitalWrite(AMIGA_UP, H[QY]);
+    digitalWrite(AMIGA_LEFT, HQ[QY]);
+    delayMicroseconds(PULSE_LENGTH);
+}
+
+void AMIGA_Left() {
+    AMIGAHorizontalMove();
+    QX = (QX >= 3) ? 0 : ++QX;    
+}
+
+void AMIGA_Right() {
+    AMIGAHorizontalMove();
+    QX = (QX <= 0) ? 3 : --QX;
+}
+
+void AMIGA_Down() {
+    AMIGAVerticalMove();
+    QY = QY <= 0 ? 3 : --QY;
+}
+
+void AMIGA_Up() {
+    AMIGAVerticalMove();
+    QY = QY >= 3 ? 0 : ++QY;
 }
 
 void amiga_mouse(hid_mouse_input_report_boot_t *mouse_report) {
-  int *x_disp = new int(mouse_report->x_displacement);
-  int *y_disp = new int(mouse_report->y_displacement);
+  int xsteps = abs(mouse_report->x_displacement);
+  int ysteps = abs(mouse_report->y_displacement);
+  int xsign = (mouse_report->x_displacement > 0 ? 1 : 0) ;
+  int ysign = (mouse_report->y_displacement > 0 ? 1 : 0) ;
 
   if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
     pinMode(AMIGA_FIRE, OUTPUT);
@@ -575,8 +528,22 @@ void amiga_mouse(hid_mouse_input_report_boot_t *mouse_report) {
     digitalWrite(AMIGA_BUTTON3, LOW);
     pinMode(AMIGA_BUTTON3, INPUT);
   }
-  xTaskCreatePinnedToCore(amiga_h_motion, "amiga_h_motion", 10000, x_disp, 1, NULL, 0);
-  xTaskCreatePinnedToCore(amiga_v_motion, "amiga_v_motion", 10000, y_disp, 1, NULL, 1);
+  while ((xsteps | ysteps) != 0) {
+    if (xsteps != 0) {
+        if (xsign)
+            AMIGA_Right();
+        else
+            AMIGA_Left(); 
+        xsteps--;
+    }
+    if (ysteps != 0) {
+        if (ysign)
+            AMIGA_Down();
+        else
+            AMIGA_Up(); 
+        ysteps--;
+    }
+  }  
 }
 
 void amiga_joystick(const uint8_t *const data, const int length) {
@@ -710,6 +677,7 @@ void configurator() {  // When the board is in configuration mode
 
 void setup() {  
   // Turn on the LED in RED color
+  //Serial.begin(115200);
   ws2812b.begin();
   ws2812b.clear();
   ws2812b.setPixelColor(0, ws2812b.Color(0, 255, 0));
@@ -800,17 +768,9 @@ void setup() {
     // If is AMIGA
     else{
       pinMode(AMIGA_UP, OUTPUT);
-      digitalWrite(AMIGA_UP, LOW);
-      pinMode(AMIGA_UP, INPUT);
       pinMode(AMIGA_DOWN, OUTPUT);
-      digitalWrite(AMIGA_DOWN, LOW);
-      pinMode(AMIGA_DOWN, INPUT);
       pinMode(AMIGA_LEFT, OUTPUT);
-      digitalWrite(AMIGA_LEFT, LOW);
-      pinMode(AMIGA_LEFT, INPUT);
       pinMode(AMIGA_RIGHT, OUTPUT);
-      digitalWrite(AMIGA_RIGHT, LOW);
-      pinMode(AMIGA_RIGHT, INPUT);
       pinMode(AMIGA_FIRE, OUTPUT);
       digitalWrite(AMIGA_FIRE, LOW);
       pinMode(AMIGA_FIRE, INPUT);
