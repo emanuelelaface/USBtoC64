@@ -72,6 +72,8 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Ini
 #define AMIGA_BUTTON3     3
 #define PULSE_LENGTH    150 // lenght of pusle for Amiga mouse
 
+#define ISAMIGA           1 // Amiga / Atari Switch
+
 #define CONFIG            0 // set the configuration switch to the "Boot" button
 #define JOYBUTTONS        7 // 4 directions and 3 fire
 #define EEPROM_SIZE JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
@@ -467,15 +469,29 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
 }
 
 void AMIGAHorizontalMove() {
+  if (ISAMIGA) {
     digitalWrite(AMIGA_DOWN, H[QX]);
     digitalWrite(AMIGA_RIGHT, HQ[QX]);
     delayMicroseconds(PULSE_LENGTH);
+  }
+  else {
+    digitalWrite(AMIGA_DOWN, H[QX]);
+    digitalWrite(AMIGA_UP, HQ[QX]);
+    delayMicroseconds(PULSE_LENGTH);
+  }
 }
 
 void AMIGAVerticalMove() {
+  if (ISAMIGA) {
     digitalWrite(AMIGA_UP, H[QY]);
     digitalWrite(AMIGA_LEFT, HQ[QY]);
     delayMicroseconds(PULSE_LENGTH);
+  }
+  else {
+    digitalWrite(AMIGA_RIGHT, H[QY]);
+    digitalWrite(AMIGA_LEFT, HQ[QY]);
+    delayMicroseconds(PULSE_LENGTH);
+  }
 }
 
 void AMIGA_Left() {
@@ -767,24 +783,45 @@ void setup() {
     }
     // If is AMIGA
     else{
-      pinMode(AMIGA_UP, OUTPUT);
-      pinMode(AMIGA_DOWN, OUTPUT);
-      pinMode(AMIGA_LEFT, OUTPUT);
-      pinMode(AMIGA_RIGHT, OUTPUT);
-      pinMode(AMIGA_FIRE, OUTPUT);
-      digitalWrite(AMIGA_FIRE, LOW);
-      pinMode(AMIGA_FIRE, INPUT);
-      pinMode(AMIGA_BUTTON2, OUTPUT);
-      digitalWrite(AMIGA_BUTTON2, LOW);
-      pinMode(AMIGA_BUTTON2, INPUT);
-      pinMode(AMIGA_BUTTON3, OUTPUT);
-      digitalWrite(AMIGA_BUTTON3, LOW);
-      pinMode(AMIGA_BUTTON3, INPUT);
-      if (digitalRead(SWITCH_MJ)) {                                                 // If we are in mouse mode
-        ws2812b.setPixelColor(0, ws2812b.Color(25, 25, 25));                        // Set the LED BLU
+      if (digitalRead(SWITCH_MJ)) {  
+        pinMode(AMIGA_UP, OUTPUT);
+        pinMode(AMIGA_DOWN, OUTPUT);
+        pinMode(AMIGA_LEFT, OUTPUT);
+        pinMode(AMIGA_RIGHT, OUTPUT);
+        pinMode(AMIGA_FIRE, OUTPUT);
+        digitalWrite(AMIGA_FIRE, LOW);
+        pinMode(AMIGA_FIRE, INPUT);
+        pinMode(AMIGA_BUTTON2, OUTPUT);
+        digitalWrite(AMIGA_BUTTON2, LOW);
+        pinMode(AMIGA_BUTTON2, INPUT);
+        pinMode(AMIGA_BUTTON3, OUTPUT);
+        digitalWrite(AMIGA_BUTTON3, LOW);
+        pinMode(AMIGA_BUTTON3, INPUT);                                               // If we are in mouse mode
+        ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                           // Set the LED BLU
         ws2812b.show();
       }
-      else {                                                                      // If we are in joystick mode
+      else {           
+        pinMode(AMIGA_UP, OUTPUT);
+        digitalWrite(AMIGA_UP, LOW);
+        pinMode(AMIGA_UP, INPUT);
+        pinMode(AMIGA_DOWN, OUTPUT);
+        digitalWrite(AMIGA_DOWN, LOW);
+        pinMode(AMIGA_DOWN, INPUT);
+        pinMode(AMIGA_LEFT, OUTPUT);
+        digitalWrite(AMIGA_LEFT, LOW);
+        pinMode(AMIGA_LEFT, INPUT);
+        pinMode(AMIGA_RIGHT, OUTPUT);
+        digitalWrite(AMIGA_RIGHT, LOW);
+        pinMode(AMIGA_RIGHT, INPUT);
+        pinMode(AMIGA_FIRE, OUTPUT);
+        digitalWrite(AMIGA_FIRE, LOW);
+        pinMode(AMIGA_FIRE, INPUT);
+        pinMode(AMIGA_BUTTON2, OUTPUT);
+        digitalWrite(AMIGA_BUTTON2, LOW);
+        pinMode(AMIGA_BUTTON2, INPUT);
+        pinMode(AMIGA_BUTTON3, OUTPUT);
+        digitalWrite(AMIGA_BUTTON3, LOW);
+        pinMode(AMIGA_BUTTON3, INPUT);                                                             // If we are in joystick mode
         ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
         ws2812b.show();
         // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
