@@ -1,4 +1,4 @@
-# USB Adapter for Commodore 64 and AMIGA Joystick and Mouse Port
+# USB Adapter for Commodore 64, AMIGA and ATARI Joystick and Mouse Port
 
 This adapter interfaces a USB device with the CONTROL Port of the C64 and AMIGA, allowing it to be used as a mouse or joystick.
 
@@ -10,7 +10,7 @@ The idea is to use an ESP32 board to wait for the discharge drop and then an add
 
 The initial variable values are the timing for a PAL C64 and are obtained empirically. The NTSC version of the timings are calculated scaling for the ratio of the frequencies NTSC/PAL. It is possible that another C64 may use slightly different timing, though it should be quite stable since Commodore sold the same mouse to everyone. When I will have one NTSC Commodore, I will test it and adjust the timings if needed.
 
-On AMIGA the mouse is encoded in the quadrature signal using two trains of pulses with 90 degrees of shift in order to identify the steps and the directions of the motion.
+On AMIGA and ATARI the mouse is encoded in the quadrature signal using two trains of pulses with 90 degrees of shift in order to identify the steps and the directions of the motion.
 
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
@@ -47,6 +47,7 @@ If you like this project and want a fully assembled and tested board, you can pu
 ## Installation From Arduino IDE
 
 To install the code from the source file **USBtoC64.ino**, you will need the Arduino IDE. Ensure that the ESP32 board is installed, specifically the ESP32S3 Dev Module.
+The flag PAL is for C64 PAL / NTSC selection, the flag ISAMIGA is to select if it is AMIGA or ATARI.
 
 Additionally, the ESP32 USB HID HOST library is required. This library is not available in the official repository. You can download the ZIP file of the repository from [ESP32_USB_Host_HID](https://github.com/esp32beans/ESP32_USB_Host_HID). To install it, go to Sketch->Include Library->Add .ZIP Library in the Arduino IDE.
 
