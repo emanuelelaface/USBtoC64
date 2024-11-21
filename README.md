@@ -63,7 +63,7 @@ The tool to upload the binary is the `esptool`. This is available as web page or
 ### From the web page
 1. Disconnect the adapter from the Commodore 64 or AMIGA.
 2. Press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
-3. Go on the website of [esptool](https://espressif.github.io/esptool-js/) click on Connect, select the port for your adapter and upload the firmware.
+3. Go on the website of [esptool](https://espressif.github.io/esptool-js/) click on Connect, select the port for your adapter, change the Flash Address into 0x0000 and upload the firmware.
 
 ### From Python
 1. Install the esptool with `pip install esptool`.
