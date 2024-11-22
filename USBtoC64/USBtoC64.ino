@@ -1,5 +1,5 @@
 /*
-USB to Commodore 64 adaptor V 2.0 by Emanuele Laface
+USB to Commodore 64 and AMIGA adaptor V 4.1 by Emanuele Laface
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
 THE POWER WILL ARRIVE DIRECTLY TO THE SID OF THE COMMODORE AND MAY DESTROY IT.
@@ -72,8 +72,6 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Ini
 #define AMIGA_BUTTON3     3
 #define PULSE_LENGTH    150 // lenght of pusle for Amiga mouse
 
-#define ISAMIGA           1 // Amiga / Atari Switch
-
 #define CONFIG            0 // set the configuration switch to the "Boot" button
 #define JOYBUTTONS        7 // 4 directions and 3 fire
 #define EEPROM_SIZE JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
@@ -128,11 +126,16 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
       c64_mouse_m(mouse_report);        // The mouse function in mouse mode is called
     }
     else {
-      amiga_mouse(mouse_report);
+      amiga_mouse_m(mouse_report);
     }
   }
-  else {                              // If we are in joystick mode
-    c64_mouse_j(mouse_report);        // The mouse function in joystick mode is called
+  else {                        // If we are in joystick mode
+    if (ISC64 > 0) {
+      c64_mouse_j(mouse_report);        // The mouse function in joystick mode is called
+    }
+    else {
+      amiga_mouse_j(mouse_report);
+    }
   }
 }
 
@@ -142,15 +145,20 @@ static void hid_host_generic_report_callback(const uint8_t *const data, const in
     c64_joystick_config(data, length);
   }
   else {
-    if (digitalRead(SWITCH_MJ)) {     // If we are in Mouse mode  
-      c64_joystick_m(data, length);   // The joystick function in mouse mode is called
+    if (digitalRead(SWITCH_MJ)) {     // If we are in Mouse mode
+      if (ISC64>0) {  
+        c64_joystick_m(data, length);   // The joystick function in mouse mode is called
+      }
+      else {
+        amiga_joystick_m(data, length);
+      }
     }
     else {   // If we are in joystick mode
       if (ISC64 > 0) {                   // If it is a Commodore 64       
         c64_joystick_j(data, length);   // The joystick function in joystick mode is called
       }
       else {
-        amiga_joystick(data, length);
+        amiga_joystick_j(data, length);
       }
     }
   }
@@ -469,29 +477,15 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
 }
 
 void AMIGAHorizontalMove() {
-  if (ISAMIGA) {
     digitalWrite(AMIGA_DOWN, H[QX]);
     digitalWrite(AMIGA_RIGHT, HQ[QX]);
     delayMicroseconds(PULSE_LENGTH);
-  }
-  else {
-    digitalWrite(AMIGA_DOWN, H[QX]);
-    digitalWrite(AMIGA_UP, HQ[QX]);
-    delayMicroseconds(PULSE_LENGTH);
-  }
 }
 
 void AMIGAVerticalMove() {
-  if (ISAMIGA) {
     digitalWrite(AMIGA_UP, H[QY]);
     digitalWrite(AMIGA_LEFT, HQ[QY]);
     delayMicroseconds(PULSE_LENGTH);
-  }
-  else {
-    digitalWrite(AMIGA_RIGHT, H[QY]);
-    digitalWrite(AMIGA_LEFT, HQ[QY]);
-    delayMicroseconds(PULSE_LENGTH);
-  }
 }
 
 void AMIGA_Left() {
@@ -514,7 +508,7 @@ void AMIGA_Up() {
     QY = QY >= 3 ? 0 : ++QY;
 }
 
-void amiga_mouse(hid_mouse_input_report_boot_t *mouse_report) {
+void amiga_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
   int xsteps = abs(mouse_report->x_displacement);
   int ysteps = abs(mouse_report->y_displacement);
   int xsign = (mouse_report->x_displacement > 0 ? 1 : 0) ;
@@ -562,7 +556,38 @@ void amiga_mouse(hid_mouse_input_report_boot_t *mouse_report) {
   }  
 }
 
-void amiga_joystick(const uint8_t *const data, const int length) {
+void amiga_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
+  if (mouse_report->buttons.button1) {        // Map left button to C64 FIRE
+    pinMode(C64_FIRE, OUTPUT);
+    digitalWrite(C64_FIRE, LOW);
+  }
+  else {
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+  }
+  if (mouse_report->x_displacement>0) {       // If the motion is in the X direction move the joystick right or left
+    pinMode(C64_RIGHT, OUTPUT);
+    digitalWrite(C64_RIGHT, LOW);
+  }
+  else {
+    pinMode(C64_LEFT, OUTPUT);
+    digitalWrite(C64_LEFT, LOW);
+  }
+  if (mouse_report->y_displacement>0) {       // If the motion is in the Y direction move the joystick up or down
+    pinMode(C64_DOWN, OUTPUT);
+    digitalWrite(C64_DOWN, LOW);
+  }
+  else {
+    pinMode(C64_UP, OUTPUT);
+    digitalWrite(C64_UP, LOW);
+  }
+  timerWrite(timerOffX, 0);   // Reset the timer for the X direction
+  timerAlarm(timerOffX, abs(mouse_report->x_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the X direction after a delay proportional to the motion
+  timerWrite(timerOffY, 0);   // Reset the timer for the Y direction
+  timerAlarm(timerOffY, abs(mouse_report->y_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the Y direction after a delay proportional to the motion
+}
+
+void amiga_joystick_j(const uint8_t *const data, const int length) {
   if (data[joyPos[0]] == joyVal[0]) {
       pinMode(AMIGA_UP, OUTPUT);
       digitalWrite(AMIGA_UP, LOW);
@@ -604,6 +629,30 @@ void amiga_joystick(const uint8_t *const data, const int length) {
     pinMode(AMIGA_FIRE, INPUT);
   }
 }
+
+void amiga_joystick_m(const uint8_t *const data, const int length) {
+  if (data[joyPos[0]] == joyVal[0]) {
+    AMIGA_Up();
+  }
+  if (data[joyPos[1]] == joyVal[1]) {
+    AMIGA_Down();
+  }
+  if (data[joyPos[2]] == joyVal[2]) {
+    AMIGA_Left();
+  }
+  if (data[joyPos[3]] == joyVal[3]) {
+    AMIGA_Right();
+  }
+  if ((data[joyPos[4]] == joyVal[4]) | (data[joyPos[5]] == joyVal[5]) | (data[joyPos[6]] == joyVal[6])) {
+      pinMode(AMIGA_FIRE, OUTPUT);
+      digitalWrite(AMIGA_FIRE, LOW);
+  }
+  else {
+    digitalWrite(AMIGA_FIRE, LOW);
+    pinMode(AMIGA_FIRE, INPUT);
+  }
+}
+
 
 // Function to configure the Joystick
 // This function is dummy, it simply records values for from the joystick for the configuration
