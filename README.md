@@ -1,4 +1,4 @@
-# USB Adapter for Commodore 64, AMIGA and ATARI Joystick and Mouse Port
+# USB Adapter for Commodore 64 and AMIGA Joystick and Mouse Port
 
 This adapter interfaces a USB device with the CONTROL Port of the C64 and AMIGA, allowing it to be used as a mouse or joystick.
 
@@ -47,7 +47,7 @@ If you like this project and want a fully assembled and tested board, you can pu
 ## Installation From Arduino IDE
 
 To install the code from the source file **USBtoC64.ino**, you will need the Arduino IDE. Ensure that the ESP32 board is installed, specifically the ESP32S3 Dev Module.
-The flag PAL is for C64 PAL / NTSC selection, the flag ISAMIGA is to select if it is AMIGA or ATARI.
+The flag PAL is for C64 PAL / NTSC selection.
 
 Additionally, the ESP32 USB HID HOST library is required. This library is not available in the official repository. You can download the ZIP file of the repository from [ESP32_USB_Host_HID](https://github.com/esp32beans/ESP32_USB_Host_HID). To install it, go to Sketch->Include Library->Add .ZIP Library in the Arduino IDE.
 
