@@ -1,5 +1,5 @@
 /*
-USB to Commodore 64 and AMIGA adaptor V 4.1 by Emanuele Laface
+USB to Commodore 64, AMIGA and ATARI adaptor V 4.1 by Emanuele Laface
 
 WARNING: DON'T CONNECT THE COMMODORE 64 AND THE USB PORT TO A SOURCE OF POWER AT THE SAME TIME.
 THE POWER WILL ARRIVE DIRECTLY TO THE SID OF THE COMMODORE AND MAY DESTROY IT.
@@ -22,61 +22,61 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include "Adafruit_NeoPixel.h"
 #include "EEPROM.h"
 
-#define PIN_WS2812B      21 // Pin for RGB LED
-#define NUM_PIXELS        1 // 1 LED
+#define PIN_WS2812B       21 // Pin for RGB LED
+#define NUM_PIXELS         1 // 1 LED
 Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Initialize LED Some board is NEO_RGB
 
 // Define GPIOs for C64
-#define C64_FIRE          7
-#define C64_UP            8
-#define C64_DOWN          9 
-#define C64_LEFT         10
-#define C64_RIGHT        11
-#define C64_POTX          4
-#define C64_POTY          6
+#define C64_FIRE           7
+#define C64_UP             8
+#define C64_DOWN           9 
+#define C64_LEFT          10
+#define C64_RIGHT         11
+#define C64_POTX           4
+#define C64_POTY           6
 // Define GPIO for interrupt from C64
-#define C64_INT           1
+#define C64_INT            1
 // Define GPIO for switch Mouse - Joystick
-#define SWITCH_MJ        13 // HIGH = mouse, LOW = Joystick
+#define SWITCH_MJ         13 // HIGH = mouse, LOW = Joystick
 
 // Define the default timers for the mouse delay, all empirical for PAL version
-#define PAL               1 // select if it is PAL or NTSC and adjust the timings
+#define PAL                1 // select if it is PAL or NTSC and adjust the timings
 
 #if PAL
-  #define MINdelayOnX    2450
-  #define MAXdelayOnX    5040
-  #define MINdelayOnY    2440
-  #define MAXdelayOnY    5100
-  #define STEPdelayOnX   10.16689245
-  #define STEPdelayOnY   10.14384171
+  #define MINdelayOnX   2450
+  #define MAXdelayOnX   5040
+  #define MINdelayOnY   2440
+  #define MAXdelayOnY   5100
+  #define STEPdelayOnX    10.16689245
+  #define STEPdelayOnY    10.14384171
   // Define the timing for mouse used as Joystick
-  #define M2JCalib      833 // 20000 at 240 MHz
+  #define M2JCalib       833 // 20000 at 240 MHz
 #else
-  #define MINdelayOnX    2360
-  #define MAXdelayOnX    4855
-  #define MINdelayOnY    2351
-  #define MAXdelayOnY    4913
-  #define STEPdelayOnX   9.794315054
-  #define STEPdelayOnY   9.772109035
+  #define MINdelayOnX   2360
+  #define MAXdelayOnX   4855
+  #define MINdelayOnY   2351
+  #define MAXdelayOnY   4913
+  #define STEPdelayOnX     9.794315054
+  #define STEPdelayOnY     9.772109035
   // Define the timing for mouse used as Joystick
   #define M2JCalib      802 // 20000 at 240 MHz
 #endif
 
-// Amiga SETTINGS
-#define AMIGA_FIRE        7
-#define AMIGA_UP          8
-#define AMIGA_DOWN        9 
-#define AMIGA_LEFT       10
-#define AMIGA_RIGHT      11
-#define AMIGA_BUTTON2     5
-#define AMIGA_BUTTON3     3
+#define A_FIRE            7
+#define A_UP              8
+#define A_DOWN            9 
+#define A_LEFT           10
+#define A_RIGHT          11
+#define A_BUTTON2         5
+#define A_BUTTON3         3
 #define PULSE_LENGTH    150 // lenght of pusle for Amiga mouse
 
 #define CONFIG            0 // set the configuration switch to the "Boot" button
 #define JOYBUTTONS        7 // 4 directions and 3 fire
-#define EEPROM_SIZE JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
+#define EEPROM_SIZE       JOYBUTTONS*2 // define the size of the EEPROM we will need to save joystick data
 
-int ISC64 = 0;  // Commodore 64 / Amiga detection flag
+int ISC64 = 0;  // Commodore 64 / Amiga/Atari detection flag
+int ISAMIGA = 1;  // Switch to select AMIGA or ATARI
 
 uint8_t H[4]  = { LOW, LOW, HIGH, HIGH };
 uint8_t HQ[4] = { LOW, HIGH, HIGH, LOW };
@@ -126,7 +126,7 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
       c64_mouse_m(mouse_report);        // The mouse function in mouse mode is called
     }
     else {
-      amiga_mouse_m(mouse_report);
+      a_mouse_m(mouse_report);
     }
   }
   else {                        // If we are in joystick mode
@@ -134,7 +134,7 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
       c64_mouse_j(mouse_report);        // The mouse function in joystick mode is called
     }
     else {
-      amiga_mouse_j(mouse_report);
+      a_mouse_j(mouse_report);
     }
   }
 }
@@ -150,7 +150,7 @@ static void hid_host_generic_report_callback(const uint8_t *const data, const in
         c64_joystick_m(data, length);   // The joystick function in mouse mode is called
       }
       else {
-        amiga_joystick_m(data, length);
+        a_joystick_m(data, length);
       }
     }
     else {   // If we are in joystick mode
@@ -158,7 +158,7 @@ static void hid_host_generic_report_callback(const uint8_t *const data, const in
         c64_joystick_j(data, length);   // The joystick function in joystick mode is called
       }
       else {
-        amiga_joystick_j(data, length);
+        a_joystick_j(data, length);
       }
     }
   }
@@ -476,87 +476,106 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
   }
 }
 
-void AMIGAHorizontalMove() {
-    digitalWrite(AMIGA_DOWN, H[QX]);
-    digitalWrite(AMIGA_RIGHT, HQ[QX]);
-    delayMicroseconds(PULSE_LENGTH);
+void AHorizontalMove(int pulse) {
+  if (ISAMIGA == 1) {
+    digitalWrite(A_DOWN, H[QX]);
+  }
+  else {
+    digitalWrite(A_UP, H[QY]);
+  }
+    digitalWrite(A_RIGHT, HQ[QX]);
+    delayMicroseconds(pulse);
 }
 
-void AMIGAVerticalMove() {
-    digitalWrite(AMIGA_UP, H[QY]);
-    digitalWrite(AMIGA_LEFT, HQ[QY]);
-    delayMicroseconds(PULSE_LENGTH);
+void AVerticalMove(int pulse) {
+    if (ISAMIGA == 1) {
+      digitalWrite(A_UP, H[QY]);
+    }
+    else {
+      digitalWrite(A_DOWN, H[QX]);
+    }
+    digitalWrite(A_LEFT, HQ[QY]);
+    delayMicroseconds(pulse);
 }
 
-void AMIGA_Left() {
-    AMIGAHorizontalMove();
+void A_Left(int pulse) {
+    AHorizontalMove(pulse);
     QX = (QX >= 3) ? 0 : ++QX;    
 }
 
-void AMIGA_Right() {
-    AMIGAHorizontalMove();
+void A_Right(int pulse) {
+    AHorizontalMove(pulse);
     QX = (QX <= 0) ? 3 : --QX;
 }
 
-void AMIGA_Down() {
-    AMIGAVerticalMove();
+void A_Down(int pulse) {
+    AVerticalMove(pulse);
     QY = QY <= 0 ? 3 : --QY;
 }
 
-void AMIGA_Up() {
-    AMIGAVerticalMove();
+void A_Up(int pulse) {
+    AVerticalMove(pulse);
     QY = QY >= 3 ? 0 : ++QY;
 }
 
-void amiga_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
+void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
   int xsteps = abs(mouse_report->x_displacement);
   int ysteps = abs(mouse_report->y_displacement);
   int xsign = (mouse_report->x_displacement > 0 ? 1 : 0) ;
   int ysign = (mouse_report->y_displacement > 0 ? 1 : 0) ;
+  int plx = 0;
+  int ply = 0;
+
+  if (xsteps != 0) {
+    plx = PULSE_LENGTH*30/xsteps;
+  }
+  if (ysteps != 0) {
+    ply = PULSE_LENGTH*30/ysteps;
+  }
 
   if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
-    pinMode(AMIGA_FIRE, OUTPUT);
-    digitalWrite(AMIGA_FIRE, LOW);
+    pinMode(A_FIRE, OUTPUT);
+    digitalWrite(A_FIRE, LOW);
   }
   else {
-    digitalWrite(AMIGA_FIRE, LOW);
-    pinMode(AMIGA_FIRE, INPUT);
+    digitalWrite(A_FIRE, LOW);
+    pinMode(A_FIRE, INPUT);
   }
   if (mouse_report->buttons.button2) {  // Right button is wired to C64 UP
-    pinMode(AMIGA_BUTTON2, OUTPUT);
-    digitalWrite(AMIGA_BUTTON2, LOW);
+    pinMode(A_BUTTON2, OUTPUT);
+    digitalWrite(A_BUTTON2, LOW);
   }
   else {
-    digitalWrite(AMIGA_BUTTON2, LOW);
-    pinMode(AMIGA_BUTTON2, INPUT);
+    digitalWrite(A_BUTTON2, LOW);
+    pinMode(A_BUTTON2, INPUT);
   }
   if (mouse_report->buttons.button3) {  // Right button is wired to C64 UP
-    pinMode(AMIGA_BUTTON3, OUTPUT);
-    digitalWrite(AMIGA_BUTTON3, LOW);
+    pinMode(A_BUTTON3, OUTPUT);
+    digitalWrite(A_BUTTON3, LOW);
   }
   else {
-    digitalWrite(AMIGA_BUTTON3, LOW);
-    pinMode(AMIGA_BUTTON3, INPUT);
+    digitalWrite(A_BUTTON3, LOW);
+    pinMode(A_BUTTON3, INPUT);
   }
   while ((xsteps | ysteps) != 0) {
     if (xsteps != 0) {
         if (xsign)
-            AMIGA_Right();
+            A_Right(plx);
         else
-            AMIGA_Left(); 
+            A_Left(plx); 
         xsteps--;
     }
     if (ysteps != 0) {
         if (ysign)
-            AMIGA_Down();
+            A_Down(ply);
         else
-            AMIGA_Up(); 
+            A_Up(ply); 
         ysteps--;
     }
   }  
 }
 
-void amiga_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
+void a_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
   if (mouse_report->buttons.button1) {        // Map left button to C64 FIRE
     pinMode(C64_FIRE, OUTPUT);
     digitalWrite(C64_FIRE, LOW);
@@ -587,69 +606,69 @@ void amiga_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
   timerAlarm(timerOffY, abs(mouse_report->y_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the Y direction after a delay proportional to the motion
 }
 
-void amiga_joystick_j(const uint8_t *const data, const int length) {
+void a_joystick_j(const uint8_t *const data, const int length) {
   if (data[joyPos[0]] == joyVal[0]) {
-      pinMode(AMIGA_UP, OUTPUT);
-      digitalWrite(AMIGA_UP, LOW);
+      pinMode(A_UP, OUTPUT);
+      digitalWrite(A_UP, LOW);
   }
   else {
-    digitalWrite(AMIGA_UP, LOW);
-    pinMode(AMIGA_UP, INPUT);
+    digitalWrite(A_UP, LOW);
+    pinMode(A_UP, INPUT);
   }
   if (data[joyPos[1]] == joyVal[1]) {
-      pinMode(AMIGA_DOWN, OUTPUT);
-      digitalWrite(AMIGA_DOWN, LOW);
+      pinMode(A_DOWN, OUTPUT);
+      digitalWrite(A_DOWN, LOW);
   }
   else {
-    digitalWrite(AMIGA_DOWN, LOW);
-    pinMode(AMIGA_DOWN, INPUT);    
+    digitalWrite(A_DOWN, LOW);
+    pinMode(A_DOWN, INPUT);    
   }
   if (data[joyPos[2]] == joyVal[2]) {
-      pinMode(AMIGA_LEFT, OUTPUT);
-      digitalWrite(AMIGA_LEFT, LOW);
+      pinMode(A_LEFT, OUTPUT);
+      digitalWrite(A_LEFT, LOW);
   }
   else {
-    digitalWrite(AMIGA_LEFT, LOW);
-    pinMode(AMIGA_LEFT, INPUT);
+    digitalWrite(A_LEFT, LOW);
+    pinMode(A_LEFT, INPUT);
   }
   if (data[joyPos[3]] == joyVal[3]) {
-      pinMode(AMIGA_RIGHT, OUTPUT);
-      digitalWrite(AMIGA_RIGHT, LOW);
+      pinMode(A_RIGHT, OUTPUT);
+      digitalWrite(A_RIGHT, LOW);
   }
   else {
-    digitalWrite(AMIGA_RIGHT, LOW);
-    pinMode(AMIGA_RIGHT, INPUT);
+    digitalWrite(A_RIGHT, LOW);
+    pinMode(A_RIGHT, INPUT);
   }
   if ((data[joyPos[4]] == joyVal[4]) | (data[joyPos[5]] == joyVal[5]) | (data[joyPos[6]] == joyVal[6])) {
-      pinMode(AMIGA_FIRE, OUTPUT);
-      digitalWrite(AMIGA_FIRE, LOW);
+      pinMode(A_FIRE, OUTPUT);
+      digitalWrite(A_FIRE, LOW);
   }
   else {
-    digitalWrite(AMIGA_FIRE, LOW);
-    pinMode(AMIGA_FIRE, INPUT);
+    digitalWrite(A_FIRE, LOW);
+    pinMode(A_FIRE, INPUT);
   }
 }
 
-void amiga_joystick_m(const uint8_t *const data, const int length) {
+void a_joystick_m(const uint8_t *const data, const int length) {
   if (data[joyPos[0]] == joyVal[0]) {
-    AMIGA_Up();
+    A_Up(PULSE_LENGTH);
   }
   if (data[joyPos[1]] == joyVal[1]) {
-    AMIGA_Down();
+    A_Down(PULSE_LENGTH);
   }
   if (data[joyPos[2]] == joyVal[2]) {
-    AMIGA_Left();
+    A_Left(PULSE_LENGTH);
   }
   if (data[joyPos[3]] == joyVal[3]) {
-    AMIGA_Right();
+    A_Right(PULSE_LENGTH);
   }
   if ((data[joyPos[4]] == joyVal[4]) | (data[joyPos[5]] == joyVal[5]) | (data[joyPos[6]] == joyVal[6])) {
-      pinMode(AMIGA_FIRE, OUTPUT);
-      digitalWrite(AMIGA_FIRE, LOW);
+      pinMode(A_FIRE, OUTPUT);
+      digitalWrite(A_FIRE, LOW);
   }
   else {
-    digitalWrite(AMIGA_FIRE, LOW);
-    pinMode(AMIGA_FIRE, INPUT);
+    digitalWrite(A_FIRE, LOW);
+    pinMode(A_FIRE, INPUT);
   }
 }
 
@@ -774,6 +793,9 @@ void setup() {
       }
       delayMicroseconds(256);
     }
+    if (ISAMIGA == 0) {
+      ISC64 = 0;
+    }
     // If it is a C64
     if (ISC64 > 0) {
       pinMode(C64_UP, OUTPUT);
@@ -791,12 +813,12 @@ void setup() {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
       pinMode(C64_FIRE, INPUT);
-      pinMode(AMIGA_BUTTON2, OUTPUT); // Set the AMIGA BUTTON2 to OPEN CIRCUIT
-      digitalWrite(AMIGA_BUTTON2, LOW);
-      pinMode(AMIGA_BUTTON2, INPUT);
-      pinMode(AMIGA_BUTTON3, OUTPUT); // Set the AMIGA BUTTON2 to OPEN CIRCUIT
-      digitalWrite(AMIGA_BUTTON3, LOW);
-      pinMode(AMIGA_BUTTON3, INPUT);
+      pinMode(A_BUTTON2, OUTPUT); // Set the AMIGA BUTTON2 to OPEN CIRCUIT
+      digitalWrite(A_BUTTON2, LOW);
+      pinMode(A_BUTTON2, INPUT);
+      pinMode(A_BUTTON3, OUTPUT); // Set the AMIGA BUTTON2 to OPEN CIRCUIT
+      digitalWrite(A_BUTTON3, LOW);
+      pinMode(A_BUTTON3, INPUT);
       pinMode(C64_POTX, OUTPUT);
       pinMode(C64_POTY, OUTPUT);
       // Define the hardware timer frequencies, and turn on the timers 
@@ -830,47 +852,47 @@ void setup() {
         timerAttachInterrupt(timerOffY, &turnOffJoyY);
       }
     }
-    // If is AMIGA
+    // If is AMIGA/ATARI
     else{
       if (digitalRead(SWITCH_MJ)) {  
-        pinMode(AMIGA_UP, OUTPUT);
-        pinMode(AMIGA_DOWN, OUTPUT);
-        pinMode(AMIGA_LEFT, OUTPUT);
-        pinMode(AMIGA_RIGHT, OUTPUT);
-        pinMode(AMIGA_FIRE, OUTPUT);
-        digitalWrite(AMIGA_FIRE, LOW);
-        pinMode(AMIGA_FIRE, INPUT);
-        pinMode(AMIGA_BUTTON2, OUTPUT);
-        digitalWrite(AMIGA_BUTTON2, LOW);
-        pinMode(AMIGA_BUTTON2, INPUT);
-        pinMode(AMIGA_BUTTON3, OUTPUT);
-        digitalWrite(AMIGA_BUTTON3, LOW);
-        pinMode(AMIGA_BUTTON3, INPUT);                                               // If we are in mouse mode
+        pinMode(A_UP, OUTPUT);
+        pinMode(A_DOWN, OUTPUT);
+        pinMode(A_LEFT, OUTPUT);
+        pinMode(A_RIGHT, OUTPUT);
+        pinMode(A_FIRE, OUTPUT);
+        digitalWrite(A_FIRE, LOW);
+        pinMode(A_FIRE, INPUT);
+        pinMode(A_BUTTON2, OUTPUT);
+        digitalWrite(A_BUTTON2, LOW);
+        pinMode(A_BUTTON2, INPUT);
+        pinMode(A_BUTTON3, OUTPUT);
+        digitalWrite(A_BUTTON3, LOW);
+        pinMode(A_BUTTON3, INPUT);                                               // If we are in mouse mode
         ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                           // Set the LED BLU
         ws2812b.show();
       }
       else {           
-        pinMode(AMIGA_UP, OUTPUT);
-        digitalWrite(AMIGA_UP, LOW);
-        pinMode(AMIGA_UP, INPUT);
-        pinMode(AMIGA_DOWN, OUTPUT);
-        digitalWrite(AMIGA_DOWN, LOW);
-        pinMode(AMIGA_DOWN, INPUT);
-        pinMode(AMIGA_LEFT, OUTPUT);
-        digitalWrite(AMIGA_LEFT, LOW);
-        pinMode(AMIGA_LEFT, INPUT);
-        pinMode(AMIGA_RIGHT, OUTPUT);
-        digitalWrite(AMIGA_RIGHT, LOW);
-        pinMode(AMIGA_RIGHT, INPUT);
-        pinMode(AMIGA_FIRE, OUTPUT);
-        digitalWrite(AMIGA_FIRE, LOW);
-        pinMode(AMIGA_FIRE, INPUT);
-        pinMode(AMIGA_BUTTON2, OUTPUT);
-        digitalWrite(AMIGA_BUTTON2, LOW);
-        pinMode(AMIGA_BUTTON2, INPUT);
-        pinMode(AMIGA_BUTTON3, OUTPUT);
-        digitalWrite(AMIGA_BUTTON3, LOW);
-        pinMode(AMIGA_BUTTON3, INPUT);                                                             // If we are in joystick mode
+        pinMode(A_UP, OUTPUT);
+        digitalWrite(A_UP, LOW);
+        pinMode(A_UP, INPUT);
+        pinMode(A_DOWN, OUTPUT);
+        digitalWrite(A_DOWN, LOW);
+        pinMode(A_DOWN, INPUT);
+        pinMode(A_LEFT, OUTPUT);
+        digitalWrite(A_LEFT, LOW);
+        pinMode(A_LEFT, INPUT);
+        pinMode(A_RIGHT, OUTPUT);
+        digitalWrite(A_RIGHT, LOW);
+        pinMode(A_RIGHT, INPUT);
+        pinMode(A_FIRE, OUTPUT);
+        digitalWrite(A_FIRE, LOW);
+        pinMode(A_FIRE, INPUT);
+        pinMode(A_BUTTON2, OUTPUT);
+        digitalWrite(A_BUTTON2, LOW);
+        pinMode(A_BUTTON2, INPUT);
+        pinMode(A_BUTTON3, OUTPUT);
+        digitalWrite(A_BUTTON3, LOW);
+        pinMode(A_BUTTON3, INPUT);                                                             // If we are in joystick mode
         ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
         ws2812b.show();
         // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two

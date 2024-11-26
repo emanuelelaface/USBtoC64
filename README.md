@@ -1,6 +1,6 @@
-# USB Adapter for Commodore 64 and AMIGA Joystick and Mouse Port
+# USB Adapter for Commodore 64, AMIGA and ATARI Joystick and Mouse Port
 
-This adapter interfaces a USB device with the CONTROL Port of the C64 and AMIGA, allowing it to be used as a mouse or joystick.
+This adapter interfaces a USB device with the CONTROL Port of the C64, AMIGA and ATARI, allowing it to be used as a mouse or joystick.
 
 The joystick connects via pins 1, 2, 3, 4, and 6 of the CONTROL port, with the GPIOs simply set as open circuits or shorted to ground when a joystick direction is pressed.
 
@@ -61,7 +61,7 @@ Alternatively, you can load the binary file **USBtoC64.bin**, which is located i
 The tool to upload the binary is the `esptool`. This is available as web page or as python. The web page should be compatible with Chrome browser or similar, probably not with Firefox, but on some operating system (like Mac OS) there can be a problem of binding the port to the web page. Anyway my sugestion is to try the web page first because is very fast and if does not work try with the python installation.
 
 ### From the web page
-1. Disconnect the adapter from the Commodore 64 or AMIGA.
+1. Disconnect the adapter from the Commodore 64 / AMIGA / ATARI.
 2. Press and hold the **BOOT** button before connecting the board to the USB cable on the computer. Then, connect the board, wait a second, and release the button.
 3. Go on the website of [esptool](https://espressif.github.io/esptool-js/) click on Connect, select the port for your adapter, change the Flash Address into 0x0000 and upload the firmware.
 
