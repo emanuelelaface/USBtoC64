@@ -340,7 +340,7 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     delayOnX = MAXdelayOnX;
   }
 
-  delayOnY -= STEPdelayOnX*mouse_report->y_displacement;   // Define the moment when the POTY has to be turned on after the interrupt
+  delayOnY -= STEPdelayOnY*mouse_report->y_displacement;   // Define the moment when the POTY has to be turned on after the interrupt
   if (delayOnY > MAXdelayOnY) {                            // If the value is over the limit, it returns to the zero
     delayOnY = MINdelayOnY;
   }
@@ -441,7 +441,7 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
       x = -3*STEPdelayOnX;      // set the x motion as 3 steps of mouse in the negative or positive direction
   }
   if (data[joyPos[3]] == joyVal[3]) {
-      x = 3*STEPdelayOnX;
+      x = 3*STEPdelayOnY;
   }
   if (data[joyPos[4]] == joyVal[4]) {
       pinMode(C64_FIRE, OUTPUT);
@@ -530,8 +530,8 @@ void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     int ypulse = PULSE_LENGTH;
   }
   else {
-    int xpulse = 5*PULSE_LENGTH;
-    int ypulse = 5*PULSE_LENGTH;
+    int xpulse = 18.6*PULSE_LENGTH;
+    int ypulse = 18.6*PULSE_LENGTH;
   }
 
   if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
