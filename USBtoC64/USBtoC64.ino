@@ -477,45 +477,45 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
 }
 
 void AHorizontalMove(int pulse) {
+  digitalWrite(A_DOWN, H[QX]);
   if (ISAMIGA == 1) {
-    digitalWrite(A_DOWN, H[QX]);
+    digitalWrite(A_RIGHT, HQ[QX]);
   }
   else {
-    digitalWrite(A_UP, H[QY]);
+    digitalWrite(A_UP, HQ[QX]);
   }
-    digitalWrite(A_RIGHT, HQ[QX]);
-    delayMicroseconds(pulse);
+  delayMicroseconds(pulse);
 }
 
 void AVerticalMove(int pulse) {
-    if (ISAMIGA == 1) {
-      digitalWrite(A_UP, H[QY]);
-    }
-    else {
-      digitalWrite(A_DOWN, H[QX]);
-    }
-    digitalWrite(A_LEFT, HQ[QY]);
-    delayMicroseconds(pulse);
+  if (ISAMIGA == 1) {
+    digitalWrite(A_UP, H[QY]);
+  }
+  else {
+    digitalWrite(A_RIGHT, H[QY]);
+  }
+  digitalWrite(A_LEFT, HQ[QY]);
+  delayMicroseconds(pulse);
 }
 
 void A_Left(int pulse) {
-    AHorizontalMove(pulse);
-    QX = (QX >= 3) ? 0 : ++QX;    
+  AHorizontalMove(pulse);
+  QX = (QX >= 3) ? 0 : ++QX;    
 }
 
 void A_Right(int pulse) {
-    AHorizontalMove(pulse);
-    QX = (QX <= 0) ? 3 : --QX;
+  AHorizontalMove(pulse);
+  QX = (QX <= 0) ? 3 : --QX;
 }
 
 void A_Down(int pulse) {
-    AVerticalMove(pulse);
-    QY = QY <= 0 ? 3 : --QY;
+  AVerticalMove(pulse);
+  QY = QY <= 0 ? 3 : --QY;
 }
 
 void A_Up(int pulse) {
-    AVerticalMove(pulse);
-    QY = QY >= 3 ? 0 : ++QY;
+  AVerticalMove(pulse);
+  QY = QY >= 3 ? 0 : ++QY;
 }
 
 void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
@@ -523,14 +523,15 @@ void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
   int ysteps = abs(mouse_report->y_displacement);
   int xsign = (mouse_report->x_displacement > 0 ? 1 : 0) ;
   int ysign = (mouse_report->y_displacement > 0 ? 1 : 0) ;
-  int plx = 0;
-  int ply = 0;
-
-  if (xsteps != 0) {
-    plx = PULSE_LENGTH*30/xsteps;
+  int xpulse = 0;
+  int ypulse = 0;
+  if (ISAMIGA == 1) {
+    int xpulse = PULSE_LENGTH;
+    int ypulse = PULSE_LENGTH;
   }
-  if (ysteps != 0) {
-    ply = PULSE_LENGTH*30/ysteps;
+  else {
+    int xpulse = 5*PULSE_LENGTH;
+    int ypulse = 5*PULSE_LENGTH;
   }
 
   if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
@@ -560,16 +561,16 @@ void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
   while ((xsteps | ysteps) != 0) {
     if (xsteps != 0) {
         if (xsign)
-            A_Right(plx);
+            A_Right(xpulse);
         else
-            A_Left(plx); 
+            A_Left(xpulse); 
         xsteps--;
     }
     if (ysteps != 0) {
         if (ysign)
-            A_Down(ply);
+            A_Down(ypulse);
         else
-            A_Up(ply); 
+            A_Up(ypulse); 
         ysteps--;
     }
   }  
@@ -787,17 +788,16 @@ void setup() {
     // Define the GPIOs for the mouse interrupt and the POTs
     pinMode(C64_INT, INPUT_PULLUP);
     // Check if it is a C64 listening to the interrupt pin
-    for (int i=0; i<1000; i++){
+
+    for (int i=0; i<20; i++){
       if (((GPIO.in >> C64_INT) & 1)){
         ISC64++;
       }
       delayMicroseconds(256);
     }
-    if (ISAMIGA == 0) {
-      ISC64 = 0;
-    }
+
     // If it is a C64
-    if (ISC64 > 0) {
+    if (ISC64 > 5 && ISC64 < 15) {
       pinMode(C64_UP, OUTPUT);
       digitalWrite(C64_UP, LOW);
       pinMode(C64_UP, INPUT);
