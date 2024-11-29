@@ -795,7 +795,6 @@ void setup() {
       }
       delayMicroseconds(256);
     }
-
     // If it is a C64
     if (ISC64 > 5 && ISC64 < 15) {
       pinMode(C64_UP, OUTPUT);
@@ -813,12 +812,8 @@ void setup() {
       pinMode(C64_FIRE, OUTPUT);
       digitalWrite(C64_FIRE, LOW);
       pinMode(C64_FIRE, INPUT);
-      pinMode(A_BUTTON2, OUTPUT); // Set the AMIGA BUTTON2 to OPEN CIRCUIT
-      digitalWrite(A_BUTTON2, LOW);
-      pinMode(A_BUTTON2, INPUT);
-      pinMode(A_BUTTON3, OUTPUT); // Set the AMIGA BUTTON2 to OPEN CIRCUIT
-      digitalWrite(A_BUTTON3, LOW);
-      pinMode(A_BUTTON3, INPUT);
+      pinMode(A_BUTTON2, INPUT_PULLDOWN);
+      pinMode(A_BUTTON3, INPUT_PULLDOWN);
       pinMode(C64_POTX, OUTPUT);
       pinMode(C64_POTY, OUTPUT);
       // Define the hardware timer frequencies, and turn on the timers 
