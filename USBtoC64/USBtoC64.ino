@@ -526,12 +526,12 @@ void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
   int xpulse = 0;
   int ypulse = 0;
   if (ISAMIGA == 1) {
-    int xpulse = PULSE_LENGTH;
-    int ypulse = PULSE_LENGTH;
+    xpulse = PULSE_LENGTH;
+    ypulse = PULSE_LENGTH;
   }
   else {
-    int xpulse = 18.6*PULSE_LENGTH;
-    int ypulse = 18.6*PULSE_LENGTH;
+    xpulse = 18.6*PULSE_LENGTH/xsteps;
+    ypulse = 18.6*PULSE_LENGTH/ysteps;
   }
 
   if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
