@@ -15,14 +15,18 @@ On AMIGA and ATARI the mouse is encoded in the quadrature signal using two train
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
 The PCB are in two versions: THT (version 3.2) and SMD (version 4.1). The functionalities are identical.
-
+<p align="center">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 50%;">
+</p>
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/schematic.jpeg" alt="Schematic" style="width: 38%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic1-rev3.0.jpg" alt="Pic 1" style="width: 29%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/adapter-smd.JPG" alt="SMD" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/adapter-smd-c64.JPG" alt="SMD C64" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/adapter-smd-amiga.JPG" alt="SMD Amiga" style="width: 32%;">
 </div>
 <div style="display: flex; justify-content: space-between;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic2-rev3.0.jpg" alt="Pic 3" style="width: 32%;">
-  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/pic3-rev3.0.jpg" alt="Pic 3" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/adapter-tht.JPG" alt="THT" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/adapter-tht-c64.jpg" alt="THT C64" style="width: 32%;">
+  <img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/adapter-tht-c64-mouse.jpg" alt="THT C64 Mouse" style="width: 32%;">
 </div>
 
 ## Pre-assembled and Tested Board
