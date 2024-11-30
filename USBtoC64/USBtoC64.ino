@@ -795,8 +795,15 @@ void setup() {
       }
       delayMicroseconds(256);
     }
+    if (ISC64 < 5) {
+      ISAMIGA = 1;
+    }
+    if (ISC64 > 15) {
+      ISAMIGA = 0;
+    }
+
     // If it is a C64
-    if (ISC64 > 5 && ISC64 < 15) {
+    if (ISC64 >= 5 && ISC64 <= 15) {
       pinMode(C64_UP, OUTPUT);
       digitalWrite(C64_UP, LOW);
       pinMode(C64_UP, INPUT);
@@ -883,11 +890,11 @@ void setup() {
         digitalWrite(A_FIRE, LOW);
         pinMode(A_FIRE, INPUT);
         pinMode(A_BUTTON2, OUTPUT);
-        digitalWrite(A_BUTTON2, LOW);
+        digitalWrite(A_BUTTON2, HIGH);
         pinMode(A_BUTTON2, INPUT);
         pinMode(A_BUTTON3, OUTPUT);
-        digitalWrite(A_BUTTON3, LOW);
-        pinMode(A_BUTTON3, INPUT);                                                             // If we are in joystick mode
+        digitalWrite(A_BUTTON3, HIGH);
+        pinMode(A_BUTTON3, INPUT);                          // If we are in joystick mode
         ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
         ws2812b.show();
         // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
