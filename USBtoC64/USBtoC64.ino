@@ -796,10 +796,14 @@ void setup() {
       delayMicroseconds(256);
     }
     if (ISC64 < 5) {
-      ISAMIGA = 1;
-    }
-    if (ISC64 > 15) {
-      ISAMIGA = 0;
+      pinMode(A_BUTTON3, INPUT_PULLDOWN);
+      pinMode(C64_POTX, INPUT_PULLDOWN);
+      if (digitalRead(A_BUTTON3) == HIGH) {
+        ISAMIGA = 1;
+      }
+      else {
+        ISAMIGA = 0;
+      }
     }
 
     // If it is a C64
