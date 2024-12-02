@@ -799,10 +799,10 @@ void setup() {
       pinMode(A_BUTTON3, INPUT_PULLDOWN);
       pinMode(C64_POTX, INPUT_PULLDOWN);
       if (digitalRead(A_BUTTON3) == HIGH) {
-        ISAMIGA = 0;
+        ISAMIGA = 1;
       }
       else {
-        ISAMIGA = 1;
+        ISAMIGA = 0;
       }
     }
 
