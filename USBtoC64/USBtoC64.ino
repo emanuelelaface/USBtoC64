@@ -530,6 +530,19 @@ void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     ypulse = PULSE_LENGTH;
   }
   else {
+    if (xsteps > 15 & xsteps <= 100) {
+      xsteps=xsteps/15;
+    }
+    if (xsteps > 100) {
+      xsteps=xsteps/30;
+    }
+
+    if (ysteps > 15 & ysteps <= 100) {
+      ysteps=ysteps/15;
+    }
+    if (ysteps > 100) {
+      ysteps=ysteps/30;
+    }
     xpulse = 18.6*PULSE_LENGTH/xsteps;
     ypulse = 18.6*PULSE_LENGTH/ysteps;
   }
@@ -760,7 +773,8 @@ void configurator() {  // When the board is in configuration mode
   esp_restart();
 }
 
-void setup() {  
+void setup() { 
+  delay(1000); 
   // Turn on the LED in RED color
   //Serial.begin(115200);
   ws2812b.begin();
