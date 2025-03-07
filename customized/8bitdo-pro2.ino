@@ -23,45 +23,63 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 #include "esp_timer.h"
 #include "Adafruit_NeoPixel.h"
 
-#define PIN_WS2812B 21 // Pin for RGB LED
-#define NUM_PIXELS 1 // 1 LED
-Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_GRB + NEO_KHZ800); // Initialize LED
+#define PIN_WS2812B       21 // Pin for RGB LED
+#define NUM_PIXELS         1 // 1 LED
+Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Initialize LED Some board is NEO_RGB
 
-// Define GPIOs for Joystick Switches
-#define C64_FIRE          7
-#define C64_UP            8
-#define C64_DOWN          9 
-#define C64_LEFT         10
-#define C64_RIGHT        11
-// Define GPIOs for analog mouse ports
-#define C64_POTX          4
-#define C64_POTY          6
+// Define GPIOs for C64
+#define C64_FIRE           7
+#define C64_UP             8
+#define C64_DOWN           9 
+#define C64_LEFT          10
+#define C64_RIGHT         11
+#define C64_POTX           4
+#define C64_POTY           6
 // Define GPIO for interrupt from C64
-#define C64_INT           1
+#define C64_INT            1
 // Define GPIO for switch Mouse - Joystick
 #define SWITCH_MJ         13 // HIGH = mouse, LOW = Joystick
 
-#define PAL               1 // select if it is PAL or NTSC and adjust the timings
+// Define the default timers for the mouse delay, all empirical for PAL version
+#define PAL                1 // select if it is PAL or NTSC and adjust the timings
 
 #if PAL
-  #define MINdelayOnX    2450
-  #define MAXdelayOnX    5040
-  #define MINdelayOnY    2440
-  #define MAXdelayOnY    5100
-  #define STEPdelayOnX   10.16689245
-  #define STEPdelayOnY   10.14384171
+  #define MINdelayOnX   2450
+  #define MAXdelayOnX   5040
+  #define MINdelayOnY   2440
+  #define MAXdelayOnY   5100
+  #define STEPdelayOnX    10.16689245
+  #define STEPdelayOnY    10.14384171
   // Define the timing for mouse used as Joystick
-  #define M2JCalib      833 // 20000 at 240 MHz
+  #define M2JCalib       833 // 20000 at 240 MHz
 #else
-  #define MINdelayOnX    2360
-  #define MAXdelayOnX    4855
-  #define MINdelayOnY    2351
-  #define MAXdelayOnY    4913
-  #define STEPdelayOnX   9.794315054
-  #define STEPdelayOnY   9.772109035
+  #define MINdelayOnX   2360
+  #define MAXdelayOnX   4855
+  #define MINdelayOnY   2351
+  #define MAXdelayOnY   4913
+  #define STEPdelayOnX     9.794315054
+  #define STEPdelayOnY     9.772109035
   // Define the timing for mouse used as Joystick
   #define M2JCalib      802 // 20000 at 240 MHz
 #endif
+
+#define A_FIRE            7
+#define A_UP              8
+#define A_DOWN            9 
+#define A_LEFT           10
+#define A_RIGHT          11
+#define A_BUTTON2         5
+#define A_BUTTON3         3
+#define PULSE_LENGTH    150 // lenght of pusle for Amiga mouse
+
+int ISC64 = 0;  // Commodore 64 / Amiga/Atari detection flag
+int ISAMIGA = 1;  // Switch to select AMIGA or ATARI
+
+uint8_t H[4]  = { LOW, LOW, HIGH, HIGH };
+uint8_t HQ[4] = { LOW, HIGH, HIGH, LOW };
+
+uint8_t QX = 3;
+uint8_t QY = 3;
 
 // Define the volatile variables for the hardware timers
 volatile uint64_t delayOnX = MINdelayOnX;
@@ -96,20 +114,40 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
   }
   // Here is where the USB mouse receive the report from USB.
   if (digitalRead(SWITCH_MJ)) {       // If we are in Mouse mode
-    c64_mouse_m(mouse_report);        // The mouse function in mouse mode is called
+    if (ISC64 > 0) { // if it is a Commodore 64
+      c64_mouse_m(mouse_report);        // The mouse function in mouse mode is called
+    }
+    else {
+      a_mouse_m(mouse_report);
+    }
   }
-  else {                              // If we are in joystick mode
-    c64_mouse_j(mouse_report);        // The mouse function in joystick mode is called
+  else {                        // If we are in joystick mode
+    if (ISC64 > 0) {
+      c64_mouse_j(mouse_report);        // The mouse function in joystick mode is called
+    }
+    else {
+      a_mouse_j(mouse_report);
+    }
   }
 }
 
 static void hid_host_generic_report_callback(const uint8_t *const data, const int length) {
   // Here is where the USB joystick receive the report from USB.
   if (digitalRead(SWITCH_MJ)) {     // If we are in Mouse mode
-    c64_joystick_m(data, length);   // The joystick function in mouse mode is called
+    if (ISC64>0) {  
+      c64_joystick_m(data, length);   // The joystick function in mouse mode is called
+    }
+    else {
+      a_joystick_m(data, length);
+    }
   }
-  else {                            // If we are in joystick mode
-    c64_joystick_j(data, length);   // The joystick function in joystick mode is called
+  else {   // If we are in joystick mode
+    if (ISC64 > 0) {                   // If it is a Commodore 64       
+      c64_joystick_j(data, length);   // The joystick function in joystick mode is called
+    }
+    else {
+      a_joystick_j(data, length);
+    }
   }
 }
 // More USB stuff
@@ -289,7 +327,7 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     delayOnX = MAXdelayOnX;
   }
 
-  delayOnY -= STEPdelayOnX*mouse_report->y_displacement;   // Define the moment when the POTY has to be turned on after the interrupt
+  delayOnY -= STEPdelayOnY*mouse_report->y_displacement;   // Define the moment when the POTY has to be turned on after the interrupt
   if (delayOnY > MAXdelayOnY) {                            // If the value is over the limit, it returns to the zero
     delayOnY = MINdelayOnY;
   }
@@ -488,6 +526,317 @@ void c64_joystick_m(const uint8_t *const data, const int length) {
   }
 }
 
+void AHorizontalMove(int pulse) {
+  digitalWrite(A_DOWN, H[QX]);
+  if (ISAMIGA == 1) {
+    digitalWrite(A_RIGHT, HQ[QX]);
+  }
+  else {
+    digitalWrite(A_UP, HQ[QX]);
+  }
+  delayMicroseconds(pulse);
+}
+
+void AVerticalMove(int pulse) {
+  if (ISAMIGA == 1) {
+    digitalWrite(A_UP, H[QY]);
+  }
+  else {
+    digitalWrite(A_RIGHT, H[QY]);
+  }
+  digitalWrite(A_LEFT, HQ[QY]);
+  delayMicroseconds(pulse);
+}
+
+void A_Left(int pulse) {
+  AHorizontalMove(pulse);
+  QX = (QX >= 3) ? 0 : ++QX;    
+}
+
+void A_Right(int pulse) {
+  AHorizontalMove(pulse);
+  QX = (QX <= 0) ? 3 : --QX;
+}
+
+void A_Down(int pulse) {
+  AVerticalMove(pulse);
+  QY = QY <= 0 ? 3 : --QY;
+}
+
+void A_Up(int pulse) {
+  AVerticalMove(pulse);
+  QY = QY >= 3 ? 0 : ++QY;
+}
+
+void a_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
+  int xsteps = abs(mouse_report->x_displacement);
+  int ysteps = abs(mouse_report->y_displacement);
+  int xsign = (mouse_report->x_displacement > 0 ? 1 : 0) ;
+  int ysign = (mouse_report->y_displacement > 0 ? 1 : 0) ;
+  int xpulse = 0;
+  int ypulse = 0;
+  if (ISAMIGA == 1) {
+    xpulse = PULSE_LENGTH;
+    ypulse = PULSE_LENGTH;
+  }
+  else {
+    xpulse = 18.6*PULSE_LENGTH/xsteps;
+    ypulse = 18.6*PULSE_LENGTH/ysteps;
+  }
+
+  if (mouse_report->buttons.button1) {  // Left button is wired to C64 FIRE
+    pinMode(A_FIRE, OUTPUT);
+    digitalWrite(A_FIRE, LOW);
+  }
+  else {
+    digitalWrite(A_FIRE, LOW);
+    pinMode(A_FIRE, INPUT);
+  }
+  if (mouse_report->buttons.button2) {  // Right button is wired to C64 UP
+    pinMode(A_BUTTON2, OUTPUT);
+    digitalWrite(A_BUTTON2, LOW);
+  }
+  else {
+    digitalWrite(A_BUTTON2, LOW);
+    pinMode(A_BUTTON2, INPUT);
+  }
+  if (mouse_report->buttons.button3) {  // Right button is wired to C64 UP
+    pinMode(A_BUTTON3, OUTPUT);
+    digitalWrite(A_BUTTON3, LOW);
+  }
+  else {
+    digitalWrite(A_BUTTON3, LOW);
+    pinMode(A_BUTTON3, INPUT);
+  }
+  while ((xsteps | ysteps) != 0) {
+    if (xsteps != 0) {
+        if (xsign)
+            A_Right(xpulse);
+        else
+            A_Left(xpulse); 
+        xsteps--;
+    }
+    if (ysteps != 0) {
+        if (ysign)
+            A_Down(ypulse);
+        else
+            A_Up(ypulse); 
+        ysteps--;
+    }
+  }  
+}
+
+void a_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
+  if (mouse_report->buttons.button1) {        // Map left button to C64 FIRE
+    pinMode(C64_FIRE, OUTPUT);
+    digitalWrite(C64_FIRE, LOW);
+  }
+  else {
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+  }
+  if (mouse_report->x_displacement>0) {       // If the motion is in the X direction move the joystick right or left
+    pinMode(C64_RIGHT, OUTPUT);
+    digitalWrite(C64_RIGHT, LOW);
+  }
+  else {
+    pinMode(C64_LEFT, OUTPUT);
+    digitalWrite(C64_LEFT, LOW);
+  }
+  if (mouse_report->y_displacement>0) {       // If the motion is in the Y direction move the joystick up or down
+    pinMode(C64_DOWN, OUTPUT);
+    digitalWrite(C64_DOWN, LOW);
+  }
+  else {
+    pinMode(C64_UP, OUTPUT);
+    digitalWrite(C64_UP, LOW);
+  }
+  timerWrite(timerOffX, 0);   // Reset the timer for the X direction
+  timerAlarm(timerOffX, abs(mouse_report->x_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the X direction after a delay proportional to the motion
+  timerWrite(timerOffY, 0);   // Reset the timer for the Y direction
+  timerAlarm(timerOffY, abs(mouse_report->y_displacement)*M2JCalib, false, 0);  // Define the interrupt that will turn off the Y direction after a delay proportional to the motion
+}
+
+void a_joystick_j(const uint8_t *const data, const int length) {
+  bool isup = false;
+  bool isdown = false;
+  bool isleft = false;
+  bool isright = false;
+  bool isfire = false;
+
+  if ((data[1] == 0) | (data[8] == 8)) {
+    isup = true;
+  }
+  if (data[1] == 1) {
+    isup = true;
+    isright = true;
+  }
+  if (data[1] == 2) {
+    isright = true;
+  }
+  if (data[1] == 3) {
+    isdown = true;
+    isright = true;
+  }
+  if (data[1] == 4) {
+    isdown = true;
+  }
+  if (data[1] == 5) {
+    isdown = true;
+    isleft = true;
+  }
+  if (data[1] == 6) {
+    isleft = true;
+  }
+  if (data[1] == 7) {
+    isup = true;
+    isleft = true;
+  }
+  if ((data[8] == 64) | (data[8] == 128) | (data[8] == 1)) {
+      isfire = true;
+  }
+  if (data[8] == 16) {
+    autofire = true;
+  }
+  if (data[8] == 2) {
+    autofire = false;
+  }
+  if (data[8] == 32) {
+    autoleftright = true;
+  }
+  if (data[8] == 4) {
+    autoleftright = false;
+  }
+  if (autofire) {
+    pinMode(A_FIRE, OUTPUT);
+    digitalWrite(A_FIRE, LOW);
+    delay(5);
+  }
+  if (autoleftright) {
+    pinMode(A_LEFT, OUTPUT);
+    digitalWrite(A_LEFT, LOW);
+    delay(8);
+    digitalWrite(A_LEFT, LOW);
+    pinMode(A_LEFT, INPUT);
+    delay(8);
+    pinMode(A_RIGHT, OUTPUT);
+    digitalWrite(A_RIGHT, LOW);
+    delay(8);
+    digitalWrite(A_RIGHT, LOW);
+    pinMode(A_RIGHT, INPUT);
+    delay(8);
+  }
+  if (isup) {
+    pinMode(A_UP, OUTPUT);
+    digitalWrite(A_UP, LOW);
+  }
+  else {
+    digitalWrite(A_UP, LOW);
+    pinMode(A_UP, INPUT);
+  }
+  if (isdown) {
+    pinMode(A_DOWN, OUTPUT);
+    digitalWrite(A_DOWN, LOW);
+  }
+  else {
+    digitalWrite(A_DOWN, LOW);
+    pinMode(A_DOWN, INPUT);
+  }
+  if (isleft) {
+    pinMode(A_LEFT, OUTPUT);
+    digitalWrite(A_LEFT, LOW);
+  }
+  else {
+    digitalWrite(A_LEFT, LOW);
+    pinMode(A_LEFT, INPUT);
+  }
+  if (isright) {
+    pinMode(A_RIGHT, OUTPUT);
+    digitalWrite(A_RIGHT, LOW);
+  }
+  else {
+    digitalWrite(A_RIGHT, LOW);
+    pinMode(A_RIGHT, INPUT);
+  }
+  if (isfire) {
+    pinMode(A_FIRE, OUTPUT);
+    digitalWrite(A_FIRE, LOW);
+  }
+  else {
+    digitalWrite(A_FIRE, LOW);
+    pinMode(A_FIRE, INPUT);
+  }
+}
+
+void a_joystick_m(const uint8_t *const data, const int length) {
+  int xsteps = 0;
+  int ysteps = 0;
+  int xsign = 0;
+  int ysign = 0;
+  int xpulse = 0;
+  int ypulse = 0;
+  if (ISAMIGA == 1) {
+    xpulse = PULSE_LENGTH;
+    ypulse = PULSE_LENGTH;
+  }
+  else {
+    xpulse = 18.6*PULSE_LENGTH/xsteps;
+    ypulse = 18.6*PULSE_LENGTH/ysteps;
+  }
+
+  if ((data[8] == 64) | (data[8] == 1)) {
+      pinMode(A_FIRE, OUTPUT);
+      digitalWrite(A_FIRE, LOW);
+  }
+  else {
+    digitalWrite(A_FIRE, LOW);
+    pinMode(A_FIRE, INPUT);
+  }
+  if (data[8] == 128) {
+      pinMode(A_BUTTON2, OUTPUT);
+      digitalWrite(A_BUTTON2, LOW);
+  }
+  else {
+    digitalWrite(A_BUTTON2, LOW);
+    pinMode(A_BUTTON2, INPUT);
+  }
+
+  if ((data[2] < 64) | (data[2] > 190)){
+    xsteps += (data[2]-127)/40;
+  }
+  if ((data[4] < 64) | (data[4] > 190)){
+    xsteps += (data[4]-127)/40;
+  }
+  if ((data[3] < 64) | (data[3] > 190)){
+    ysteps += (data[3]-127)/40;
+  }
+  if ((data[5] < 64) | (data[5] > 190)){
+    ysteps += (data[5]-127)/40;
+  }
+
+  xsign = (xsteps > 0 ? 1 : 0) ;
+  ysign = (ysteps > 0 ? 1 : 0) ;
+  xsteps = abs(xsteps);
+  ysteps = abs(ysteps);
+
+  while ((xsteps | ysteps) != 0) {
+    if (xsteps != 0) {
+        if (xsign)
+            A_Right(xpulse);
+        else
+            A_Left(xpulse); 
+        xsteps--;
+    }
+    if (ysteps != 0) {
+        if (ysign)
+            A_Down(ypulse);
+        else
+            A_Up(ypulse); 
+        ysteps--;
+    }
+  }
+}
+
 // This interrupt is called when the switch mouse/joystick is activated.
 // The reason to reset the board is that too many things has to change, in particular the
 // Clock frequency and the USB (and timers) would be in an unpredictable state, so it is
@@ -503,60 +852,133 @@ void setup() {
   ws2812b.setPixelColor(0, ws2812b.Color(0, 255, 0));
   ws2812b.show();
 
+  delay(1000);
   // Start the USB
   app_main();
-  // Configure the GPIOs for the Joystick
-  pinMode(C64_UP, OUTPUT);
-  digitalWrite(C64_UP, LOW);
-  pinMode(C64_UP, INPUT);
-  pinMode(C64_DOWN, OUTPUT);
-  digitalWrite(C64_DOWN, LOW);
-  pinMode(C64_DOWN, INPUT);
-  pinMode(C64_LEFT, OUTPUT);
-  digitalWrite(C64_LEFT, LOW);
-  pinMode(C64_LEFT, INPUT);
-  pinMode(C64_RIGHT, OUTPUT);
-  digitalWrite(C64_RIGHT, LOW);
-  pinMode(C64_RIGHT, INPUT);
-  pinMode(C64_FIRE, OUTPUT);
-  digitalWrite(C64_FIRE, LOW);
-  pinMode(C64_FIRE, INPUT);
-  // Define the GPIO and Interrupt for the mouse/joystick switch
   pinMode(SWITCH_MJ, INPUT_PULLUP);
   attachInterrupt(digitalPinToInterrupt(SWITCH_MJ), switchMJHandler, CHANGE);
   // Define the GPIOs for the mouse interrupt and the POTs
   pinMode(C64_INT, INPUT_PULLUP);
-  pinMode(C64_POTX, OUTPUT);
-  pinMode(C64_POTY, OUTPUT);
-  // Define the hardware timer frequencies, and turn on the timers 
-  timerOnX = timerBegin(10000000);
-  timerAlarm(timerOnX, delayOnX, false, 0);
-  timerOffX = timerBegin(10000000);
-  timerAlarm(timerOffX, delayOffX, false, 0);
-  timerOnY = timerBegin(10000000);
-  timerAlarm(timerOnY, delayOnY, false, 0);
-  timerOffY = timerBegin(10000000);
-  timerAlarm(timerOffY, delayOffY, false, 0);
+  // Check if it is a C64 listening to the interrupt pin
 
-  if (digitalRead(SWITCH_MJ)) {                                               // If we are in mouse mode
-    timerAttachInterrupt(timerOnX, &turnOnPotX);                              // Attach the timers to the POT interrupts
-    timerAttachInterrupt(timerOffX, &turnOffPotX);
-    timerAttachInterrupt(timerOnY, &turnOnPotY);
-    timerAttachInterrupt(timerOffY, &turnOffPotY);
-    attachInterrupt(digitalPinToInterrupt(C64_INT), handleInterrupt, RISING); // Attach the interrupt PIN to the handler
-    ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                        // Set the LED BLU
-    ws2812b.show();
+  for (int i=0; i<20; i++){
+    if (((GPIO.in >> C64_INT) & 1)){
+      ISC64++;
+    }
+    delayMicroseconds(256);
   }
-  else {                                                                      // If we are in joystick mode
-    ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
-    ws2812b.show();
-    // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
-    // Joystick can be safely used on the C64 with the 100 mA current supply of the control ports.
-    // We cannot use this frequency in mouse mode because the hardware timers must be fast enough to trigger the interrupt
-    // at the right moment. Also it is very uncommon that we will need 2 mouse at he same time on the C64.
-    setCpuFrequencyMhz(10);
-    timerAttachInterrupt(timerOffX, &turnOffJoyX);                            // Attach the timers for the interrupts of the mouse in joystick mode
-    timerAttachInterrupt(timerOffY, &turnOffJoyY);
+  if (ISC64 < 5) {
+    pinMode(A_BUTTON3, INPUT_PULLDOWN);
+    pinMode(C64_POTX, INPUT_PULLDOWN);
+    if (digitalRead(A_BUTTON3) == HIGH) {
+      ISAMIGA = 1;
+    }
+    else {
+      ISAMIGA = 0;
+    }
+  }
+
+  // If it is a C64
+  if (ISC64 >= 5 && ISC64 <= 15) {
+    pinMode(C64_UP, OUTPUT);
+    digitalWrite(C64_UP, LOW);
+    pinMode(C64_UP, INPUT);
+    pinMode(C64_DOWN, OUTPUT);
+    digitalWrite(C64_DOWN, LOW);
+    pinMode(C64_DOWN, INPUT);
+    pinMode(C64_LEFT, OUTPUT);
+    digitalWrite(C64_LEFT, LOW);
+    pinMode(C64_LEFT, INPUT);
+    pinMode(C64_RIGHT, OUTPUT);
+    digitalWrite(C64_RIGHT, LOW);
+    pinMode(C64_RIGHT, INPUT);
+    pinMode(C64_FIRE, OUTPUT);
+    digitalWrite(C64_FIRE, LOW);
+    pinMode(C64_FIRE, INPUT);
+    pinMode(A_BUTTON2, INPUT_PULLDOWN);
+    pinMode(A_BUTTON3, INPUT_PULLDOWN);
+    pinMode(C64_POTX, OUTPUT);
+    pinMode(C64_POTY, OUTPUT);
+    // Define the hardware timer frequencies, and turn on the timers 
+    timerOnX = timerBegin(10000000);
+    timerAlarm(timerOnX, delayOnX, false, 0);
+    timerOffX = timerBegin(10000000);
+    timerAlarm(timerOffX, delayOffX, false, 0);
+    timerOnY = timerBegin(10000000);
+    timerAlarm(timerOnY, delayOnY, false, 0);
+    timerOffY = timerBegin(10000000);
+    timerAlarm(timerOffY, delayOffY, false, 0);
+
+    if (digitalRead(SWITCH_MJ)) {                                               // If we are in mouse mode
+      timerAttachInterrupt(timerOnX, &turnOnPotX);                              // Attach the timers to the POT interrupts
+      timerAttachInterrupt(timerOffX, &turnOffPotX);
+      timerAttachInterrupt(timerOnY, &turnOnPotY);
+      timerAttachInterrupt(timerOffY, &turnOffPotY);
+      attachInterrupt(digitalPinToInterrupt(C64_INT), handleInterrupt, RISING); // Attach the interrupt PIN to the handler
+      ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                        // Set the LED BLU
+      ws2812b.show();
+    }
+    else {                                                                      // If we are in joystick mode
+      ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
+      ws2812b.show();
+      // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
+      // Joystick can be safely used on the C64 with the 100 mA current supply of the control ports.
+      // We cannot use this frequency in mouse mode because the hardware timers must be fast enough to trigger the interrupt
+      // at the right moment. Also it is very uncommon that we will need 2 mouse at he same time on the C64.
+      setCpuFrequencyMhz(10);
+      timerAttachInterrupt(timerOffX, &turnOffJoyX);                            // Attach the timers for the interrupts of the mouse in joystick mode
+      timerAttachInterrupt(timerOffY, &turnOffJoyY);
+    }
+  }
+  // If is AMIGA/ATARI
+  else{
+    if (digitalRead(SWITCH_MJ)) {  
+      pinMode(A_UP, OUTPUT);
+      pinMode(A_DOWN, OUTPUT);
+      pinMode(A_LEFT, OUTPUT);
+      pinMode(A_RIGHT, OUTPUT);
+      pinMode(A_FIRE, OUTPUT);
+      digitalWrite(A_FIRE, LOW);
+      pinMode(A_FIRE, INPUT);
+      pinMode(A_BUTTON2, OUTPUT);
+      digitalWrite(A_BUTTON2, LOW);
+      pinMode(A_BUTTON2, INPUT);
+      pinMode(A_BUTTON3, OUTPUT);
+      digitalWrite(A_BUTTON3, LOW);
+      pinMode(A_BUTTON3, INPUT);                                               // If we are in mouse mode
+      ws2812b.setPixelColor(0, ws2812b.Color(0, 0, 25));                           // Set the LED BLU
+      ws2812b.show();
+    }
+    else {           
+      pinMode(A_UP, OUTPUT);
+      digitalWrite(A_UP, LOW);
+      pinMode(A_UP, INPUT);
+      pinMode(A_DOWN, OUTPUT);
+      digitalWrite(A_DOWN, LOW);
+      pinMode(A_DOWN, INPUT);
+      pinMode(A_LEFT, OUTPUT);
+      digitalWrite(A_LEFT, LOW);
+      pinMode(A_LEFT, INPUT);
+      pinMode(A_RIGHT, OUTPUT);
+      digitalWrite(A_RIGHT, LOW);
+      pinMode(A_RIGHT, INPUT);
+      pinMode(A_FIRE, OUTPUT);
+      digitalWrite(A_FIRE, LOW);
+      pinMode(A_FIRE, INPUT);
+      pinMode(A_BUTTON2, OUTPUT);
+      digitalWrite(A_BUTTON2, HIGH);
+      pinMode(A_BUTTON2, INPUT);
+      pinMode(A_BUTTON3, OUTPUT);
+      digitalWrite(A_BUTTON3, HIGH);
+      pinMode(A_BUTTON3, INPUT);                          // If we are in joystick mode
+      ws2812b.setPixelColor(0, ws2812b.Color(25, 0, 0));                        // Turn the LED green
+      ws2812b.show();
+      // Decrease the frequency of the CPU to 10 MHz to drop the current usage of the board from 90 to 20 mA, in this way two
+      // Joystick can be safely used on the C64 with the 100 mA current supply of the control ports.
+      // We cannot use this frequency in mouse mode because the hardware timers must be fast enough to trigger the interrupt
+      // at the right moment. Also it is very uncommon that we will need 2 mouse at he same time on the C64.
+      setCpuFrequencyMhz(10);
+    }
   }
 }
 
