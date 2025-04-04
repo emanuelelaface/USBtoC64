@@ -774,13 +774,20 @@ void configurator() {  // When the board is in configuration mode
 }
 
 void setup() { 
-  delay(1000); 
   // Turn on the LED in RED color
   //Serial.begin(115200);
+
   ws2812b.begin();
   ws2812b.clear();
   ws2812b.setPixelColor(0, ws2812b.Color(0, 255, 0));
   ws2812b.show();
+
+  delay(500); 
+
+  ws2812b.clear();
+  ws2812b.setPixelColor(0, ws2812b.Color(0, 255, 0));
+  ws2812b.show();
+  
   // start the EEPROM
   EEPROM.begin(EEPROM_SIZE);
   for (int i=0; i<JOYBUTTONS; i++) {
