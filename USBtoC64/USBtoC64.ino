@@ -40,7 +40,7 @@ Adafruit_NeoPixel ws2812b(NUM_PIXELS, PIN_WS2812B, NEO_RGB + NEO_KHZ800); // Ini
 #define SWITCH_MJ         13 // HIGH = mouse, LOW = Joystick
 
 // Define the default timers for the mouse delay, all empirical for PAL version
-#define PAL                0 // select if it is PAL or NTSC and adjust the timings
+#define PAL                1 // select if it is PAL or NTSC and adjust the timings
 
 #if PAL
   #define MINdelayOnX   2450
@@ -332,7 +332,7 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     digitalWrite(C64_UP, LOW);
     pinMode(C64_UP, INPUT);
   }
-  delayOnX += (STEPdelayOnX*mouse_report->x_displacement)/10;   // Define the moment when the POTX has to be turned on after the interrupt
+  delayOnX += (STEPdelayOnX*mouse_report->x_displacement);   // Define the moment when the POTX has to be turned on after the interrupt
   if (delayOnX > MAXdelayOnX) {                            // If the value is over the limit, it returns to the zero
     delayOnX = MINdelayOnX;
   }
@@ -340,7 +340,7 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     delayOnX = MAXdelayOnX;
   }
 
-  delayOnY += (STEPdelayOnY*mouse_report->y_displacement)/10;   // Define the moment when the POTY has to be turned on after the interrupt
+  delayOnY -= (STEPdelayOnY*mouse_report->y_displacement);   // Define the moment when the POTY has to be turned on after the interrupt
   if (delayOnY > MAXdelayOnY) {                            // If the value is over the limit, it returns to the zero
     delayOnY = MINdelayOnY;
   }
@@ -826,7 +826,6 @@ void setup() {
         ISAMIGA = 0;
       }
     }
-    ISC64 = 10;
     // If it is a C64
     if (ISC64 >= 5 && ISC64 <= 15) {
       pinMode(C64_UP, OUTPUT);
