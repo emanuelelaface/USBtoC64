@@ -133,8 +133,6 @@
             font: inherit;
             padding: 0.5em 0.5em 0.5em 0.5em;
             margin: 0;
-            -webkit-box-sizing: border-box;
-            -moz-box-sizing: border-box;
             box-sizing: border-box;
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -173,9 +171,7 @@
 
         <div class="controls-block">
             <div class="control-section">
-                <center>
-                    <h2>Standard Controller</h2>
-                </center>
+                <center><h2>Standard Controller</h2></center>
                 <table>
                     <tr>
                         <th></th>
@@ -201,6 +197,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -223,6 +221,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -245,6 +245,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -267,6 +269,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -289,6 +293,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -311,6 +317,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -333,6 +341,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -355,13 +365,15 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
                     </tr>
 
                     <tr>
-                        <td>BUTTON A or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-a.png" style="width:20%;" alt="A"></td>
+                        <td>BUTTON A</td>
                         <td><input type="text" name="button-a-index"></td>
                         <td><input type="text" name="button-a-value"></td>
                         <td>
@@ -377,13 +389,15 @@
                                 <option value="FIRE" selected="selected">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
                     </tr>
 
                     <tr>
-                        <td>BUTTON B or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-b.png" style="width:20%;" alt="B"></td>
+                        <td>BUTTON B</td>
                         <td><input type="text" name="button-b-index"></td>
                         <td><input type="text" name="button-b-value"></td>
                         <td>
@@ -399,13 +413,15 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON" selected="selected">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
                     </tr>
 
                     <tr>
-                        <td>BUTTON X or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-x.png" style="width:20%;" alt="X"></td>
+                        <td>BUTTON X</td>
                         <td><input type="text" name="button-x-index"></td>
                         <td><input type="text" name="button-x-value"></td>
                         <td>
@@ -421,13 +437,15 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
                     </tr>
 
                     <tr>
-                        <td>BUTTON Y or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-y.png" style="width:20%;" alt="Y"></td>
+                        <td>BUTTON Y</td>
                         <td><input type="text" name="button-y-index"></td>
                         <td><input type="text" name="button-y-value"></td>
                         <td>
@@ -443,6 +461,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF" selected="selected">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -465,6 +485,8 @@
                                 <option value="FIRE" selected="selected">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -487,6 +509,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE">NONE</option>
                             </select>
                         </td>
@@ -509,6 +533,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE" selected="selected">NONE</option>
                             </select>
                         </td>
@@ -531,6 +557,8 @@
                                 <option value="FIRE">FIRE</option>
                                 <option value="AUTOFIREON">AUTO FIRE ON</option>
                                 <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="AUTOLEFTRIGHTON">AUTO LEFT/RIGHT ON</option>
+                                <option value="AUTOLEFTRIGHTOFF">AUTO LEFT/RIGHT OFF</option>
                                 <option value="NONE" selected="selected">NONE</option>
                             </select>
                         </td>
@@ -544,20 +572,20 @@
                     <tr>
                         <th></th>
                         <th>Index</th>
-                        <th>Min Value</th>
-                        <th>Max Value</th>
+                        <th>Low Threshold</th>
+                        <th>High Threshold</th>
                     </tr>
                     <tr>
                         <td>Horizontal</td>
                         <td><input type="text" name="left-analog-horizontal-index"></td>
-                        <td><input type="text" name="left-analog-horizontal-min"></td>
-                        <td><input type="text" name="left-analog-horizontal-max"></td>
+                        <td><input type="text" name="left-analog-horizontal-min" placeholder="64"></td>
+                        <td><input type="text" name="left-analog-horizontal-max" placeholder="190"></td>
                     </tr>
                     <tr>
                         <td>Vertical</td>
                         <td><input type="text" name="left-analog-vertical-index"></td>
-                        <td><input type="text" name="left-analog-vertical-min"></td>
-                        <td><input type="text" name="left-analog-vertical-max"></td>
+                        <td><input type="text" name="left-analog-vertical-min" placeholder="64"></td>
+                        <td><input type="text" name="left-analog-vertical-max" placeholder="190"></td>
                     </tr>
                 </table>
 
@@ -566,42 +594,20 @@
                     <tr>
                         <th></th>
                         <th>Index</th>
-                        <th>Min Value</th>
-                        <th>Max Value</th>
+                        <th>Low Threshold</th>
+                        <th>High Threshold</th>
                     </tr>
                     <tr>
                         <td>Horizontal</td>
                         <td><input type="text" name="right-analog-horizontal-index"></td>
-                        <td><input type="text" name="right-analog-horizontal-min"></td>
-                        <td><input type="text" name="right-analog-horizontal-max"></td>
+                        <td><input type="text" name="right-analog-horizontal-min" placeholder="64"></td>
+                        <td><input type="text" name="right-analog-horizontal-max" placeholder="190"></td>
                     </tr>
                     <tr>
                         <td>Vertical</td>
                         <td><input type="text" name="right-analog-vertical-index"></td>
-                        <td><input type="text" name="right-analog-vertical-min"></td>
-                        <td><input type="text" name="right-analog-vertical-max"></td>
-                    </tr>
-                </table>
-
-                <center><h2>Triggers</h2></center>
-                <table>
-                    <tr>
-                        <th></th>
-                        <th>Index</th>
-                        <th>Min Value</th>
-                        <th>Max Value</th>
-                    </tr>
-                    <tr>
-                        <td>Left Trigger</td>
-                        <td><input type="text" name="left-trigger-index"></td>
-                        <td><input type="text" name="left-trigger-min"></td>
-                        <td><input type="text" name="left-trigger-max"></td>
-                    </tr>
-                    <tr>
-                        <td>Right Trigger</td>
-                        <td><input type="text" name="right-trigger-index"></td>
-                        <td><input type="text" name="right-trigger-min"></td>
-                        <td><input type="text" name="right-trigger-max"></td>
+                        <td><input type="text" name="right-analog-vertical-min" placeholder="64"></td>
+                        <td><input type="text" name="right-analog-vertical-max" placeholder="190"></td>
                     </tr>
                 </table>
 
@@ -623,77 +629,39 @@
         const downloadInfo = document.getElementById('downloadInfo');
         let selectedDevice = null;
 
-        function sanitizeFileName(s) {
-            return (s || "device")
-                .replace(/[^a-z0-9_\-]+/gi, "_")
-                .replace(/_+/g, "_")
-                .replace(/^_+|_+$/g, "");
-        }
-
-        function appendFunctionOptions() {
-            // Add AUTO LEFT/RIGHT options to every selector without rewriting the full HTML table.
-            const extra = [
-                { value: "AUTOLEFTRIGHTON",  text: "AUTO LEFT/RIGHT ON"  },
-                { value: "AUTOLEFTRIGHTOFF", text: "AUTO LEFT/RIGHT OFF" }
-            ];
-            document.querySelectorAll("select").forEach(sel => {
-                extra.forEach(e => {
-                    if (!Array.from(sel.options).some(o => o.value === e.value)) {
-                        const opt = document.createElement("option");
-                        opt.value = e.value;
-                        opt.textContent = e.text;
-                        sel.appendChild(opt);
-                    }
-                });
-            });
-        }
-
         async function connectToGameController() {
             try {
                 const [device] = await navigator.hid.requestDevice({ filters: [] });
+                if (!device) return;
 
-                if (device) {
-                    console.log(`HID device connected: ${device.productName}, ${device.vendorId}:${device.productId}`);
-                    await device.open();
+                await device.open();
+                selectedDevice = device;
 
-                    const controllerInfoDiv = document.getElementById('controllerInfo');
-                    controllerInfoDiv.innerHTML = `
-                        <p><strong>Controller:</strong> ${device.productName}</p>
-                        <p><strong>Vendor ID:</strong> ${device.vendorId}</p>
-                        <p><strong>Product ID:</strong> ${device.productId}</p>
-                    `;
+                const controllerInfoDiv = document.getElementById('controllerInfo');
+                controllerInfoDiv.innerHTML = `
+                    <p><strong>Controller:</strong> ${device.productName}</p>
+                    <p><strong>Vendor ID:</strong> ${device.vendorId}</p>
+                    <p><strong>Product ID:</strong> ${device.productId}</p>
+                `;
 
-                    selectedDevice = device;
-                    downloadInfo.textContent = "";
-                    await readRawData(device);
-                } else {
-                    console.log('No HID device selected.');
-                }
+                downloadInfo.textContent = "";
+                readRawData(device);
             } catch (error) {
                 console.error('Error while connecting to the HID device:', error);
             }
         }
 
-        async function readRawData(device) {
-            try {
-                device.addEventListener('inputreport', event => {
-                    const { data } = event;
-                    const values = [];
+        function readRawData(device) {
+            device.addEventListener('inputreport', event => {
+                const { data } = event;
+                const values = [];
 
-                    const reportId = event.reportId;
-                    if (reportId !== undefined && reportId !== 0) {
-                        values.push(reportId);
-                    }
+                const reportId = event.reportId;
+                if (reportId !== undefined && reportId !== 0) values.push(reportId);
 
-                    for (let i = 0; i < data.byteLength; i++) {
-                        values.push(data.getUint8(i));
-                    }
-
-                    updateTable(values);
-                });
-            } catch (error) {
-                console.error('Error while reading raw data from the HID device:', error);
-            }
+                for (let i = 0; i < data.byteLength; i++) values.push(data.getUint8(i));
+                updateTable(values);
+            });
         }
 
         function updateTable(values) {
@@ -702,14 +670,25 @@
                 const row = document.createElement('tr');
                 const indexCell = document.createElement('td');
                 const valueCell = document.createElement('td');
-
                 indexCell.textContent = index;
                 valueCell.textContent = value;
-
                 row.appendChild(indexCell);
                 row.appendChild(valueCell);
                 dataBody.appendChild(row);
             });
+        }
+
+        function getInputValue(name) {
+            const el = document.querySelector(`input[name="${name}"]`);
+            return el ? el.value.trim() : "";
+        }
+
+        function parseIntSafe(s) {
+            const t = String(s ?? "").trim();
+            if (t === "") return null;
+            const n = Number(t);
+            if (!Number.isFinite(n)) return null;
+            return Math.trunc(n);
         }
 
         function getRowSelectValue(indexInputName) {
@@ -719,20 +698,6 @@
             if (!tr) return "NONE";
             const sel = tr.querySelector("select");
             return sel ? sel.value : "NONE";
-        }
-
-        function getInputValue(name) {
-            const el = document.querySelector(`input[name="${name}"]`);
-            return el ? el.value.trim() : "";
-        }
-
-        function parseIntSafe(s) {
-            if (s === null || s === undefined) return null;
-            const t = String(s).trim();
-            if (t === "") return null;
-            const n = Number(t);
-            if (!Number.isFinite(n)) return null;
-            return Math.trunc(n);
         }
 
         function funcToEnum(func) {
@@ -776,54 +741,67 @@
             ];
 
             const rules = [];
-
             rows.forEach(r => {
                 const i = parseIntSafe(getInputValue(r.idx));
                 const v = parseIntSafe(getInputValue(r.val));
                 const f = getRowSelectValue(r.idx);
-
                 const enumName = funcToEnum(f);
                 if (enumName === null) return;
                 if (i === null || v === null) return;
-
                 rules.push({ index: i, value: v, funcEnum: enumName });
             });
 
             return rules;
         }
 
+        function inferDpadIndex() {
+            const names = [
+                "up-index","up-right-index","right-index","right-down-index",
+                "down-index","down-left-index","left-index","left-up-index"
+            ];
+            const idxs = names.map(n => parseIntSafe(getInputValue(n)));
+            if (idxs.some(x => x === null)) return -1;
+            const first = idxs[0];
+            if (idxs.every(x => x === first)) return first;
+            return -1;
+        }
+
         function collectAnalogConfig() {
-            // Use Left/Right analog sticks to generate the index lists.
             const xIdx = [];
             const yIdx = [];
-            const mins = [];
-            const maxs = [];
+            let deadLow = null;
+            let deadHigh = null;
 
-            function addAxis(indexName, minName, maxName, arr) {
+            function readAxis(indexName, lowName, highName, target) {
                 const idx = parseIntSafe(getInputValue(indexName));
-                const mn  = parseIntSafe(getInputValue(minName));
-                const mx  = parseIntSafe(getInputValue(maxName));
-                if (idx !== null) arr.push(idx);
-                if (mn !== null) mins.push(mn);
-                if (mx !== null) maxs.push(mx);
+                const lo  = parseIntSafe(getInputValue(lowName));
+                const hi  = parseIntSafe(getInputValue(highName));
+
+                if (idx !== null) target.push(idx);
+
+                if (lo !== null) deadLow = (deadLow === null) ? lo : Math.min(deadLow, lo);
+                if (hi !== null) deadHigh = (deadHigh === null) ? hi : Math.max(deadHigh, hi);
             }
 
-            // Left stick
-            addAxis("left-analog-horizontal-index", "left-analog-horizontal-min", "left-analog-horizontal-max", xIdx);
-            addAxis("left-analog-vertical-index",   "left-analog-vertical-min",   "left-analog-vertical-max",   yIdx);
-
-            // Right stick
-            addAxis("right-analog-horizontal-index","right-analog-horizontal-min","right-analog-horizontal-max",xIdx);
-            addAxis("right-analog-vertical-index",  "right-analog-vertical-min",  "right-analog-vertical-max",  yIdx);
-
-            // Compute a global deadzone range (min/max) used by the firmware helper functions.
-            let deadLow  = 64;
-            let deadHigh = 190;
-
-            if (mins.length > 0) deadLow = Math.min(...mins);
-            if (maxs.length > 0) deadHigh = Math.max(...maxs);
+            readAxis("left-analog-horizontal-index","left-analog-horizontal-min","left-analog-horizontal-max", xIdx);
+            readAxis("left-analog-vertical-index",  "left-analog-vertical-min",  "left-analog-vertical-max",   yIdx);
+            readAxis("right-analog-horizontal-index","right-analog-horizontal-min","right-analog-horizontal-max", xIdx);
+            readAxis("right-analog-vertical-index",  "right-analog-vertical-min",  "right-analog-vertical-max",   yIdx);
 
             const useAnalog = (xIdx.length > 0 || yIdx.length > 0);
+
+            if (deadLow === null) deadLow = 64;
+            if (deadHigh === null) deadHigh = 190;
+
+            if (deadLow <= 0 && deadHigh >= 255) {
+                deadLow = 64;
+                deadHigh = 190;
+            }
+
+            if (deadLow >= deadHigh) {
+                deadLow = 64;
+                deadHigh = 190;
+            }
 
             return { useAnalog, xIdx, yIdx, deadLow, deadHigh };
         }
@@ -838,17 +816,24 @@
 
             const rules = collectJoyRules();
             const analog = collectAnalogConfig();
+            const dpadIndex = inferDpadIndex();
 
-            const joyRulesText = (rules.length === 0)
+            const rulesText = (rules.length === 0)
                 ? "  // No rules defined\n"
                 : rules.map(r => `  { ${r.index}, ${r.value}, JM_EQ, ${r.funcEnum} },`).join("\n") + "\n";
 
-            // If analog is not configured, disable it (and keep placeholders to avoid empty arrays).
+            const mouseBtnRules = rules
+                .filter(r => (dpadIndex < 0) ? true : (r.index !== dpadIndex))
+                .filter(r => ["JM_FIRE","JM_UP","JM_AUTOFIRE_ON","JM_AUTOFIRE_OFF","JM_AUTOLEFTRIGHT_ON","JM_AUTOLEFTRIGHT_OFF"].includes(r.funcEnum));
+
+            const mouseBtnText = (mouseBtnRules.length === 0)
+                ? "  // No mouse-button rules defined (non-DPad rules)\n"
+                : mouseBtnRules.map(r => `  { ${r.index}, ${r.value}, JM_EQ, ${r.funcEnum} },`).join("\n") + "\n";
+
             const useAnalogMacro = analog.useAnalog ? 1 : 0;
             const xIdxList = (analog.useAnalog ? analog.xIdx : [2, 4]).join(", ");
             const yIdxList = (analog.useAnalog ? analog.yIdx : [3, 5]).join(", ");
 
-            // Build the output header. This matches the firmware structure used in this project.
             const header =
 `#pragma once
 #include <Arduino.h>
@@ -863,7 +848,6 @@
 #define JOY_MAP_LEARN   0
 #define JOY_MAP_CUSTOM  1
 
-// This file is generated for custom mapping.
 #define JOY_MAPPING_MODE JOY_MAP_CUSTOM
 
 #if (JOY_MAPPING_MODE == JOY_MAP_CUSTOM)
@@ -886,8 +870,7 @@ enum JM_Func : uint8_t {
   JM_AUTOFIRE_ON,
   JM_AUTOFIRE_OFF,
   JM_AUTOLEFTRIGHT_ON,
-  JM_AUTOLEFTRIGHT_OFF,
-  JM_BUTTON2
+  JM_AUTOLEFTRIGHT_OFF
 };
 
 struct JM_Rule {
@@ -897,59 +880,35 @@ struct JM_Rule {
   JM_Func func;
 };
 
-// Persistent states (custom mapping only)
 static bool JM_autofire = false;
 static bool JM_autoleftright = false;
 
-// -------------------- Custom rules (JOYSTICK MODE) --------------------
-// All rules generated here use JM_EQ. If you need bitmask matching, change JM_EQ to JM_BITANY.
+#define JM_DPAD_INDEX ${dpadIndex}
+#define JM_HAS_DPAD_INDEX ${dpadIndex >= 0 ? 1 : 0}
+
 static const JM_Rule JM_JOY_RULES[] = {
-${joyRulesText}};
+${rulesText}};
 static const size_t JM_JOY_RULES_COUNT = sizeof(JM_JOY_RULES) / sizeof(JM_JOY_RULES[0]);
 
-// -------------------- Custom rules (JOYSTICK AS MOUSE MODE - buttons) --------------------
-// These are placeholders. You can customize them if you want specific buttons for mouse clicks in joystick-as-mouse mode.
-// C64: JM_FIRE drives C64_FIRE, JM_UP drives C64_UP (commonly used as a right click line).
-static const JM_Rule JM_MOUSE_BTN_RULES_C64[] = {
-  // Example:
-  // { 8, 64, JM_EQ, JM_FIRE },
-  // { 8, 128, JM_EQ, JM_UP },
-  // { 8, 16, JM_EQ, JM_AUTOFIRE_ON },
-  // { 8, 2,  JM_EQ, JM_AUTOFIRE_OFF }
-};
-static const size_t JM_MOUSE_BTN_RULES_C64_COUNT = sizeof(JM_MOUSE_BTN_RULES_C64) / sizeof(JM_MOUSE_BTN_RULES_C64[0]);
+static const JM_Rule JM_MOUSE_BTN_RULES[] = {
+${mouseBtnText}};
+static const size_t JM_MOUSE_BTN_RULES_COUNT = sizeof(JM_MOUSE_BTN_RULES) / sizeof(JM_MOUSE_BTN_RULES[0]);
 
-// AMIGA/ATARI: JM_FIRE drives A_FIRE, JM_BUTTON2 drives A_BUTTON2 (commonly used as right click line).
-static const JM_Rule JM_MOUSE_BTN_RULES_A[] = {
-  // Example:
-  // { 8, 64,  JM_EQ, JM_FIRE },
-  // { 8, 128, JM_EQ, JM_BUTTON2 },
-  // { 8, 16,  JM_EQ, JM_AUTOFIRE_ON },
-  // { 8, 2,   JM_EQ, JM_AUTOFIRE_OFF }
-};
-static const size_t JM_MOUSE_BTN_RULES_A_COUNT = sizeof(JM_MOUSE_BTN_RULES_A) / sizeof(JM_MOUSE_BTN_RULES_A[0]);
-
-// -------------------- Analog configuration --------------------
 #define JM_USE_ANALOG_MOUSE  ${useAnalogMacro}
 
-static const uint8_t JM_C64_MOUSE_X_INDEXES[] = { ${xIdxList} };
-static const uint8_t JM_C64_MOUSE_Y_INDEXES[] = { ${yIdxList} };
-static const uint8_t JM_A_MOUSE_X_INDEXES[]   = { ${xIdxList} };
-static const uint8_t JM_A_MOUSE_Y_INDEXES[]   = { ${yIdxList} };
+static const uint8_t JM_MOUSE_X_INDEXES[] = { ${xIdxList} };
+static const uint8_t JM_MOUSE_Y_INDEXES[] = { ${yIdxList} };
 
 #define JM_ANALOG_CENTER      127
 #define JM_ANALOG_DEAD_LOW    ${analog.deadLow}
 #define JM_ANALOG_DEAD_HIGH   ${analog.deadHigh}
 
-// C64: delta added directly to delayOnX/delayOnY
 #define JM_C64_ANALOG_DIV      3
 #define JM_C64_Y_INVERT        1
 
-// AMIGA/ATARI: convert analog to signed "steps"
 #define JM_A_STEP_DIV          40
 #define JM_A_Y_INVERT          0
 
-// Atari pulse scaling
 #define JM_ATARI_PULSE_SCALE   18.6f
 
 static inline bool JM_match(const JM_Rule &r, const uint8_t *data, int length) {
@@ -959,7 +918,7 @@ static inline bool JM_match(const JM_Rule &r, const uint8_t *data, int length) {
   return ((v & r.value) != 0);
 }
 
-static inline void JM_applyDirFunc(JM_Func f, bool &up, bool &down, bool &left, bool &right, bool &fire) {
+static inline void JM_applyDirFunc(JM_Func f, bool &up, bool &down, bool &left, bool &right) {
   switch (f) {
     case JM_UP:         up = true; break;
     case JM_UP_RIGHT:   up = true; right = true; break;
@@ -969,18 +928,33 @@ static inline void JM_applyDirFunc(JM_Func f, bool &up, bool &down, bool &left, 
     case JM_DOWN_LEFT:  down = true; left = true; break;
     case JM_LEFT:       left = true; break;
     case JM_LEFT_UP:    up = true; left = true; break;
-    case JM_FIRE:       fire = true; break;
     default: break;
   }
 }
 
-static inline void JM_DecodeJoystickMode(const uint8_t *data, int length,
-                                        bool &up, bool &down, bool &left, bool &right, bool &fire,
-                                        bool &autofireEnabled, bool &autoleftrightEnabled) {
-  up = down = left = right = fire = false;
+static inline void JM_DecodeDirections(const uint8_t *data, int length,
+                                      bool &up, bool &down, bool &left, bool &right) {
+  up = down = left = right = false;
 
   for (size_t i = 0; i < JM_JOY_RULES_COUNT; i++) {
     const JM_Rule &r = JM_JOY_RULES[i];
+#if (JM_HAS_DPAD_INDEX == 1)
+    if ((int)r.index != JM_DPAD_INDEX) continue;
+#endif
+    if (!JM_match(r, data, length)) continue;
+    JM_applyDirFunc(r.func, up, down, left, right);
+  }
+}
+
+static inline void JM_DecodeJoystickButtons(const uint8_t *data, int length,
+                                           bool &fire, bool &autofireEnabled, bool &autoleftrightEnabled) {
+  fire = false;
+
+  for (size_t i = 0; i < JM_JOY_RULES_COUNT; i++) {
+    const JM_Rule &r = JM_JOY_RULES[i];
+#if (JM_HAS_DPAD_INDEX == 1)
+    if ((int)r.index == JM_DPAD_INDEX) continue;
+#endif
     if (!JM_match(r, data, length)) continue;
 
     if (r.func == JM_AUTOFIRE_ON)        { JM_autofire = true;  continue; }
@@ -988,11 +962,19 @@ static inline void JM_DecodeJoystickMode(const uint8_t *data, int length,
     if (r.func == JM_AUTOLEFTRIGHT_ON)   { JM_autoleftright = true;  continue; }
     if (r.func == JM_AUTOLEFTRIGHT_OFF)  { JM_autoleftright = false; continue; }
 
-    JM_applyDirFunc(r.func, up, down, left, right, fire);
+    if (r.func == JM_FIRE) fire = true;
   }
 
   autofireEnabled = JM_autofire;
   autoleftrightEnabled = JM_autoleftright;
+}
+
+// Backward-compatible API (older firmware expects a single decode call)
+static inline void JM_DecodeJoystickMode(const uint8_t *data, int length,
+                                        bool &up, bool &down, bool &left, bool &right, bool &fire,
+                                        bool &autofireEnabled, bool &autoleftrightEnabled) {
+  JM_DecodeDirections(data, length, up, down, left, right);
+  JM_DecodeJoystickButtons(data, length, fire, autofireEnabled, autoleftrightEnabled);
 }
 
 static inline void JM_DecodeMouseModeButtons_C64(const uint8_t *data, int length,
@@ -1000,8 +982,8 @@ static inline void JM_DecodeMouseModeButtons_C64(const uint8_t *data, int length
   fire = false;
   up = false;
 
-  for (size_t i = 0; i < JM_MOUSE_BTN_RULES_C64_COUNT; i++) {
-    const JM_Rule &r = JM_MOUSE_BTN_RULES_C64[i];
+  for (size_t i = 0; i < JM_MOUSE_BTN_RULES_COUNT; i++) {
+    const JM_Rule &r = JM_MOUSE_BTN_RULES[i];
     if (!JM_match(r, data, length)) continue;
 
     if (r.func == JM_AUTOFIRE_ON)  { JM_autofire = true;  continue; }
@@ -1019,15 +1001,15 @@ static inline void JM_DecodeMouseModeButtons_A(const uint8_t *data, int length,
   fire = false;
   button2 = false;
 
-  for (size_t i = 0; i < JM_MOUSE_BTN_RULES_A_COUNT; i++) {
-    const JM_Rule &r = JM_MOUSE_BTN_RULES_A[i];
+  for (size_t i = 0; i < JM_MOUSE_BTN_RULES_COUNT; i++) {
+    const JM_Rule &r = JM_MOUSE_BTN_RULES[i];
     if (!JM_match(r, data, length)) continue;
 
     if (r.func == JM_AUTOFIRE_ON)  { JM_autofire = true;  continue; }
     if (r.func == JM_AUTOFIRE_OFF) { JM_autofire = false; continue; }
 
-    if (r.func == JM_FIRE)     fire = true;
-    if (r.func == JM_BUTTON2)  button2 = true;
+    if (r.func == JM_FIRE) fire = true;
+    if (r.func == JM_UP)   button2 = true;
   }
 
   autofireEnabled = JM_autofire;
@@ -1038,8 +1020,8 @@ static inline void JM_AnalogToMouseDelta_C64(const uint8_t *data, int length, in
   dY = 0;
 
 #if (JM_USE_ANALOG_MOUSE == 1)
-  for (size_t i = 0; i < (sizeof(JM_C64_MOUSE_X_INDEXES) / sizeof(JM_C64_MOUSE_X_INDEXES[0])); i++) {
-    uint8_t idx = JM_C64_MOUSE_X_INDEXES[i];
+  for (size_t i = 0; i < (sizeof(JM_MOUSE_X_INDEXES) / sizeof(JM_MOUSE_X_INDEXES[0])); i++) {
+    uint8_t idx = JM_MOUSE_X_INDEXES[i];
     if ((int)idx >= length) continue;
     uint8_t v = data[idx];
     if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
@@ -1047,8 +1029,8 @@ static inline void JM_AnalogToMouseDelta_C64(const uint8_t *data, int length, in
     }
   }
 
-  for (size_t i = 0; i < (sizeof(JM_C64_MOUSE_Y_INDEXES) / sizeof(JM_C64_MOUSE_Y_INDEXES[0])); i++) {
-    uint8_t idx = JM_C64_MOUSE_Y_INDEXES[i];
+  for (size_t i = 0; i < (sizeof(JM_MOUSE_Y_INDEXES) / sizeof(JM_MOUSE_Y_INDEXES[0])); i++) {
+    uint8_t idx = JM_MOUSE_Y_INDEXES[i];
     if ((int)idx >= length) continue;
     uint8_t v = data[idx];
     if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
@@ -1067,8 +1049,8 @@ static inline void JM_AnalogToMouseSteps_A(const uint8_t *data, int length, int 
   yStepsSigned = 0;
 
 #if (JM_USE_ANALOG_MOUSE == 1)
-  for (size_t i = 0; i < (sizeof(JM_A_MOUSE_X_INDEXES) / sizeof(JM_A_MOUSE_X_INDEXES[0])); i++) {
-    uint8_t idx = JM_A_MOUSE_X_INDEXES[i];
+  for (size_t i = 0; i < (sizeof(JM_MOUSE_X_INDEXES) / sizeof(JM_MOUSE_X_INDEXES[0])); i++) {
+    uint8_t idx = JM_MOUSE_X_INDEXES[i];
     if ((int)idx >= length) continue;
     uint8_t v = data[idx];
     if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
@@ -1076,8 +1058,8 @@ static inline void JM_AnalogToMouseSteps_A(const uint8_t *data, int length, int 
     }
   }
 
-  for (size_t i = 0; i < (sizeof(JM_A_MOUSE_Y_INDEXES) / sizeof(JM_A_MOUSE_Y_INDEXES[0])); i++) {
-    uint8_t idx = JM_A_MOUSE_Y_INDEXES[i];
+  for (size_t i = 0; i < (sizeof(JM_MOUSE_Y_INDEXES) / sizeof(JM_MOUSE_Y_INDEXES[0])); i++) {
+    uint8_t idx = JM_MOUSE_Y_INDEXES[i];
     if ((int)idx >= length) continue;
     uint8_t v = data[idx];
     if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
@@ -1093,6 +1075,12 @@ static inline void JM_AnalogToMouseSteps_A(const uint8_t *data, int length, int 
 
 #else // JOY_MAPPING_MODE != JOY_MAP_CUSTOM
 
+static inline void JM_DecodeDirections(const uint8_t*, int, bool &up, bool &down, bool &left, bool &right) {
+  up = down = left = right = false;
+}
+static inline void JM_DecodeJoystickButtons(const uint8_t*, int, bool &fire, bool &autofireEnabled, bool &autoleftrightEnabled) {
+  fire = false; autofireEnabled = false; autoleftrightEnabled = false;
+}
 static inline void JM_DecodeJoystickMode(const uint8_t*, int,
                                         bool &up, bool &down, bool &left, bool &right, bool &fire,
                                         bool &autofireEnabled, bool &autoleftrightEnabled) {
@@ -1100,36 +1088,19 @@ static inline void JM_DecodeJoystickMode(const uint8_t*, int,
   autofireEnabled = false;
   autoleftrightEnabled = false;
 }
-
-static inline void JM_DecodeMouseModeButtons_C64(const uint8_t*, int,
-                                                bool &fire, bool &up, bool &autofireEnabled) {
-  fire = false;
-  up = false;
-  autofireEnabled = false;
+static inline void JM_DecodeMouseModeButtons_C64(const uint8_t*, int, bool &fire, bool &up, bool &autofireEnabled) {
+  fire = false; up = false; autofireEnabled = false;
 }
-
-static inline void JM_DecodeMouseModeButtons_A(const uint8_t*, int,
-                                              bool &fire, bool &button2, bool &autofireEnabled) {
-  fire = false;
-  button2 = false;
-  autofireEnabled = false;
+static inline void JM_DecodeMouseModeButtons_A(const uint8_t*, int, bool &fire, bool &button2, bool &autofireEnabled) {
+  fire = false; button2 = false; autofireEnabled = false;
 }
-
-static inline void JM_AnalogToMouseDelta_C64(const uint8_t*, int, int &dX, int &dY) {
-  dX = 0;
-  dY = 0;
-}
-
-static inline void JM_AnalogToMouseSteps_A(const uint8_t*, int, int &xStepsSigned, int &yStepsSigned) {
-  xStepsSigned = 0;
-  yStepsSigned = 0;
-}
+static inline void JM_AnalogToMouseDelta_C64(const uint8_t*, int, int &dX, int &dY) { dX = 0; dY = 0; }
+static inline void JM_AnalogToMouseSteps_A(const uint8_t*, int, int &xStepsSigned, int &yStepsSigned) { xStepsSigned = 0; yStepsSigned = 0; }
 
 #define JM_ATARI_PULSE_SCALE 18.6f
 
 #endif
 `;
-
             return header;
         }
 
@@ -1140,15 +1111,12 @@ static inline void JM_AnalogToMouseSteps_A(const uint8_t*, int, int &xStepsSigne
             }
 
             const content = generateJoystickMappingHeader();
-            const safeName = sanitizeFileName(selectedDevice.productName);
-            const filename = `JoystickMapping_${safeName}_${selectedDevice.vendorId}_${selectedDevice.productId}.h`;
-
             const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
 
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', filename);
+            link.setAttribute('download', 'JoystickMapping.h');
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1156,9 +1124,7 @@ static inline void JM_AnalogToMouseSteps_A(const uint8_t*, int, int &xStepsSigne
 
         document.getElementById('connectButton').addEventListener('click', connectToGameController);
         document.getElementById('downloadHeaderButton').addEventListener('click', downloadJoystickMappingH);
-
-        // Initialize extra options once at page load
-        appendFunctionOptions();
     </script>
 </body>
 </html>
+
