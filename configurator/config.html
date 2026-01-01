@@ -11,7 +11,7 @@
             margin: 0;
             padding: 0;
             display: flex;
-	    flex-direction: column;
+            flex-direction: column;
             justify-content: flex-start;
             align-items: center;
             height: 100vh;
@@ -78,7 +78,7 @@
         }
         .toggle-container {
             display: flex;
-	    flex-direction: column;
+            flex-direction: column;
             align-items: center;
             gap: 10px;
         }
@@ -107,7 +107,7 @@
         .toggle-container input[type="checkbox"]:checked + label::before {
             content: "NTSC";
         }
-        #downloadCsvButton {
+        #downloadHeaderButton {
             padding: 10px 20px;
             font-size: 16px;
             color: #fff;
@@ -116,9 +116,9 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.3s;
-	    margin-top: 100px;
+            margin-top: 100px;
         }
-        #downloadCsvButton:hover {
+        #downloadHeaderButton:hover {
             background-color: #c82333;
         }
         #controllerInfo {
@@ -126,49 +126,56 @@
             font-size: 16px;
             color: #333;
         }
-	select {
-  	    background-color: lightgray;
-	    border-radius: 4px;
+        select {
+            background-color: lightgray;
+            border-radius: 4px;
             display: inline-block;
             font: inherit;
-	    padding: 0.5em 0.5em 0.5em 0.5em;
-            margin: 0;      
+            padding: 0.5em 0.5em 0.5em 0.5em;
+            margin: 0;
             -webkit-box-sizing: border-box;
             -moz-box-sizing: border-box;
             box-sizing: border-box;
             -webkit-appearance: none;
             -moz-appearance: none;
         }
+        .warning {
+            color: #b00020;
+            font-size: 14px;
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
     <center>
-    <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/gamepad.png" width: 100%; height: auto;"></img>
+        <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/gamepad.png" style="width:100%; height:auto;" alt="Gamepad">
     </center>
+
     <div id="container">
         <div class="controller-reader">
-	    <center>
-            <h1>Controller Values</h1>
-            <button id="connectButton">Connect to Game Controller</button>
-            <div id="controllerInfo"></div>
-	    </center>
-	    <table id="dataTable">
+            <center>
+                <h1>Controller Values</h1>
+                <button id="connectButton">Connect to Game Controller</button>
+                <div id="controllerInfo"></div>
+                <div id="downloadInfo" class="warning"></div>
+            </center>
+
+            <table id="dataTable">
                 <thead>
                     <tr>
                         <th>Index</th>
-                        <th>Values</th>
+                        <th>Value</th>
                     </tr>
                 </thead>
-                <tbody id="dataBody">
-                </tbody>
+                <tbody id="dataBody"></tbody>
             </table>
         </div>
 
         <div class="controls-block">
             <div class="control-section">
-		<center>
-                <h2>Standard Controller</h2>
-		</center>
+                <center>
+                    <h2>Standard Controller</h2>
+                </center>
                 <table>
                     <tr>
                         <th></th>
@@ -176,349 +183,363 @@
                         <th>Value</th>
                         <th>Function</th>
                     </tr>
+
                     <tr>
                         <td>UP</td>
                         <td><input type="text" name="up-index"></td>
                         <td><input type="text" name="up-value"></td>
                         <td>
-			    <select>
-				<option value="UP" selected="selected">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP" selected="selected">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>UP-RIGHT</td>
                         <td><input type="text" name="up-right-index"></td>
                         <td><input type="text" name="up-right-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT" selected="selected">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT" selected="selected">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>RIGHT</td>
                         <td><input type="text" name="right-index"></td>
                         <td><input type="text" name="right-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT" selected="selected">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT" selected="selected">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>RIGHT-DOWN</td>
                         <td><input type="text" name="right-down-index"></td>
                         <td><input type="text" name="right-down-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN" selected="selected">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN" selected="selected">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>DOWN</td>
                         <td><input type="text" name="down-index"></td>
                         <td><input type="text" name="down-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN" selected="selected">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN" selected="selected">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>DOWN-LEFT</td>
                         <td><input type="text" name="down-left-index"></td>
                         <td><input type="text" name="down-left-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT" selected="selected">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT" selected="selected">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>LEFT</td>
                         <td><input type="text" name="left-index"></td>
                         <td><input type="text" name="left-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT" selected="selected">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT" selected="selected">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>LEFT-UP</td>
                         <td><input type="text" name="left-up-index"></td>
                         <td><input type="text" name="left-up-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP" selected="selected">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP" selected="selected">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
-                        <td>BUTTON A or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-a.png" width=20%></img></td>
+                        <td>BUTTON A or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-a.png" style="width:20%;" alt="A"></td>
                         <td><input type="text" name="button-a-index"></td>
                         <td><input type="text" name="button-a-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE" selected="selected">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE" selected="selected">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
-                        <td>BUTTON B or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-b.png" width=20%></img></td>
+                        <td>BUTTON B or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-b.png" style="width:20%;" alt="B"></td>
                         <td><input type="text" name="button-b-index"></td>
                         <td><input type="text" name="button-b-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON" selected="selected">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON" selected="selected">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
-                        <td>BUTTON X or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-x.png" width=20%></img></td>
+                        <td>BUTTON X or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-x.png" style="width:20%;" alt="X"></td>
                         <td><input type="text" name="button-x-index"></td>
                         <td><input type="text" name="button-x-value"></td>
                         <td>
-			    <select>
-				<option value="UP" selected="selected">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP" selected="selected">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
-                        <td>BUTTON Y or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-y.png" width=20%></img></td>
+                        <td>BUTTON Y or <img src="https://raw.githubusercontent.com/emanuelelaface/USBtoC64/main/images/icon-ps-y.png" style="width:20%;" alt="Y"></td>
                         <td><input type="text" name="button-y-index"></td>
                         <td><input type="text" name="button-y-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF" selected="selected">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF" selected="selected">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>BUTTON LEFT</td>
                         <td><input type="text" name="button-left-index"></td>
                         <td><input type="text" name="button-left-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE" selected="selected">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE" selected="selected">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>BUTTON RIGHT</td>
                         <td><input type="text" name="button-right-index"></td>
                         <td><input type="text" name="button-right-value"></td>
                         <td>
-			    <select>
-				<option value="UP" selected="selected">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP" selected="selected">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>SELECT</td>
                         <td><input type="text" name="button-select-index"></td>
                         <td><input type="text" name="button-select-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE" selected="selected">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE" selected="selected">NONE</option>
+                            </select>
+                        </td>
                     </tr>
+
                     <tr>
                         <td>START</td>
                         <td><input type="text" name="button-start-index"></td>
                         <td><input type="text" name="button-start-value"></td>
                         <td>
-			    <select>
-				<option value="UP">UP</option>
-				<option value="UP-RIGHT">UP-RIGHT</option>
-				<option value="RIGHT">RIGHT</option>
-				<option value="RIGHT-DOWN">RIGHT-DOWN</option>
-				<option value="DOWN">DOWN</option>
-				<option value="DOWN-LEFT">DOWN-LEFT</option>
-				<option value="LEFT">LEFT</option>
-				<option value="LEFT-UP">LEFT-UP</option>
-				<option value="FIRE">FIRE</option>
-				<option value="AUTOFIREON">AUTO FIRE ON</option>
-				<option value="AUTOFIREOFF">AUTO FIRE OFF</option>
-				<option value="NONE" selected="selected">NONE</option>
-		            </select>
-			</td>
+                            <select>
+                                <option value="UP">UP</option>
+                                <option value="UP-RIGHT">UP-RIGHT</option>
+                                <option value="RIGHT">RIGHT</option>
+                                <option value="RIGHT-DOWN">RIGHT-DOWN</option>
+                                <option value="DOWN">DOWN</option>
+                                <option value="DOWN-LEFT">DOWN-LEFT</option>
+                                <option value="LEFT">LEFT</option>
+                                <option value="LEFT-UP">LEFT-UP</option>
+                                <option value="FIRE">FIRE</option>
+                                <option value="AUTOFIREON">AUTO FIRE ON</option>
+                                <option value="AUTOFIREOFF">AUTO FIRE OFF</option>
+                                <option value="NONE" selected="selected">NONE</option>
+                            </select>
+                        </td>
                     </tr>
                 </table>
             </div>
 
             <div class="control-section">
-		<center>
-                <h2>Left Analog Controller</h2>
-		</center>
+                <center><h2>Left Analog Controller</h2></center>
                 <table>
                     <tr>
                         <th></th>
@@ -538,10 +559,9 @@
                         <td><input type="text" name="left-analog-vertical-min"></td>
                         <td><input type="text" name="left-analog-vertical-max"></td>
                     </tr>
-		</table>
-		<center>
-                <h2>Right Analog Controller</h2>
-		</center>
+                </table>
+
+                <center><h2>Right Analog Controller</h2></center>
                 <table>
                     <tr>
                         <th></th>
@@ -562,9 +582,8 @@
                         <td><input type="text" name="right-analog-vertical-max"></td>
                     </tr>
                 </table>
-		<center>
-                <h2>Triggers</h2>
-		</center>
+
+                <center><h2>Triggers</h2></center>
                 <table>
                     <tr>
                         <th></th>
@@ -585,33 +604,58 @@
                         <td><input type="text" name="right-trigger-max"></td>
                     </tr>
                 </table>
-		<center><h2>Commodore Model</h2></center>
-    		<div class="toggle-container", align="center">
-        		<input type="checkbox" id="toggle">
-        		<label for="toggle"></label>
-    		</div>
-    		<center>
-        		<button id="downloadCsvButton">Download Configuration</button>
-    		</center>
+
+                <center><h2>Commodore Model</h2></center>
+                <div class="toggle-container" align="center">
+                    <input type="checkbox" id="toggle">
+                    <label for="toggle"></label>
+                </div>
+
+                <center>
+                    <button id="downloadHeaderButton">Download JoystickMapping.h</button>
+                </center>
             </div>
         </div>
     </div>
 
-
     <script>
         const dataBody = document.getElementById('dataBody');
-	let selectedDevice = null;
+        const downloadInfo = document.getElementById('downloadInfo');
+        let selectedDevice = null;
+
+        function sanitizeFileName(s) {
+            return (s || "device")
+                .replace(/[^a-z0-9_\-]+/gi, "_")
+                .replace(/_+/g, "_")
+                .replace(/^_+|_+$/g, "");
+        }
+
+        function appendFunctionOptions() {
+            // Add AUTO LEFT/RIGHT options to every selector without rewriting the full HTML table.
+            const extra = [
+                { value: "AUTOLEFTRIGHTON",  text: "AUTO LEFT/RIGHT ON"  },
+                { value: "AUTOLEFTRIGHTOFF", text: "AUTO LEFT/RIGHT OFF" }
+            ];
+            document.querySelectorAll("select").forEach(sel => {
+                extra.forEach(e => {
+                    if (!Array.from(sel.options).some(o => o.value === e.value)) {
+                        const opt = document.createElement("option");
+                        opt.value = e.value;
+                        opt.textContent = e.text;
+                        sel.appendChild(opt);
+                    }
+                });
+            });
+        }
 
         async function connectToGameController() {
             try {
-                const [device] = await navigator.hid.requestDevice({
-                    filters: []
-                });
+                const [device] = await navigator.hid.requestDevice({ filters: [] });
 
                 if (device) {
-                    console.log(`Dispositivo HID connesso: ${device.productName}, ${device.vendorId}:${device.productId}`);
+                    console.log(`HID device connected: ${device.productName}, ${device.vendorId}:${device.productId}`);
                     await device.open();
-                    
+
                     const controllerInfoDiv = document.getElementById('controllerInfo');
                     controllerInfoDiv.innerHTML = `
                         <p><strong>Controller:</strong> ${device.productName}</p>
@@ -619,13 +663,14 @@
                         <p><strong>Product ID:</strong> ${device.productId}</p>
                     `;
 
+                    selectedDevice = device;
+                    downloadInfo.textContent = "";
                     await readRawData(device);
-		    selectedDevice = device;
                 } else {
-                    console.log('Nessun dispositivo HID selezionato.');
+                    console.log('No HID device selected.');
                 }
             } catch (error) {
-                console.error('Errore nella connessione al dispositivo HID:', error);
+                console.error('Error while connecting to the HID device:', error);
             }
         }
 
@@ -635,10 +680,10 @@
                     const { data } = event;
                     const values = [];
 
-		    const reportId = event.reportId;
-		    if (reportId !== undefined && reportId !== 0) {
-		    	values.push(reportId);
-		    }
+                    const reportId = event.reportId;
+                    if (reportId !== undefined && reportId !== 0) {
+                        values.push(reportId);
+                    }
 
                     for (let i = 0; i < data.byteLength; i++) {
                         values.push(data.getUint8(i));
@@ -647,7 +692,7 @@
                     updateTable(values);
                 });
             } catch (error) {
-                console.error('Errore nella lettura dei dati raw dal dispositivo HID:', error);
+                console.error('Error while reading raw data from the HID device:', error);
             }
         }
 
@@ -667,56 +712,453 @@
             });
         }
 
-        function downloadCSV() {
-            const rows = [];
+        function getRowSelectValue(indexInputName) {
+            const idxInput = document.querySelector(`input[name="${indexInputName}"]`);
+            if (!idxInput) return "NONE";
+            const tr = idxInput.closest("tr");
+            if (!tr) return "NONE";
+            const sel = tr.querySelector("select");
+            return sel ? sel.value : "NONE";
+        }
 
-            const cells = document.querySelectorAll('input[type="text"]');
-            const values = Array.from(cells).map(input => input.value);
-            const cellsf = document.querySelectorAll('select');
-            const valuesf = Array.from(cellsf).map(select => select.value);
+        function getInputValue(name) {
+            const el = document.querySelector(`input[name="${name}"]`);
+            return el ? el.value.trim() : "";
+        }
+
+        function parseIntSafe(s) {
+            if (s === null || s === undefined) return null;
+            const t = String(s).trim();
+            if (t === "") return null;
+            const n = Number(t);
+            if (!Number.isFinite(n)) return null;
+            return Math.trunc(n);
+        }
+
+        function funcToEnum(func) {
+            switch (func) {
+                case "UP": return "JM_UP";
+                case "UP-RIGHT": return "JM_UP_RIGHT";
+                case "RIGHT": return "JM_RIGHT";
+                case "RIGHT-DOWN": return "JM_RIGHT_DOWN";
+                case "DOWN": return "JM_DOWN";
+                case "DOWN-LEFT": return "JM_DOWN_LEFT";
+                case "LEFT": return "JM_LEFT";
+                case "LEFT-UP": return "JM_LEFT_UP";
+                case "FIRE": return "JM_FIRE";
+                case "AUTOFIREON": return "JM_AUTOFIRE_ON";
+                case "AUTOFIREOFF": return "JM_AUTOFIRE_OFF";
+                case "AUTOLEFTRIGHTON": return "JM_AUTOLEFTRIGHT_ON";
+                case "AUTOLEFTRIGHTOFF": return "JM_AUTOLEFTRIGHT_OFF";
+                case "NONE": return null;
+                default: return null;
+            }
+        }
+
+        function collectJoyRules() {
+            const rows = [
+                { idx: "up-index",             val: "up-value" },
+                { idx: "up-right-index",       val: "up-right-value" },
+                { idx: "right-index",          val: "right-value" },
+                { idx: "right-down-index",     val: "right-down-value" },
+                { idx: "down-index",           val: "down-value" },
+                { idx: "down-left-index",      val: "down-left-value" },
+                { idx: "left-index",           val: "left-value" },
+                { idx: "left-up-index",        val: "left-up-value" },
+                { idx: "button-a-index",       val: "button-a-value" },
+                { idx: "button-b-index",       val: "button-b-value" },
+                { idx: "button-x-index",       val: "button-x-value" },
+                { idx: "button-y-index",       val: "button-y-value" },
+                { idx: "button-left-index",    val: "button-left-value" },
+                { idx: "button-right-index",   val: "button-right-value" },
+                { idx: "button-select-index",  val: "button-select-value" },
+                { idx: "button-start-index",   val: "button-start-value" }
+            ];
+
+            const rules = [];
+
+            rows.forEach(r => {
+                const i = parseIntSafe(getInputValue(r.idx));
+                const v = parseIntSafe(getInputValue(r.val));
+                const f = getRowSelectValue(r.idx);
+
+                const enumName = funcToEnum(f);
+                if (enumName === null) return;
+                if (i === null || v === null) return;
+
+                rules.push({ index: i, value: v, funcEnum: enumName });
+            });
+
+            return rules;
+        }
+
+        function collectAnalogConfig() {
+            // Use Left/Right analog sticks to generate the index lists.
+            const xIdx = [];
+            const yIdx = [];
+            const mins = [];
+            const maxs = [];
+
+            function addAxis(indexName, minName, maxName, arr) {
+                const idx = parseIntSafe(getInputValue(indexName));
+                const mn  = parseIntSafe(getInputValue(minName));
+                const mx  = parseIntSafe(getInputValue(maxName));
+                if (idx !== null) arr.push(idx);
+                if (mn !== null) mins.push(mn);
+                if (mx !== null) maxs.push(mx);
+            }
+
+            // Left stick
+            addAxis("left-analog-horizontal-index", "left-analog-horizontal-min", "left-analog-horizontal-max", xIdx);
+            addAxis("left-analog-vertical-index",   "left-analog-vertical-min",   "left-analog-vertical-max",   yIdx);
+
+            // Right stick
+            addAxis("right-analog-horizontal-index","right-analog-horizontal-min","right-analog-horizontal-max",xIdx);
+            addAxis("right-analog-vertical-index",  "right-analog-vertical-min",  "right-analog-vertical-max",  yIdx);
+
+            // Compute a global deadzone range (min/max) used by the firmware helper functions.
+            let deadLow  = 64;
+            let deadHigh = 190;
+
+            if (mins.length > 0) deadLow = Math.min(...mins);
+            if (maxs.length > 0) deadHigh = Math.max(...maxs);
+
+            const useAnalog = (xIdx.length > 0 || yIdx.length > 0);
+
+            return { useAnalog, xIdx, yIdx, deadLow, deadHigh };
+        }
+
+        function generateJoystickMappingHeader() {
+            const deviceName = selectedDevice ? selectedDevice.productName : "UNKNOWN_DEVICE";
+            const vid = selectedDevice ? selectedDevice.vendorId : 0;
+            const pid = selectedDevice ? selectedDevice.productId : 0;
+
             const toggleCheckbox = document.getElementById('toggle');
-            const mode = toggleCheckbox.checked ? 'NTSC' : 'PAL';
-	    var csvPayload = [
-                    `${selectedDevice.productName},${selectedDevice.vendorId},${selectedDevice.productId}`,
-		    `UP,${values[0]},${values[1]},${valuesf[0]}`,
-		    `UP-RIGHT,${values[2]},${values[3]},${valuesf[1]}`,
-		    `RIGHT,${values[4]},${values[5]},${valuesf[2]}`,
-		    `RIGHT-DOWN,${values[6]},${values[7]},${valuesf[3]}`,
-		    `DOWN,${values[8]},${values[9]},${valuesf[4]}`,
-		    `DOWN-LEFT,${values[10]},${values[11]},${valuesf[5]}`,
-		    `LEFT,${values[12]},${values[13]},${valuesf[6]}`,
-		    `LEFT-UP,${values[14]},${values[15]},${valuesf[7]}`,
-		    `A,${values[16]},${values[17]},${valuesf[8]}`,
-		    `B,${values[18]},${values[19]},${valuesf[9]}`,
-		    `X,${values[20]},${values[21]},${valuesf[10]}`,
-		    `Y,${values[22]},${values[23]},${valuesf[11]}`,
-		    `BUTTON-LEFT,${values[24]},${values[25]},${valuesf[12]}`,
-		    `BUTTON-RIGHT,${values[26]},${values[27]},${valuesf[13]}`,
-		    `SELECT,${values[28]},${values[29]},${valuesf[14]}`,
-		    `START,${values[30]},${values[31]},${valuesf[15]}`,
-		    `LEFT-ANALOG-HORIZONTAL,${values[32]},${values[33]},${values[34]}`,
-		    `LEFT-ANALOG-VERTICAL,${values[35]},${values[36]},${values[37]}`,
-		    `RIGHT-ANALOG-HORIZONTAL,${values[38]},${values[39]},${values[40]}`,
-		    `RIGHT-ANALOG-VERTICAL,${values[41]},${values[42]},${values[43]}`,
-		    `LEFT-TRIGGER,${values[44]},${values[45]},${values[46]}`,
-		    `RIGHT-TRIGGER,${values[47]},${values[48]},${values[49]}`,
-		    `COMMODORE,${mode}`
-	    ].join("\n");
+            const commodoreModel = toggleCheckbox.checked ? 'NTSC' : 'PAL';
 
-            const blob = new Blob([csvPayload], { type: 'text/csv;charset=utf-8;' });
+            const rules = collectJoyRules();
+            const analog = collectAnalogConfig();
+
+            const joyRulesText = (rules.length === 0)
+                ? "  // No rules defined\n"
+                : rules.map(r => `  { ${r.index}, ${r.value}, JM_EQ, ${r.funcEnum} },`).join("\n") + "\n";
+
+            // If analog is not configured, disable it (and keep placeholders to avoid empty arrays).
+            const useAnalogMacro = analog.useAnalog ? 1 : 0;
+            const xIdxList = (analog.useAnalog ? analog.xIdx : [2, 4]).join(", ");
+            const yIdxList = (analog.useAnalog ? analog.yIdx : [3, 5]).join(", ");
+
+            // Build the output header. This matches the firmware structure used in this project.
+            const header =
+`#pragma once
+#include <Arduino.h>
+#include <stdint.h>
+
+// Generated by the USBtoC64 Configurator (WebHID)
+// Device: ${deviceName}
+// Vendor ID: ${vid}
+// Product ID: ${pid}
+// Preferred C64 timing (firmware PAL macro): ${commodoreModel}
+
+#define JOY_MAP_LEARN   0
+#define JOY_MAP_CUSTOM  1
+
+// This file is generated for custom mapping.
+#define JOY_MAPPING_MODE JOY_MAP_CUSTOM
+
+#if (JOY_MAPPING_MODE == JOY_MAP_CUSTOM)
+
+enum JM_Op : uint8_t {
+  JM_EQ = 0,
+  JM_BITANY = 1
+};
+
+enum JM_Func : uint8_t {
+  JM_UP = 0,
+  JM_UP_RIGHT,
+  JM_RIGHT,
+  JM_RIGHT_DOWN,
+  JM_DOWN,
+  JM_DOWN_LEFT,
+  JM_LEFT,
+  JM_LEFT_UP,
+  JM_FIRE,
+  JM_AUTOFIRE_ON,
+  JM_AUTOFIRE_OFF,
+  JM_AUTOLEFTRIGHT_ON,
+  JM_AUTOLEFTRIGHT_OFF,
+  JM_BUTTON2
+};
+
+struct JM_Rule {
+  uint8_t index;
+  uint8_t value;
+  JM_Op op;
+  JM_Func func;
+};
+
+// Persistent states (custom mapping only)
+static bool JM_autofire = false;
+static bool JM_autoleftright = false;
+
+// -------------------- Custom rules (JOYSTICK MODE) --------------------
+// All rules generated here use JM_EQ. If you need bitmask matching, change JM_EQ to JM_BITANY.
+static const JM_Rule JM_JOY_RULES[] = {
+${joyRulesText}};
+static const size_t JM_JOY_RULES_COUNT = sizeof(JM_JOY_RULES) / sizeof(JM_JOY_RULES[0]);
+
+// -------------------- Custom rules (JOYSTICK AS MOUSE MODE - buttons) --------------------
+// These are placeholders. You can customize them if you want specific buttons for mouse clicks in joystick-as-mouse mode.
+// C64: JM_FIRE drives C64_FIRE, JM_UP drives C64_UP (commonly used as a right click line).
+static const JM_Rule JM_MOUSE_BTN_RULES_C64[] = {
+  // Example:
+  // { 8, 64, JM_EQ, JM_FIRE },
+  // { 8, 128, JM_EQ, JM_UP },
+  // { 8, 16, JM_EQ, JM_AUTOFIRE_ON },
+  // { 8, 2,  JM_EQ, JM_AUTOFIRE_OFF }
+};
+static const size_t JM_MOUSE_BTN_RULES_C64_COUNT = sizeof(JM_MOUSE_BTN_RULES_C64) / sizeof(JM_MOUSE_BTN_RULES_C64[0]);
+
+// AMIGA/ATARI: JM_FIRE drives A_FIRE, JM_BUTTON2 drives A_BUTTON2 (commonly used as right click line).
+static const JM_Rule JM_MOUSE_BTN_RULES_A[] = {
+  // Example:
+  // { 8, 64,  JM_EQ, JM_FIRE },
+  // { 8, 128, JM_EQ, JM_BUTTON2 },
+  // { 8, 16,  JM_EQ, JM_AUTOFIRE_ON },
+  // { 8, 2,   JM_EQ, JM_AUTOFIRE_OFF }
+};
+static const size_t JM_MOUSE_BTN_RULES_A_COUNT = sizeof(JM_MOUSE_BTN_RULES_A) / sizeof(JM_MOUSE_BTN_RULES_A[0]);
+
+// -------------------- Analog configuration --------------------
+#define JM_USE_ANALOG_MOUSE  ${useAnalogMacro}
+
+static const uint8_t JM_C64_MOUSE_X_INDEXES[] = { ${xIdxList} };
+static const uint8_t JM_C64_MOUSE_Y_INDEXES[] = { ${yIdxList} };
+static const uint8_t JM_A_MOUSE_X_INDEXES[]   = { ${xIdxList} };
+static const uint8_t JM_A_MOUSE_Y_INDEXES[]   = { ${yIdxList} };
+
+#define JM_ANALOG_CENTER      127
+#define JM_ANALOG_DEAD_LOW    ${analog.deadLow}
+#define JM_ANALOG_DEAD_HIGH   ${analog.deadHigh}
+
+// C64: delta added directly to delayOnX/delayOnY
+#define JM_C64_ANALOG_DIV      3
+#define JM_C64_Y_INVERT        1
+
+// AMIGA/ATARI: convert analog to signed "steps"
+#define JM_A_STEP_DIV          40
+#define JM_A_Y_INVERT          0
+
+// Atari pulse scaling
+#define JM_ATARI_PULSE_SCALE   18.6f
+
+static inline bool JM_match(const JM_Rule &r, const uint8_t *data, int length) {
+  if ((int)r.index >= length) return false;
+  uint8_t v = data[r.index];
+  if (r.op == JM_EQ) return (v == r.value);
+  return ((v & r.value) != 0);
+}
+
+static inline void JM_applyDirFunc(JM_Func f, bool &up, bool &down, bool &left, bool &right, bool &fire) {
+  switch (f) {
+    case JM_UP:         up = true; break;
+    case JM_UP_RIGHT:   up = true; right = true; break;
+    case JM_RIGHT:      right = true; break;
+    case JM_RIGHT_DOWN: down = true; right = true; break;
+    case JM_DOWN:       down = true; break;
+    case JM_DOWN_LEFT:  down = true; left = true; break;
+    case JM_LEFT:       left = true; break;
+    case JM_LEFT_UP:    up = true; left = true; break;
+    case JM_FIRE:       fire = true; break;
+    default: break;
+  }
+}
+
+static inline void JM_DecodeJoystickMode(const uint8_t *data, int length,
+                                        bool &up, bool &down, bool &left, bool &right, bool &fire,
+                                        bool &autofireEnabled, bool &autoleftrightEnabled) {
+  up = down = left = right = fire = false;
+
+  for (size_t i = 0; i < JM_JOY_RULES_COUNT; i++) {
+    const JM_Rule &r = JM_JOY_RULES[i];
+    if (!JM_match(r, data, length)) continue;
+
+    if (r.func == JM_AUTOFIRE_ON)        { JM_autofire = true;  continue; }
+    if (r.func == JM_AUTOFIRE_OFF)       { JM_autofire = false; continue; }
+    if (r.func == JM_AUTOLEFTRIGHT_ON)   { JM_autoleftright = true;  continue; }
+    if (r.func == JM_AUTOLEFTRIGHT_OFF)  { JM_autoleftright = false; continue; }
+
+    JM_applyDirFunc(r.func, up, down, left, right, fire);
+  }
+
+  autofireEnabled = JM_autofire;
+  autoleftrightEnabled = JM_autoleftright;
+}
+
+static inline void JM_DecodeMouseModeButtons_C64(const uint8_t *data, int length,
+                                                bool &fire, bool &up, bool &autofireEnabled) {
+  fire = false;
+  up = false;
+
+  for (size_t i = 0; i < JM_MOUSE_BTN_RULES_C64_COUNT; i++) {
+    const JM_Rule &r = JM_MOUSE_BTN_RULES_C64[i];
+    if (!JM_match(r, data, length)) continue;
+
+    if (r.func == JM_AUTOFIRE_ON)  { JM_autofire = true;  continue; }
+    if (r.func == JM_AUTOFIRE_OFF) { JM_autofire = false; continue; }
+
+    if (r.func == JM_FIRE) fire = true;
+    if (r.func == JM_UP)   up = true;
+  }
+
+  autofireEnabled = JM_autofire;
+}
+
+static inline void JM_DecodeMouseModeButtons_A(const uint8_t *data, int length,
+                                              bool &fire, bool &button2, bool &autofireEnabled) {
+  fire = false;
+  button2 = false;
+
+  for (size_t i = 0; i < JM_MOUSE_BTN_RULES_A_COUNT; i++) {
+    const JM_Rule &r = JM_MOUSE_BTN_RULES_A[i];
+    if (!JM_match(r, data, length)) continue;
+
+    if (r.func == JM_AUTOFIRE_ON)  { JM_autofire = true;  continue; }
+    if (r.func == JM_AUTOFIRE_OFF) { JM_autofire = false; continue; }
+
+    if (r.func == JM_FIRE)     fire = true;
+    if (r.func == JM_BUTTON2)  button2 = true;
+  }
+
+  autofireEnabled = JM_autofire;
+}
+
+static inline void JM_AnalogToMouseDelta_C64(const uint8_t *data, int length, int &dX, int &dY) {
+  dX = 0;
+  dY = 0;
+
+#if (JM_USE_ANALOG_MOUSE == 1)
+  for (size_t i = 0; i < (sizeof(JM_C64_MOUSE_X_INDEXES) / sizeof(JM_C64_MOUSE_X_INDEXES[0])); i++) {
+    uint8_t idx = JM_C64_MOUSE_X_INDEXES[i];
+    if ((int)idx >= length) continue;
+    uint8_t v = data[idx];
+    if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
+      dX += ((int)v - JM_ANALOG_CENTER) / JM_C64_ANALOG_DIV;
+    }
+  }
+
+  for (size_t i = 0; i < (sizeof(JM_C64_MOUSE_Y_INDEXES) / sizeof(JM_C64_MOUSE_Y_INDEXES[0])); i++) {
+    uint8_t idx = JM_C64_MOUSE_Y_INDEXES[i];
+    if ((int)idx >= length) continue;
+    uint8_t v = data[idx];
+    if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
+#if (JM_C64_Y_INVERT == 1)
+      dY += (JM_ANALOG_CENTER - (int)v) / JM_C64_ANALOG_DIV;
+#else
+      dY += ((int)v - JM_ANALOG_CENTER) / JM_C64_ANALOG_DIV;
+#endif
+    }
+  }
+#endif
+}
+
+static inline void JM_AnalogToMouseSteps_A(const uint8_t *data, int length, int &xStepsSigned, int &yStepsSigned) {
+  xStepsSigned = 0;
+  yStepsSigned = 0;
+
+#if (JM_USE_ANALOG_MOUSE == 1)
+  for (size_t i = 0; i < (sizeof(JM_A_MOUSE_X_INDEXES) / sizeof(JM_A_MOUSE_X_INDEXES[0])); i++) {
+    uint8_t idx = JM_A_MOUSE_X_INDEXES[i];
+    if ((int)idx >= length) continue;
+    uint8_t v = data[idx];
+    if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
+      xStepsSigned += ((int)v - JM_ANALOG_CENTER) / JM_A_STEP_DIV;
+    }
+  }
+
+  for (size_t i = 0; i < (sizeof(JM_A_MOUSE_Y_INDEXES) / sizeof(JM_A_MOUSE_Y_INDEXES[0])); i++) {
+    uint8_t idx = JM_A_MOUSE_Y_INDEXES[i];
+    if ((int)idx >= length) continue;
+    uint8_t v = data[idx];
+    if (v < JM_ANALOG_DEAD_LOW || v > JM_ANALOG_DEAD_HIGH) {
+#if (JM_A_Y_INVERT == 1)
+      yStepsSigned += (JM_ANALOG_CENTER - (int)v) / JM_A_STEP_DIV;
+#else
+      yStepsSigned += ((int)v - JM_ANALOG_CENTER) / JM_A_STEP_DIV;
+#endif
+    }
+  }
+#endif
+}
+
+#else // JOY_MAPPING_MODE != JOY_MAP_CUSTOM
+
+static inline void JM_DecodeJoystickMode(const uint8_t*, int,
+                                        bool &up, bool &down, bool &left, bool &right, bool &fire,
+                                        bool &autofireEnabled, bool &autoleftrightEnabled) {
+  up = down = left = right = fire = false;
+  autofireEnabled = false;
+  autoleftrightEnabled = false;
+}
+
+static inline void JM_DecodeMouseModeButtons_C64(const uint8_t*, int,
+                                                bool &fire, bool &up, bool &autofireEnabled) {
+  fire = false;
+  up = false;
+  autofireEnabled = false;
+}
+
+static inline void JM_DecodeMouseModeButtons_A(const uint8_t*, int,
+                                              bool &fire, bool &button2, bool &autofireEnabled) {
+  fire = false;
+  button2 = false;
+  autofireEnabled = false;
+}
+
+static inline void JM_AnalogToMouseDelta_C64(const uint8_t*, int, int &dX, int &dY) {
+  dX = 0;
+  dY = 0;
+}
+
+static inline void JM_AnalogToMouseSteps_A(const uint8_t*, int, int &xStepsSigned, int &yStepsSigned) {
+  xStepsSigned = 0;
+  yStepsSigned = 0;
+}
+
+#define JM_ATARI_PULSE_SCALE 18.6f
+
+#endif
+`;
+
+            return header;
+        }
+
+        function downloadJoystickMappingH() {
+            if (!selectedDevice) {
+                downloadInfo.textContent = "Please connect a controller first (Connect to Game Controller).";
+                return;
+            }
+
+            const content = generateJoystickMappingHeader();
+            const safeName = sanitizeFileName(selectedDevice.productName);
+            const filename = `JoystickMapping_${safeName}_${selectedDevice.vendorId}_${selectedDevice.productId}.h`;
+
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8;' });
 
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
             link.setAttribute('href', url);
-            link.setAttribute('download', `${selectedDevice.productName}_${selectedDevice.vendorId}_${selectedDevice.productId}.csv`);
+            link.setAttribute('download', filename);
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
         document.getElementById('connectButton').addEventListener('click', connectToGameController);
-        document.getElementById('downloadCsvButton').addEventListener('click', downloadCSV);
+        document.getElementById('downloadHeaderButton').addEventListener('click', downloadJoystickMappingH);
+
+        // Initialize extra options once at page load
+        appendFunctionOptions();
     </script>
 </body>
 </html>
-
