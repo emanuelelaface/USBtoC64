@@ -332,6 +332,14 @@ void c64_mouse_m(hid_mouse_input_report_boot_t *mouse_report) {
     digitalWrite(C64_UP, LOW);
     pinMode(C64_UP, INPUT);
   }
+  if (mouse_report->buttons.button3) {  // Middle button is wired to C64 DOWN
+    pinMode(C64_DOWN, OUTPUT);
+    digitalWrite(C64_DOWN, LOW);
+  }
+  else {
+    digitalWrite(C64_DOWN, LOW);
+    pinMode(C64_DOWN, INPUT);
+  }
   delayOnX += (STEPdelayOnX*mouse_report->x_displacement);   // Define the moment when the POTX has to be turned on after the interrupt
   if (delayOnX > MAXdelayOnX) {                            // If the value is over the limit, it returns to the zero
     delayOnX = MINdelayOnX;
