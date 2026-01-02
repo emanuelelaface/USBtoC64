@@ -14,7 +14,7 @@ On AMIGA and ATARI the mouse is encoded in the quadrature signal using two train
 
 There is an additional switch to make the board work in mouse mode or joystick mode. In mouse mode, any connected device will use the analog mouse, so a program like GEOS can be controlled with a USB mouse or a gamepad. In joystick mode, the board uses the joystick pins for any kind of device. This means that some games, like graphic adventure games (e.g., Maniac Mansion), can be played with a mouse even if they were originally designed for a game controller.
 
-The target computer selection (C64 / AMIGA / ATARI) is user-selectable and stored in non-volatile memory, so it persists across reboots. To change it you must connect a USB mouse to the adapter, then press and hold one mouse button for about 5 seconds until the LED blinks. The button you hold selects the target machine:
+The target computer selection (C64 / AMIGA / ATARI) is user-selectable and stored in non-volatile memory, so it persists across reboots. To change it you must connect a USB mouse to the adapter, turn on the computer and, within the first 30 seconds from the boot, press and hold one mouse button for about 5 seconds until the LED blinks. The button you hold selects the target machine:
 - **Left button**: Commodore 64
 - **Right button**: AMIGA
 - **Middle button**: ATARI
