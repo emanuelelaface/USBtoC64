@@ -139,9 +139,31 @@ static volatile uint8_t modeHoldTarget = MODE_C64;
 static volatile bool modeHoldArmed = false;
 static volatile bool modeSwitchInProgress = false;
 
+// ---- NEW: allow mode switching only in the first 30 seconds after boot ----
+#define MODE_SWITCH_WINDOW_US (30LL * 1000000LL)   // 30 seconds
+static int64_t gModeSwitchDeadlineUs = 0;
+static volatile bool gModeSwitchEnabled = true;
+
 static inline void clearModeHoldState() {
   modeHoldArmed = false;
   modeHoldMask = 0;
+}
+
+// Checks if mode switching is still allowed (and permanently disables it after the window)
+static inline bool modeSwitchAllowedNow() {
+  if (!gModeSwitchEnabled) return false;
+
+  if (esp_timer_get_time() > gModeSwitchDeadlineUs) {
+    // Window expired: lock permanently
+    gModeSwitchEnabled = false;
+
+    // Stop any pending hold
+    if (modeHoldTimer) esp_timer_stop(modeHoldTimer);
+    clearModeHoldState();
+
+    return false;
+  }
+  return true;
 }
 
 static void setRuntimeLed() {
@@ -199,6 +221,9 @@ static void applyModeToOriginalFlags() {
 }
 
 static void requestModeChange(uint8_t newMode) {
+  // NEW: also enforce the 30s window here (covers edge-case scheduling)
+  if (!modeSwitchAllowedNow()) { modeSwitchInProgress = false; return; }
+
   if (newMode > MODE_ATARI) { modeSwitchInProgress = false; return; }
   if (newMode == gMode)     { modeSwitchInProgress = false; clearModeHoldState(); return; }
 
@@ -214,6 +239,13 @@ static void requestModeChange(uint8_t newMode) {
 }
 
 static void modeSwitchTask(void *arg) {
+  // NEW: double-check window in task context too
+  if (!modeSwitchAllowedNow()) {
+    modeSwitchInProgress = false;
+    clearModeHoldState();
+    vTaskDelete(NULL);
+  }
+
   uint8_t mode = (uint8_t)(uintptr_t)arg;
   requestModeChange(mode);
   vTaskDelete(NULL);
@@ -221,6 +253,9 @@ static void modeSwitchTask(void *arg) {
 
 static void modeHoldTimerCb(void *arg) {
   (void)arg;
+
+  // NEW: if window expired, do nothing
+  if (!modeSwitchAllowedNow()) { modeSwitchInProgress = false; return; }
 
   if (modeSwitchInProgress) return;
   if (!modeHoldArmed) return;
@@ -261,6 +296,9 @@ static inline void stopModeHold() {
 }
 
 static void updateModeHoldFromMouse(hid_mouse_input_report_boot_t *mouse_report) {
+  // NEW: only allow arming/holding in the first 30 seconds after boot
+  if (!modeSwitchAllowedNow()) return;
+
   uint8_t mask = 0;
   if (mouse_report->buttons.button1) mask |= 0x01; // Left
   if (mouse_report->buttons.button2) mask |= 0x02; // Right
@@ -988,6 +1026,10 @@ void setup() {
   gMode = loadModeFromEEPROM();
   applyModeToOriginalFlags();
 
+  // NEW: start the 30s mode-switch window from now
+  gModeSwitchDeadlineUs = esp_timer_get_time() + MODE_SWITCH_WINDOW_US;
+  gModeSwitchEnabled = true;
+
   // Create the 5 seconds hold timer (one-shot)
   esp_timer_create_args_t targs = {
     .callback = &modeHoldTimerCb,
@@ -1096,3 +1138,4 @@ void setup() {
 }
 
 void loop() {}
+
