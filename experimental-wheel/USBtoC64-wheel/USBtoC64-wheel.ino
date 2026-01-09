@@ -416,7 +416,7 @@ static void micromysWheelTask(void *arg)
 }
 
 // -------------------- Amiga wheel -> "middle button + vertical move" --------------------
-#define AMIGA_WHEEL_STEP_Y   12 // Scroll "intensity"
+#define AMIGA_WHEEL_STEP_Y   30 // Scroll "intensity"
 #define AMIGA_WHEEL_INVERT   0 // Scroll direction
 
 static inline int8_t amigaWheelToDeltaY(int8_t wheel)
@@ -448,13 +448,18 @@ static inline void amigaWheelEmulate(const hid_mouse_input_report_boot_t *base, 
 
   hid_mouse_input_report_boot_t r = *base;
   r.x_displacement = 0;
-  r.y_displacement = y;
-
+  r.y_displacement = 0;
   r.buttons.button3 = 1;
   a_mouse_m(&r);
-
-  r.buttons.button3 = base->buttons.button3;
+  delayMicroseconds(25000);
+  r.x_displacement = 0;
+  r.y_displacement = y;
+  r.buttons.button3 = 1;
+  a_mouse_m(&r);
+  delayMicroseconds(25000);
+  r.x_displacement = 0;
   r.y_displacement = 0;
+  r.buttons.button3 = 0;
   a_mouse_m(&r);
 }
 
