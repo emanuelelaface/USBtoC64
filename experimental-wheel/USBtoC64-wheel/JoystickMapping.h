@@ -10,8 +10,8 @@
 #define JOY_MAP_CUSTOM  1
 
 #ifndef JOY_MAPPING_MODE
-//  #define JOY_MAPPING_MODE JOY_MAP_LEARN
-  #define JOY_MAPPING_MODE JOY_MAP_CUSTOM
+  #define JOY_MAPPING_MODE JOY_MAP_LEARN
+//  #define JOY_MAPPING_MODE JOY_MAP_CUSTOM
 #endif
 
 // -------------------- Custom mapping definitions --------------------
@@ -320,3 +320,4 @@ static inline void JM_AnalogToMouseSteps_A(const uint8_t*, int, int &xStepsSigne
 #define JM_ATARI_PULSE_SCALE 18.6f
 
 #endif
+

@@ -415,6 +415,49 @@ static void micromysWheelTask(void *arg)
   }
 }
 
+// -------------------- Amiga wheel -> "middle button + vertical move" --------------------
+#define AMIGA_WHEEL_STEP_Y   12 // Scroll "intensity"
+#define AMIGA_WHEEL_INVERT   0 // Scroll direction
+
+static inline int8_t amigaWheelToDeltaY(int8_t wheel)
+{
+  if (wheel == 0) return 0;
+
+  uint16_t steps = (wheel < 0) ? (uint16_t)(-wheel) : (uint16_t)wheel;
+  int16_t delta = (int16_t)steps * (int16_t)AMIGA_WHEEL_STEP_Y;
+  if (delta > 127) delta = 127;
+
+#if WHEEL_01_IS_UP
+  bool up = (wheel > 0);
+#else
+  bool up = (wheel < 0);
+#endif
+
+#if AMIGA_WHEEL_INVERT
+  up = !up;
+#endif
+
+  // In a_mouse_m(): y_displacement > 0 => A_Down, y_displacement < 0 => A_Up
+  return (int8_t)(up ? -delta : delta);
+}
+
+static inline void amigaWheelEmulate(const hid_mouse_input_report_boot_t *base, int8_t wheel)
+{
+  int8_t y = amigaWheelToDeltaY(wheel);
+  if (y == 0) return;
+
+  hid_mouse_input_report_boot_t r = *base;
+  r.x_displacement = 0;
+  r.y_displacement = y;
+
+  r.buttons.button3 = 1;
+  a_mouse_m(&r);
+
+  r.buttons.button3 = base->buttons.button3;
+  r.y_displacement = 0;
+  a_mouse_m(&r);
+}
+
 // -------------------- HID callbacks --------------------
 static void hid_host_mouse_report_callback(const uint8_t *const data, const int length) {
   Serial.printf("len=%d  ", length);
@@ -485,6 +528,11 @@ static void hid_host_mouse_report_callback(const uint8_t *const data, const int 
   } else {                            // Joystick mode (mouse as joystick)
     if (ISC64 > 0) c64_mouse_j(mouse_report);
     else           a_mouse_j(mouse_report);
+  }
+  
+  // ---- NEW: wheel mapping for AMIGA in mouse mode ----
+  if ((ISC64 <= 0) && (ISAMIGA == 1) && digitalRead(SWITCH_MJ) && (wheel != 0)) {
+    amigaWheelEmulate(mouse_report, wheel);
   }
 }
 
@@ -1283,3 +1331,4 @@ void setup() {
 }
 
 void loop() {}
+
