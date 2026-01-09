@@ -116,6 +116,21 @@ If your controller is advanced, with analog joystick and you want to map specifi
 
 ---
 
+## Experimental Firmware: Mouse Wheel Support (C64OS + AmigaOS)
+
+An additional **experimental firmware** is available under the folder **`experimental-wheel`**.  
+This build enables **mouse wheel (scroll) support** on both **C64OS** and **AmigaOS**.
+
+### C64OS (Wheel Support)
+- Requires **C64OS version 1.03 or newer**.
+- In the **Mouse** settings/menu, select the **Micromys** driver.
+
+### AmigaOS (Wheel Support)
+- Install **FreeWheel** on your Amiga.
+- Open **FreeWheel** settings, go to **Set Buttons**, and set the **Middle button** to enable scrolling.
+
+---
+
 WARNING: Some controllers may use the USB port to charge a battery (especially if they are also Bluetooth), and this could draw more than 100 mA from the C64, potentially shutting down the Commodore (and possibly damaging it). If you use a controller with a battery, you should remove the battery before connecting it or disable the charging functionality if possible.
 
 ---
