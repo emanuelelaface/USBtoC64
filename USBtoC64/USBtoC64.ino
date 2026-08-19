@@ -705,12 +705,14 @@ void c64_mouse_j(hid_mouse_input_report_boot_t *mouse_report) {
 }
 
 // -------------------- Pin apply helpers --------------------
-static inline void applyPins_C64(bool up, bool down, bool left, bool right, bool fire) {
+static inline void applyPins_C64(bool up, bool down, bool left, bool right, bool fire, bool fire2, bool fire3) {
   if (up)    { pinMode(C64_UP, OUTPUT);    digitalWrite(C64_UP, LOW); }    else { digitalWrite(C64_UP, LOW);    pinMode(C64_UP, INPUT); }
   if (down)  { pinMode(C64_DOWN, OUTPUT);  digitalWrite(C64_DOWN, LOW); }  else { digitalWrite(C64_DOWN, LOW);  pinMode(C64_DOWN, INPUT); }
   if (left)  { pinMode(C64_LEFT, OUTPUT);  digitalWrite(C64_LEFT, LOW); }  else { digitalWrite(C64_LEFT, LOW);  pinMode(C64_LEFT, INPUT); }
   if (right) { pinMode(C64_RIGHT, OUTPUT); digitalWrite(C64_RIGHT, LOW); } else { digitalWrite(C64_RIGHT, LOW); pinMode(C64_RIGHT, INPUT); }
   if (fire)  { pinMode(C64_FIRE, OUTPUT);  digitalWrite(C64_FIRE, LOW); }  else { digitalWrite(C64_FIRE, LOW);  pinMode(C64_FIRE, INPUT); }
+  if (fire2) { pinMode(C64_POTX, OUTPUT); digitalWrite(C64_POTX, HIGH); } else { pinMode(C64_POTX, OUTPUT); digitalWrite(C64_POTX, LOW); }
+  if (fire3) { pinMode(C64_POTY, OUTPUT); digitalWrite(C64_POTY, HIGH); } else { pinMode(C64_POTY, OUTPUT); digitalWrite(C64_POTY, LOW); }
 }
 
 static inline void applyPins_A(bool up, bool down, bool left, bool right, bool fire, bool fire2, bool fire3) {
@@ -791,7 +793,7 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
 
   applyAutofirePulse_C64(autofireEnabled);
   applyAutoLeftRight_C64(autoleftrightEnabled);
-  applyPins_C64(up, down, left, right, fire);
+  applyPins_C64(up, down, left, right, fire, fire2, fire3);
 #else
   if (data[joyPos[0]] == joyVal[0]) { pinMode(C64_UP, OUTPUT); digitalWrite(C64_UP, LOW); }
   else { digitalWrite(C64_UP, LOW); pinMode(C64_UP, INPUT); }
@@ -805,13 +807,14 @@ void c64_joystick_j(const uint8_t *const data, const int length) {
   if (data[joyPos[3]] == joyVal[3]) { pinMode(C64_RIGHT, OUTPUT); digitalWrite(C64_RIGHT, LOW); }
   else { digitalWrite(C64_RIGHT, LOW); pinMode(C64_RIGHT, INPUT); }
 
-  if ((data[joyPos[4]] == joyVal[4]) | (data[joyPos[5]] == joyVal[5]) | (data[joyPos[6]] == joyVal[6])) {
-    pinMode(C64_FIRE, OUTPUT);
-    digitalWrite(C64_FIRE, LOW);
-  } else {
-    digitalWrite(C64_FIRE, LOW);
-    pinMode(C64_FIRE, INPUT);
-  }
+  if (data[joyPos[4]] == joyVal[4]) { pinMode(C64_FIRE, OUTPUT); digitalWrite(C64_FIRE, LOW); } 
+  else { digitalWrite(C64_FIRE, LOW); pinMode(C64_FIRE, INPUT); }
+
+  if (data[joyPos[5]] == joyVal[5]) { pinMode(C64_POTX, OUTPUT); digitalWrite(C64_POTX, HIGH); }
+  else { pinMode(C64_POTX, OUTPUT); digitalWrite(C64_POTX, LOW); }
+
+  if (data[joyPos[6]] == joyVal[6]) { pinMode(C64_POTY, OUTPUT); digitalWrite(C64_POTY, HIGH); }
+  else { pinMode(C64_POTY, OUTPUT); digitalWrite(C64_POTY, LOW); }
 #endif
 }
 
