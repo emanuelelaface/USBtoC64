@@ -42,10 +42,10 @@ The PCB are in two versions: THT (version 3.2) and SMD (version 4.1). The functi
 ## Pre-assembled and Tested Board
 
 <div style="display: flex; justify-content: space-between;">
-  <a href="https://www.tindie.com/products/burglar_ot/usbtoc64/"><img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/tindie-logo.png" alt="Tindie Logo Link" width="150" height="78"></a>
+  <a href="https://www.tindie.com/products/burglar_ot/usb-to-commodore-64-amiga-atari/"><img src="https://github.com/emanuelelaface/USBtoC64/blob/main/images/tindie-logo.png" alt="Tindie Logo Link" width="150" height="78"></a>
 </div>
 
-If you like this project and want a fully assembled and tested board, you can purchase it on [Tindie](https://www.tindie.com/products/burglar_ot/usbtoc64/). By doing so, you can also benefit from a customized configuration and support the future development of the project.
+If you like this project and want a fully assembled and tested board, you can purchase it on [Tindie](https://www.tindie.com/products/burglar_ot/usb-to-commodore-64-amiga-atari/). By doing so, you can also benefit from a customized configuration and support the future development of the project.
 
 ## Components
 
